@@ -1,0 +1,9 @@
+{
+  "name": "gang-wars",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gang Wars — Prohibition 1929 PWA",
+  "scripts": {
+    "test": "node --test engine.test.js"
+  }
+}

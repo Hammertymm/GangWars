@@ -3,9 +3,10 @@
    All game assets are inline in gangwars.html so this one file
    is enough for full offline play after the first load. */
 
-const CACHE = 'gangwars-v1';
+const CACHE = 'gangwars-v3';
 const ASSETS = [
   './gangwars.html',
+  './engine.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'
