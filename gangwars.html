@@ -37,21 +37,33 @@
     padding:max(6px,env(safe-area-inset-top)) 12px max(6px,env(safe-area-inset-bottom)) 12px;background:var(--bg);}
   .masthead{flex:0 0 auto;text-align:center;
     border-top:4px double var(--amber);border-bottom:4px double var(--amber);
-    padding:5px 0;margin:4px 0 6px;}
-  h1{font-size:clamp(1.6rem, 9vw, 3rem);letter-spacing:3px;margin:0;line-height:1.05;
+    padding:4px 0;margin:2px 0 4px;}
+  h1{font-size:clamp(1.5rem, 8.5vw, 2.75rem);letter-spacing:3px;margin:0;line-height:1.05;
     color:var(--amber);text-shadow:var(--glow);font-weight:900;white-space:nowrap;}
   #app{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
   .play{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;}
   .play-screen{flex:1 1 auto;min-height:0;justify-content:flex-start;}
 
-  .hud{flex:0 0 auto;border:1px solid var(--border);border-radius:7px;padding:6px 10px;
-    background:var(--panel);font-size:.78rem;line-height:1.45;}
+  .hud{flex:0 0 auto;border:1px solid var(--border);border-radius:8px;padding:10px 12px 9px;
+    background:var(--panel);font-size:.82rem;line-height:1.45;}
   .hud b{color:var(--amber);} .hud .red{color:var(--red);}
-  .row{display:flex;justify-content:space-between;gap:8px;}
+  .hud-top{font-size:.95rem;margin-bottom:2px;}
+  .hud-day b{font-size:1.05rem;color:var(--text);}
+  .hud-day-total{color:var(--dim);font-size:.88rem;}
+  .hud-loc{font-size:1.02rem;font-weight:700;color:var(--amber);letter-spacing:.5px;text-align:right;}
+  .hud-money{margin:8px 0 5px;}
+  .hud-stat{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .row .hud-stat:last-child{align-items:flex-end;text-align:right;}
+  .hud-stat-label{font-size:.72rem;color:var(--dim);letter-spacing:.5px;text-transform:uppercase;}
+  .hud-cash b,.hud-debt b{font-size:1.18rem;line-height:1.1;letter-spacing:.3px;}
+  .hud-debt b{font-size:1.18rem;}
+  .hud-meta{font-size:.82rem;color:var(--dim);}
+  .hud-meta b{color:var(--text);font-size:.92rem;font-weight:600;}
+  .row{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;}
   .bar{height:5px;background:var(--bartrack);border-radius:4px;margin-top:4px;overflow:hidden;}
   .bar > i{display:block;height:100%;background:var(--green);}
 
-  .loc{flex:0 0 auto;color:var(--amber);font-size:.88rem;letter-spacing:2px;margin:6px 2px 4px;
+  .loc{flex:0 0 auto;color:var(--amber);font-size:.84rem;letter-spacing:2px;margin:4px 2px 3px;
     display:flex;justify-content:space-between;align-items:baseline;}
   .loc small{color:var(--dim);font-size:.6rem;letter-spacing:1px;}
 
@@ -73,9 +85,10 @@
   .hero img{width:100%;height:100%;max-height:none;object-fit:contain;
     display:block;border-radius:5px;}
 
-  .actlog{flex:0 0 auto;font-size:.68rem;color:var(--dim);padding:4px 2px 2px;min-height:1.8em;line-height:1.25;}
-  .play-foot{flex:0 0 auto;display:flex;flex-direction:column;gap:2px;padding-top:4px;margin-top:auto;}
-  .actions{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .actlog{flex:0 0 auto;font-size:.66rem;color:var(--dim);padding:2px 2px 0;min-height:0;line-height:1.25;}
+  .play-foot{flex:1 1 0%;min-height:0;display:flex;flex-direction:column;gap:2px;padding-top:2px;}
+  .actions{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;padding-top:4px;}
+  .play-foot .actions button{padding:10px 10px;}
 
   button{font-family:inherit;background:var(--btnbg);color:var(--text);border:1px solid var(--btnborder);
     padding:12px 12px;font-size:.84rem;letter-spacing:1px;cursor:pointer;border-radius:7px;}
@@ -107,7 +120,7 @@
   .err{color:var(--red);min-height:1em;font-size:.78rem;margin:.2rem 0;text-align:center;}
   .scr{font-size:.82rem;}
   .ticker{font-size:.72rem;color:var(--dim);letter-spacing:.5px;margin-top:8px;}
-  .flavor{font-size:.65rem;color:var(--dim);font-style:italic;margin:2px 0 0;line-height:1.3;
+  .flavor{font-size:.78rem;color:var(--dim);margin:6px 0 2px;line-height:1.4;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .range{font-size:.6rem;color:var(--dim);line-height:1;display:block;margin-top:1px;}
   .profit{font-size:.78rem;}
@@ -293,12 +306,19 @@ if (typeof document !== "undefined") {
     }).join("");
     app.innerHTML = `<div class="play play-screen">
       <div class="hud">
-        <div class="row"><span>Day <b>${S.day}</b>/${CONFIG.days}</span><span>${S.location}</span></div>
+        <div class="row hud-top">
+          <span class="hud-day">Day <b>${S.day}</b><span class="hud-day-total">/${CONFIG.days}</span></span>
+          <span class="hud-loc">${S.location}</span>
+        </div>
         <p class="flavor">${LOCATION_FLAVOR[S.location]||""}</p>
-        <div class="row"><span>Cash <b>${money(S.cash)}</b></span>
-          <span>Owe Don <b class="red">${money(S.debt)}</b></span></div>
-        <div class="row"><span class="na">Bank ${money(S.bank)}</span>
-          <span class="na">${S.guns} gun${S.guns!==1?'s':''} · ${S.health}/${CONFIG.startHealth}</span></div>
+        <div class="row hud-money">
+          <span class="hud-stat hud-cash"><span class="hud-stat-label">Cash</span><b>${money(S.cash)}</b></span>
+          <span class="hud-stat hud-debt"><span class="hud-stat-label">Owe Don</span><b class="red">${money(S.debt)}</b></span>
+        </div>
+        <div class="row hud-meta">
+          <span class="hud-stat"><span class="hud-stat-label">Bank</span><b>${money(S.bank)}</b></span>
+          <span class="hud-stat hud-gear"><span class="hud-stat-label">Gear</span><b>${S.guns} gun${S.guns!==1?'s':''} · ${S.health}/${CONFIG.startHealth}</b></span>
+        </div>
         <div class="bar"><i style="width:${used/S.space*100}%"></i></div>
       </div>
       <div class="loc">THE MARKET <small>stash ${used}/${S.space}</small></div>
@@ -328,8 +348,13 @@ if (typeof document !== "undefined") {
     if(!screen || !market) return;
     market.classList.remove("market-scroll");
     market.style.maxHeight = "";
-    const siblings = [...screen.children].filter(el => el !== market);
-    const fixedH = siblings.reduce((sum, el) => sum + el.offsetHeight, 0);
+    const hud = screen.querySelector(".hud");
+    const loc = screen.querySelector(".loc");
+    const foot = screen.querySelector(".play-foot");
+    const footH = foot
+      ? [...foot.children].reduce((sum, el) => sum + el.offsetHeight, 0) + 6
+      : 0;
+    const fixedH = (hud?.offsetHeight || 0) + (loc?.offsetHeight || 0) + footH;
     const budget = screen.clientHeight - fixedH;
     const contentH = market.scrollHeight;
     if(contentH > budget){
