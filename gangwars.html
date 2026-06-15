@@ -72,6 +72,11 @@
   .market-mid{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
     background:var(--bg);border:1px solid var(--border);border-radius:8px;}
   .market-head{flex:0 0 auto;padding:5px 10px 3px;border-bottom:1px solid var(--border);}
+  .market-golden-banner{flex:0 0 auto;margin:0;padding:5px 10px 4px;
+    font-size:clamp(.58rem, 2.5vw, .68rem);letter-spacing:1.2px;text-transform:uppercase;
+    text-align:center;color:#1a1206;background:linear-gradient(90deg, #b8860b, var(--amber), #b8860b);
+    border-bottom:1px solid var(--amber);animation:golden-pulse 2s ease-in-out infinite;}
+  @keyframes golden-pulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.15);}}
   .market-head-title{font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.76rem, 3.4vw, .88rem);color:var(--amber);letter-spacing:1px;text-transform:uppercase;}
   .market-cols{flex:0 0 auto;display:grid;grid-template-columns:1fr minmax(4.2rem,5.4rem) 1.8rem minmax(5rem,6.8rem);gap:3px;
@@ -357,7 +362,10 @@ if (typeof document !== "undefined") {
   function logMsg(t){ S.log.unshift(`Day ${S.day}: ${t}`); S.log = S.log.slice(0,12); }
   function afterMarketAction(msg){
     const stall = tickStallPressure(S);
-    if (stall) logMsg(stall);
+    if (stall){
+      if (S.over){ endGame(stall); return; }
+      logMsg(stall);
+    }
     if (msg) logMsg(msg);
     save();
   }
@@ -418,8 +426,8 @@ if (typeof document !== "undefined") {
   function maybeTutorial(){
     if(localStorage.getItem(TUTORIAL_KEY)) return;
     const steps = [
-      {title:"THE DON'S DEBT", body:"Your debt compounds at 10% every day you travel. Pay him down at Little Italy before it eats your profits."},
-      {title:"THE FAMILY VAULT", body:"Bank your cash at Little Italy only. Savings earn 6% daily — but you must be home to deposit or withdraw."},
+      {title:"THE DON'S DEBT", body:`Your debt compounds at 8% every day you travel. Pay him down at Little Italy before it eats your profits — the Don caps total debt at ${money(CONFIG.maxTotalDebt)}.`},
+      {title:"THE FAMILY VAULT", body:`Bank your cash at Little Italy only. Savings earn ${Math.round(CONFIG.bankInterest*100)}% daily — plus a ${Math.round(CONFIG.conservativeBankBonus*100)}% bonus when your debt is under half the cap.`},
       {title:"PACK HEAT", body:"Feds show up on the road. Buy guns when offered — without one, you can only run or bribe."},
       {title:"LOOSE CASH", body:"Muggings hit harder when you're carrying a lot of cash. Bank it at Little Italy before you travel — the streets notice a fat wallet."},
     ];
@@ -522,6 +530,7 @@ if (typeof document !== "undefined") {
         </div>
       </div>`;
     }).join("");
+    const goldenActive = S.events?.goldenGodlike && S.day === S.events.goldenGodlike.day;
     app.innerHTML = `<div class="play market-play">
       <div class="loc-header">
         <img src="${DISTRICT_IMG[S.location]||DISTRICT_IMG[HOME]}" alt="${S.location}">
@@ -532,6 +541,7 @@ if (typeof document !== "undefined") {
         </div>
       </div>
       <div class="market-mid">
+        ${goldenActive?'<div class="market-golden-banner" role="status">✦ Golden Shower — every price in the city ×10 ✦</div>':''}
         <div class="market-head">
           <span class="market-head-title">MARKET</span>
         </div>
@@ -626,7 +636,7 @@ if (typeof document !== "undefined") {
         app.innerHTML = `<div class="modal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
           <h2 id="modal-title">THE FAMILY VAULT</h2>
           <p>Your debt to the Don stands at <b class="red">${money(S.debt)}</b> — and it's climbing ${Math.round(CONFIG.loanInterest*100)}%/day.</p>
-          <p>Bank <b>${money(S.bank)}</b> <span class="na">(+${Math.round(CONFIG.bankInterest*100)}%/day)</span> · Cash <b>${money(S.cash)}</b></p>
+          <p>Bank <b>${money(S.bank)}</b> <span class="na">(+${Math.round(effectiveBankInterest(S)*100)}%/day)</span> · Cash <b>${money(S.cash)}</b></p>
           <p class="na">The Don caps total debt at ${money(CONFIG.maxTotalDebt)}.</p>
           <div class="btns">
             <button class="amber" data-a="repay" ${S.debt>0&&S.cash>0?'':'disabled'}>SETTLE UP</button>
@@ -707,7 +717,9 @@ if (typeof document !== "undefined") {
     render();
   }
   function travelTo(dest){
-    modal=null; S.location=dest; S.day+=1; applyDailyInterest(S);
+    modal=null; S.location=dest; S.day+=1;
+    const capMsg = applyDailyInterest(S);
+    if (capMsg){ endGame(capMsg); return; }
     if (S.day > CONFIG.days){ endGame(); return; }
     const { prices, anomaly, sr, gk, golden, re } = resolveTravelMarket(S, dest);
     S.prices = prices;
@@ -872,7 +884,9 @@ if (typeof document !== "undefined") {
     );
   }
   function eventGun(next){
-    const cost=randInt(1500,2500);
+    if (S.guns >= CONFIG.maxGuns){ next(); return; }
+    const base=randInt(1500,2500);
+    const cost=gunEventCost(base, S.guns);
     if (S.cash<cost){ next(); return; }
     const gv=pick([
       `Someone's selling out of a bag in the alley. Clean piece, <span class="price">${money(cost)}</span>. The Feds won't wait for you to be unarmed.`,
@@ -891,6 +905,7 @@ if (typeof document !== "undefined") {
     let maxCops = 1 + Math.min(3, Math.floor(S.day / 8));
     if (S.day > 20) maxCops += 1;
     let cops = randInt(1, maxCops);
+    let fightRound = 0;
     const bribeScale = S.day > 20 ? 1.5 : 1;
     const draw=(msg)=>{
       modal=function(){
@@ -920,6 +935,7 @@ if (typeof document !== "undefined") {
     };
     const hit=()=>{ S.health-=1; if(S.health<=0){ endGame("The city has a short memory. By morning nobody will remember your name."); return true; } return false; };
     const doFight=()=>{
+      fightRound++;
       if (chance(fightKillChance(S.guns))) cops-=1;
       if (cops<=0){ const reward=randInt(3750,10000); S.cash+=reward;
         logMsg(`Beat the Feds, grabbed ${money(reward)}.`); modal=null;
@@ -930,7 +946,7 @@ if (typeof document !== "undefined") {
           ["IZZY PICKED THE WRONG MARK",         `The disguise was convincing — you'll give him that. But a fishmonger who moves like a middleweight is a fishmonger worth questioning. <span class="price">${money(reward)}</span> richer, one legend humbled.`],
         ]);
         showEvent('feds', winV[1], "GO", next); return; }
-      if (chance(0.35)){ if(hit())return; draw("You took a hit!"); } else draw("You missed — they're still on you.");
+      if (chance(fedsCounterHitChance(S.guns, fightRound, S.day))){ if(hit())return; draw("You took a hit!"); } else draw("You missed — they're still on you.");
     };
     const doRun=()=>{
       if (chance(0.62)){ logMsg("Vanished into the streets."); modal=null;

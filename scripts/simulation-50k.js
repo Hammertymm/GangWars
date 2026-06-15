@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* 50,000-run gameplay simulation — 5 player archetypes × 10,000 runs */
+/* 60,000-run gameplay simulation — 6 player archetypes × 10,000 runs */
 
 const fs = require('fs');
 const path = require('path');
@@ -9,7 +9,8 @@ const {
   newGame, resolveTravelMarket, applyDailyInterest,
   buy, sell, bankRepay, bankBorrow, bankDeposit,
   spaceLeft, spaceUsed, netWorth, classicScore, getRank, profitPct,
-  randInt, chance, pick, fightKillChance, maxBorrowAmount,
+  randInt, chance, pick, fightKillChance, fedsCounterHitChance, gunEventCost,
+  maxBorrowAmount, tickStallPressure, checkDebtCap,
 } = require('../engine.js');
 
 const RUNS_PER_ARCHETYPE = 10000;
@@ -21,8 +22,9 @@ function hit(s) {
 }
 
 function resolveFeds(s, opts) {
-  let cops = randInt(1, 1 + Math.min(3, Math.floor(s.day / 8)));
-  if (s.day > 20) cops += 1;
+  let maxCops = 1 + Math.min(3, Math.floor(s.day / 8));
+  if (s.day > 20) maxCops += 1;
+  let cops = randInt(1, maxCops);
   s.stats.fedsEncounters++;
   let rounds = 0;
   const bribeScale = s.day > 20 ? 1.5 : 1;
@@ -44,7 +46,7 @@ function resolveFeds(s, opts) {
           return;
         }
       }
-      if (chance(0.35) && hit(s)) {
+      if (chance(fedsCounterHitChance(s.guns, rounds, s.day)) && hit(s)) {
         s.over = true;
         s.deathReason = 'feds';
         s.stats.deaths++;
@@ -118,8 +120,9 @@ function runTravelEvents(s, opts) {
         break;
       }
       case 'gun': {
-        const cost = randInt(1500, 2500);
-        if (s.cash >= cost && opts.buyGun) {
+        const base = randInt(1500, 2500);
+        const cost = gunEventCost(base, s.guns);
+        if (s.cash >= cost && opts.buyGun && s.guns < CONFIG.maxGuns) {
           s.cash -= cost;
           s.guns += 1;
           s.stats.gunsBought++;
@@ -245,7 +248,12 @@ function travelTo(s, dest, opts) {
   s.stats.districtVisits[dest] = (s.stats.districtVisits[dest] || 0) + 1;
   s.location = dest;
   s.day += 1;
-  applyDailyInterest(s);
+  const capMsg = applyDailyInterest(s);
+  if (capMsg) {
+    s.over = true;
+    s.deathReason = 'debt_cap';
+    return;
+  }
   s.stats.totalInterestPaid += s.debt;
 
   if (s.day > CONFIG.days) {
@@ -270,6 +278,8 @@ function initStats(s) {
     stashBuys: 0, gunsBought: 0, borrows: 0,
     fedsEncounters: 0, fedsBribes: 0, fedsWins: 0, fedsEscaped: 0, deaths: 0,
     goodsLostFeds: 0,
+    stallInterestHits: 0,
+    debtCapHits: 0,
     rareHits: 0, superRareHits: 0, godlikeHits: 0, goldenHits: 0,
     totalInterestPaid: 0,
     districtVisits: {},
@@ -290,10 +300,26 @@ function playGame(opts) {
   initStats(s);
 
   while (!s.over && s.day <= CONFIG.days) {
-    trade(s, opts);
-    bankAtHome(s, opts);
+    if (opts.day1StallActions && s.day === 1) {
+      for (let i = 0; i < opts.day1StallActions; i++) {
+        trade(s, opts);
+        bankAtHome(s, opts);
+        const stall = tickStallPressure(s);
+        if (stall) {
+          if (s.over) {
+            s.stats.debtCapHits++;
+            break;
+          }
+          s.stats.stallInterestHits++;
+        }
+      }
+    } else {
+      trade(s, opts);
+      bankAtHome(s, opts);
+    }
     const dest = pickDestination(s, opts);
     travelTo(s, dest, opts);
+    if (s.deathReason === 'debt_cap') s.stats.debtCapHits++;
     if (!s.over) trade(s, opts);
   }
 
@@ -409,6 +435,26 @@ const ARCHETYPES = {
     borrowMax: false,
     buyMultiple: false,
   },
+  day1Staller: {
+    label: 'Day 1 Staller',
+    sellProfitPct: 12,
+    buyThreshold: 0.88,
+    maxBuyQty: 50,
+    chaseEvents: false,
+    preferDock: false,
+    arbitrageMode: false,
+    buyStash: false,
+    buyGun: false,
+    fedsPreferBribe: true,
+    fedsFight: false,
+    repayDebt: false,
+    useBank: true,
+    depositFraction: 0.4,
+    depositThreshold: 8000,
+    borrowMax: true,
+    buyMultiple: false,
+    day1StallActions: 15,
+  },
 };
 
 function avg(arr) { return arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0; }
@@ -465,6 +511,8 @@ function summarizeArchetype(name, results) {
     score90PlusPct: pct(results.filter(r => r.score >= 90).length, n),
     bigDaddyJPct: pct(results.filter(r => r.rank === 'Big Daddy J').length, n),
     avgFedsEncounters: avg(results.map(r => r.stats.fedsEncounters)).toFixed(2),
+    avgStallInterestHits: avg(results.map(r => r.stats.stallInterestHits || 0)).toFixed(2),
+    avgDebtCapHits: avg(results.map(r => r.stats.debtCapHits || 0)).toFixed(2),
     avgEventsPerTrip: eventTrips ? (totalEvents / eventTrips).toFixed(2) : '0',
     districtUsage: districtTotals,
     goodsBuyFrequency: goodBuyTotals,
@@ -504,22 +552,25 @@ function aggregateEconomy(allResults) {
       let t = 0;
       for (let i = 0; i < 1000; i++) {
         const s = newGame();
-        for (let d = 0; d < 30; d++) applyDailyInterest(s);
+        for (let d = 0; d < 30; d++) {
+          applyDailyInterest(s);
+          if (s.over) break;
+        }
         t += s.debt;
       }
       return Math.round(t / 1000);
     })(),
     exploits: [
-      { id: 'day1_stall', severity: 'High', note: 'No interest until first travel — not modeled in sim (all archetypes travel immediately)' },
-      { id: 'debt_stack', severity: 'High', note: 'Debt exploiter avg borrows per run measurable via stats.borrows' },
-      { id: 'gun_stack', severity: 'High', note: 'Aggressive archetype accumulates multiple guns; Feds death rate should be near 0' },
-      { id: 'event_pileup', severity: 'Medium', note: `Avg events per trip: ${avg(Object.values(allResults).map(s => parseFloat(s.avgEventsPerTrip))).toFixed(2)}` },
+      { id: 'day1_stall', severity: 'Medium', note: 'Stall archetype triggers stall interest; debt cap ends run if debt hits ceiling' },
+      { id: 'debt_stack', severity: 'Medium', note: 'Debt capped at $100k including compounded interest — game over at ceiling' },
+      { id: 'gun_stack', severity: 'Low', note: `Gun cap ${CONFIG.maxGuns}; escalating purchase cost; Feds counter-hit scales per round` },
+      { id: 'event_pileup', severity: 'Low', note: `Avg events per trip capped at ${CONFIG.maxTravelEvents}` },
     ],
   };
 }
 
 function main() {
-  console.log(`\n=== Gang Wars 50,000-Run Simulation ===\n`);
+  console.log(`\n=== Gang Wars 60,000-Run Simulation ===\n`);
   const t0 = Date.now();
   const summaries = {};
   const rawByArchetype = {};
@@ -561,7 +612,7 @@ function main() {
       dominantStrategies: economy.mostProfitableStrategies,
       brokenStrategies: economy.leastProfitableStrategies.filter(s => s.avgWealth < 0),
       unusedMechanics: ['Golden Godlike chase (0.1% roll)', 'Full debt payoff win condition'],
-      difficultySpikes: ['Day 20+ Feds bribe scale 1.5×', '10% daily compound debt over 30 travels'],
+      difficultySpikes: ['Day 20+ extra Feds agent and +5% counter-hit', '8% daily compound debt; hard cap at $100k'],
       softLockPossibilities: ['Day 1 stall (player choice)', 'Zero cash + zero bank + high debt + no goods'],
       unwinnableScenarios: ['None forced — negative NW allowed at end'],
       exploitableLoops: economy.exploits,

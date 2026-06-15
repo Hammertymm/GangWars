@@ -7,13 +7,15 @@ const CONFIG = {
   startDebt: 25000,
   startSpace: 100,
   startHealth: 10,
-  loanInterest: 0.10,
+  loanInterest: 0.08,
   bankInterest: 0.06,
+  conservativeBankBonus: 0.02,
   unavailableChance: 1/8,
   maxBorrow: 25000,
-  maxTotalDebt: 75000,
+  maxTotalDebt: 100000,
   maxTravelEvents: 2,
   day1StallActions: 5,
+  maxGuns: 2,
 };
 
 const LOCATIONS = ["Little Italy","Dock #13","Kitty Kat Club","Uptown","Warehouse District","City Hall"];
@@ -29,16 +31,16 @@ const LOCATION_FLAVOR = {
 };
 
 const TERRITORY_MODIFIERS = {
-  "Little Italy":       {},
+  "Little Italy":       { homeDiscount: 0.03 },
   "Dock #13":           { variance: 1.35 },
-  "Kitty Kat Club":     { alcoholBonus: 0.08 },
-  "Uptown":             { luxuryBonus: 0.12 },
+  "Kitty Kat Club":     { alcoholBonus: 0.05 },
+  "Uptown":             { luxuryBonus: 0.18 },
   "Warehouse District": { criminalBonus: 0.10 },
   "City Hall":          { bias: -0.06 },
 };
 
 const DRUGS = [
-  {id:"moonshine",    name:"Moonshine",     low:50,    high:250},
+  {id:"moonshine",    name:"Moonshine",     low:50,    high:200},
   {id:"cigars",       name:"Cuban Cigars",  low:200,   high:700},
   {id:"bathgin",      name:"Bathtub Gin",   low:600,   high:2000},
   {id:"art",          name:"Forged Art",    low:1500,  high:5500},
@@ -109,6 +111,7 @@ function applyTerritoryPrice(d, location, basePrice){
   if (mod.criminalBonus && FAM_CRIMINAL.has(d.id)) price = Math.round(price * (1 + mod.criminalBonus));
   if (mod.alcoholBonus && FAM_ALCOHOL.has(d.id)) price = Math.round(price * (1 + mod.alcoholBonus));
   if (mod.bias) price = Math.round(price * (1 + mod.bias));
+  if (mod.homeDiscount) price = Math.round(price * (1 - mod.homeDiscount));
   return Math.max(1, price);
 }
 
@@ -155,7 +158,7 @@ function rollMarket(location){
 function spaceUsed(inv){ return Object.values(inv).reduce((a,b)=>a+b,0); }
 function spaceLeft(s){ return s.space - spaceUsed(s.inventory); }
 function netWorth(s){ return s.cash + s.bank - s.debt; }
-const PERFECT_SCORE_NET_WORTH = 10000000;
+const PERFECT_SCORE_NET_WORTH = 20000000;
 function classicScore(s){
   const nw = Math.max(0, netWorth(s));
   return Math.max(0, Math.min(100, Math.round(100 * Math.sqrt(nw / PERFECT_SCORE_NET_WORTH))));
@@ -172,6 +175,32 @@ function fightKillChance(guns){
   return Math.min(0.85, 0.45 + 0.12 * Math.max(0, guns));
 }
 
+/** Chance the Feds land a hit each fight round (scales with round count and late game). */
+function fedsCounterHitChance(guns, round, day){
+  const gunMitigation = Math.min(0.12, 0.04 * Math.max(0, guns));
+  let p = 0.35 + 0.03 * Math.max(0, round - 1) - gunMitigation;
+  if (day > 20) p += 0.05;
+  return Math.min(0.55, Math.max(0.18, p));
+}
+
+function gunEventCost(baseCost, guns){
+  return Math.round(baseCost * (1 + 0.5 * Math.max(0, guns)));
+}
+
+function effectiveBankInterest(s){
+  const bonus = s.debt <= CONFIG.maxTotalDebt * 0.5 ? CONFIG.conservativeBankBonus : 0;
+  return CONFIG.bankInterest + bonus;
+}
+
+function checkDebtCap(s){
+  if (s.debt >= CONFIG.maxTotalDebt) {
+    s.debt = CONFIG.maxTotalDebt;
+    s.over = true;
+    return "The Don called in your marker — you owe more than he allows.";
+  }
+  return null;
+}
+
 function maxBorrowAmount(s){
   const room = CONFIG.maxTotalDebt - s.debt;
   return Math.max(0, Math.min(CONFIG.maxBorrow, room));
@@ -181,7 +210,8 @@ function tickStallPressure(s){
   if (s.day !== 1 || s.over) return null;
   s.stallActions = (s.stallActions || 0) + 1;
   if (s.stallActions > 0 && s.stallActions % CONFIG.day1StallActions === 0) {
-    applyDailyInterest(s);
+    const capMsg = applyDailyInterest(s);
+    if (capMsg) return capMsg;
     return "The Don's patience ran out — interest hits while you linger.";
   }
   return null;
@@ -189,7 +219,9 @@ function tickStallPressure(s){
 
 function applyDailyInterest(s){
   s.debt = Math.round(s.debt * (1 + CONFIG.loanInterest));
-  if (CONFIG.bankInterest > 0) s.bank = Math.round(s.bank * (1 + CONFIG.bankInterest));
+  const bankRate = effectiveBankInterest(s);
+  if (bankRate > 0) s.bank = Math.round(s.bank * (1 + bankRate));
+  return checkDebtCap(s);
 }
 
 function buy(s, id, qty){
@@ -344,7 +376,8 @@ if (typeof module !== "undefined") {
     rollMarket, applyTerritoryPrice, marketPriceBounds, spaceUsed, spaceLeft, netWorth, classicScore, PERFECT_SCORE_NET_WORTH, getRank, RANKS,
     applyDailyInterest, buy, sell, bankRepay, bankBorrow, bankDeposit, bankWithdraw,
     avgCost, profitPct, newGame, migrateSave, resolveTravelMarket,
-    fightKillChance, maxBorrowAmount, tickStallPressure,
+    fightKillChance, fedsCounterHitChance, gunEventCost, effectiveBankInterest, checkDebtCap,
+    maxBorrowAmount, tickStallPressure,
     randInt, chance, pick,
   };
 }

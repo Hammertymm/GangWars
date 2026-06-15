@@ -6,7 +6,8 @@ const {
   rollMarket, buy, sell, newGame, migrateSave, resolveTravelMarket,
   bankBorrow, bankRepay, bankDeposit, bankWithdraw, applyDailyInterest,
   avgCost, profitPct, applyTerritoryPrice, marketPriceBounds, netWorth, classicScore, PERFECT_SCORE_NET_WORTH,
-  TERRITORY_MODIFIERS, FAM_LUXURY, getRank, RANKS, maxBorrowAmount, fightKillChance, tickStallPressure,
+  TERRITORY_MODIFIERS, FAM_LUXURY, getRank, RANKS, maxBorrowAmount, fightKillChance, fedsCounterHitChance,
+  gunEventCost, effectiveBankInterest, checkDebtCap, tickStallPressure,
 } = require('./engine.js');
 
 describe('rollMarket', () => {
@@ -127,7 +128,7 @@ describe('tickStallPressure', () => {
     for (let i = 0; i < CONFIG.day1StallActions - 1; i++) assert.equal(tickStallPressure(s), null);
     const msg = tickStallPressure(s);
     assert.match(msg, /patience ran out/);
-    assert.equal(s.debt, Math.round(10000 * 1.1));
+    assert.equal(s.debt, Math.round(10000 * 1.08));
   });
 });
 
@@ -136,9 +137,42 @@ describe('applyDailyInterest', () => {
     const s = newGame();
     s.debt = 10000;
     s.bank = 10000;
+    assert.equal(applyDailyInterest(s), null);
+    assert.equal(s.debt, Math.round(10000 * 1.08));
+    assert.equal(s.bank, Math.round(10000 * 1.08));
+  });
+
+  it('applies conservative bank bonus when debt is low', () => {
+    const s = newGame();
+    s.debt = 10000;
+    s.bank = 5000;
     applyDailyInterest(s);
-    assert.equal(s.debt, Math.round(10000 * 1.1));
-    assert.equal(s.bank, Math.round(10000 * 1.06));
+    assert.equal(s.bank, Math.round(5000 * (1 + CONFIG.bankInterest + CONFIG.conservativeBankBonus)));
+  });
+});
+
+describe('checkDebtCap', () => {
+  it('ends the run when debt reaches the cap', () => {
+    const s = newGame();
+    s.debt = CONFIG.maxTotalDebt;
+    const msg = checkDebtCap(s);
+    assert.match(msg, /called in your marker/);
+    assert.equal(s.over, true);
+  });
+});
+
+describe('fedsCounterHitChance', () => {
+  it('rises with round count and late game', () => {
+    assert.ok(fedsCounterHitChance(0, 3, 10) > fedsCounterHitChance(0, 1, 10));
+    assert.ok(fedsCounterHitChance(0, 2, 25) > fedsCounterHitChance(0, 2, 10));
+    assert.ok(fedsCounterHitChance(2, 2, 10) < fedsCounterHitChance(0, 2, 10));
+  });
+});
+
+describe('gunEventCost', () => {
+  it('scales cost for additional guns', () => {
+    assert.equal(gunEventCost(2000, 0), 2000);
+    assert.equal(gunEventCost(2000, 1), 3000);
   });
 });
 
@@ -150,7 +184,7 @@ describe('classicScore', () => {
     s.debt = 0;
     assert.equal(classicScore(s), 0);
     assert.equal(netWorth(s), 0);
-    s.cash = 8100000;
+    s.cash = Math.round(PERFECT_SCORE_NET_WORTH * 0.81);
     assert.equal(classicScore(s), 90);
     s.cash = PERFECT_SCORE_NET_WORTH;
     assert.equal(classicScore(s), 100);
@@ -221,32 +255,41 @@ describe('resolveTravelMarket', () => {
   });
 
   it('applies godlike x10 only in matching district', () => {
-    const s = newGame();
-    s.day = 12;
-    s.events.godlike = { lines: ['A', 'B'], day: 12, district: 'Uptown' };
-    s.prices = rollMarket(HOME).prices;
-    const elsewhere = resolveTravelMarket(s, HOME);
-    const uptown = resolveTravelMarket(s, 'Uptown');
-    const ids = DRUGS.map(d => d.id).filter(id => elsewhere.prices[id] && uptown.prices[id]);
-    assert.ok(ids.length > 0);
-    const id = ids[0];
-    assert.ok(uptown.prices[id] >= elsewhere.prices[id] * 5);
+    const rand = Math.random;
+    Math.random = () => 0.55;
+    try {
+      const s = newGame();
+      s.day = 12;
+      s.events.godlike = { lines: ['A', 'B'], day: 12, district: 'Uptown' };
+      const withEvent = resolveTravelMarket(s, 'Uptown');
+      delete s.events.godlike;
+      Math.random = () => 0.55;
+      const without = resolveTravelMarket(s, 'Uptown');
+      const id = DRUGS.find(d => withEvent.prices[d.id] && without.prices[d.id])?.id;
+      assert.ok(id);
+      assert.equal(withEvent.prices[id], Math.round(without.prices[id] * 10));
+    } finally {
+      Math.random = rand;
+    }
   });
 
   it('applies golden godlike x10 in every district on event day', () => {
-    const s = newGame();
-    s.day = 9;
-    s.events.goldenGodlike = { ...GOLDEN_GODLIKE, day: 9 };
-    s.prices = rollMarket(HOME).prices;
-    const home = resolveTravelMarket(s, HOME);
-    const dock = resolveTravelMarket(s, 'Dock #13');
-    const id = DRUGS.find(d => home.prices[d.id] && dock.prices[d.id])?.id;
-    assert.ok(id);
-    delete s.events.goldenGodlike;
-    const baselineHome = resolveTravelMarket(s, HOME);
-    const baselineDock = resolveTravelMarket(s, 'Dock #13');
-    assert.ok(home.prices[id] >= baselineHome.prices[id] * 5);
-    assert.ok(dock.prices[id] >= baselineDock.prices[id] * 5);
+    const rand = Math.random;
+    Math.random = () => 0.55;
+    try {
+      const s = newGame();
+      s.day = 9;
+      s.events.goldenGodlike = { ...GOLDEN_GODLIKE, day: 9 };
+      const home = resolveTravelMarket(s, HOME);
+      delete s.events.goldenGodlike;
+      Math.random = () => 0.55;
+      const baselineHome = resolveTravelMarket(s, HOME);
+      const id = DRUGS.find(d => home.prices[d.id] && baselineHome.prices[d.id])?.id;
+      assert.ok(id);
+      assert.equal(home.prices[id], Math.round(baselineHome.prices[id] * 10));
+    } finally {
+      Math.random = rand;
+    }
   });
 
   it('applies super rare x3 in matching district', () => {

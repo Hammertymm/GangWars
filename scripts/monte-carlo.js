@@ -5,8 +5,9 @@ const {
   CONFIG, DRUGS, DRUG, LOCATIONS, HOME,
   newGame, resolveTravelMarket, applyDailyInterest,
   buy, sell, bankRepay, bankBorrow, bankDeposit, bankWithdraw,
-  spaceLeft, netWorth, classicScore, getRank, profitPct, avgCost,
-  randInt, chance, pick, fightKillChance, maxBorrowAmount, CONFIG,
+  spaceLeft, netWorth, classicScore, getRank, profitPct, avgCost, PERFECT_SCORE_NET_WORTH,
+  randInt, chance, pick, fightKillChance, fedsCounterHitChance, gunEventCost,
+  maxBorrowAmount, tickStallPressure, checkDebtCap,
 } = require('../engine.js');
 
 const RUNS = parseInt(process.argv[2] || '10000', 10);
@@ -62,8 +63,9 @@ function runTravelEvents(s, opts) {
         break;
       }
       case 'gun': {
-        const cost = randInt(1500, 2500);
-        if (s.cash >= cost && opts.buyGun) {
+        const base = randInt(1500, 2500);
+        const cost = gunEventCost(base, s.guns);
+        if (s.cash >= cost && opts.buyGun && s.guns < CONFIG.maxGuns) {
           s.cash -= cost;
           s.guns += 1;
           s.stats.gunsBought++;
@@ -78,18 +80,22 @@ function runTravelEvents(s, opts) {
 }
 
 function resolveFeds(s, opts) {
-  let cops = randInt(1, 1 + Math.min(3, Math.floor(s.day / 8)));
+  let maxCops = 1 + Math.min(3, Math.floor(s.day / 8));
+  if (s.day > 20) maxCops += 1;
+  let cops = randInt(1, maxCops);
   s.stats.fedsEncounters++;
   let rounds = 0;
+  const bribeScale = s.day > 20 ? 1.5 : 1;
+
   while (cops > 0 && !s.over && rounds < 50) {
     rounds++;
-    const bribeCost = Math.min(s.cash, randInt(2000, 8000) * cops);
+    const bribeCost = Math.min(s.cash, Math.round(randInt(2000, 8000) * cops * bribeScale));
     if (opts.fedsPreferBribe && bribeCost > 0 && s.cash >= bribeCost * 0.5) {
       s.cash -= bribeCost;
       s.stats.fedsBribes++;
       return;
     }
-    if (s.guns > 0 && opts.fedsFight && cops <= 2) {
+    if (s.guns > 0 && opts.fedsFight) {
       if (chance(fightKillChance(s.guns))) {
         cops -= 1;
         if (cops <= 0) {
@@ -98,7 +104,7 @@ function resolveFeds(s, opts) {
           return;
         }
       }
-      if (chance(0.35) && hit(s)) {
+      if (chance(fedsCounterHitChance(s.guns, rounds, s.day)) && hit(s)) {
         s.over = true;
         s.deathReason = 'feds';
         s.stats.deaths++;
@@ -189,7 +195,11 @@ function bankAtHome(s, opts) {
 function travelTo(s, dest, opts) {
   s.location = dest;
   s.day += 1;
-  applyDailyInterest(s);
+  if (applyDailyInterest(s)) {
+    s.over = true;
+    s.deathReason = 'debt_cap';
+    return;
+  }
   s.stats.totalInterest += s.debt;
 
   if (s.day > CONFIG.days) {
@@ -406,7 +416,7 @@ for (const s of summaries) {
 const debt30 = interestOnlySimulation(1000);
 console.log(`--- MECHANICS CHECKS ---`);
 console.log(`  Starting debt after 30 days interest-only (no travel): ~$${debt30.toLocaleString()} (vs start $25,000)`);
-console.log(`  Perfect score threshold: $5,000,000 net worth`);
+console.log(`  Perfect score threshold: $${PERFECT_SCORE_NET_WORTH.toLocaleString()} net worth`);
 
 const ev = analyzeEventValue(2000);
 console.log(`  Godlike/Golden runs (${ev.withGodlike}/2000): avg NW $${ev.avgWith.toLocaleString()} vs $${ev.avgWithout.toLocaleString()} without`);

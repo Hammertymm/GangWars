@@ -30,7 +30,7 @@ const BASE = {
   stashChance: 1 / 7,
   gunChance: 1 / 7,
   fedsChance: 1 / 7,
-  perfectScoreNW: 5000000,
+  perfectScoreNW: 20000000,
   scoreDivisor: 157.5,
   rareChance: 0.04,
   superRareChance: 0.01,

@@ -1,11 +1,9 @@
 {
   "generatedAt": "2026-06-15",
-  "totalImagesOnDisk": 69,
+  "totalImagesOnDisk": 68,
   "totalReferences": 69,
   "missing": [],
-  "orphans": [
-    "hero.jpg"
-  ],
+  "orphans": [],
   "duplicates": [],
   "dimensions": {
     "apple-touch-icon.png": {
@@ -268,10 +266,6 @@
       "width": 199,
       "height": 324
     },
-    "hero.jpg": {
-      "width": 760,
-      "height": 769
-    },
     "icon-192.png": {
       "width": 192,
       "height": 192
@@ -530,7 +524,6 @@
     ],
     "root": [
       "apple-touch-icon.png",
-      "hero.jpg",
       "icon-192.png",
       "icon-512.png",
       "title-screen.png"
@@ -538,10 +531,8 @@
   },
   "summary": {
     "missingCount": 0,
-    "orphanCount": 1,
-    "docOnlyOrphans": [
-      "hero.jpg"
-    ],
+    "orphanCount": 0,
+    "docOnlyOrphans": [],
     "duplicateGroups": 0,
     "allDistrictsPresent": true,
     "allGoodsPresent": true
