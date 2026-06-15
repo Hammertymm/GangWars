@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v15';
+const CACHE = 'gangwars-v16';
 const ASSETS = [
   './gangwars.html',
   './engine.js',
@@ -20,6 +20,16 @@ const ASSETS = [
   './cards/underboss.png',
   './cards/godfather.png',
   './cards/big-daddy-j.png',
+  './events/the_feds.png',
+  './events/ambushed_rolled.png',
+  './events/dead_drop.png',
+  './events/packing_iron.png',
+  './events/upgrade_available.png',
+  './events/shortage.png',
+  './events/buying_frenzy.png',
+  './events/flooded_market.png',
+  './events/super_rare_event.png',
+  './events/rare_event_intel.png',
 ];
 
 const ICON_PATTERN = /(?:apple-touch-icon|icon-(?:180|192|512))\.png$/;

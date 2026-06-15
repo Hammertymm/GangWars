@@ -166,6 +166,22 @@
   .eos-sep{border:none;border-top:1px solid var(--border);margin:3px 0;}
   .eos-btns{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px;}
   .eos-btns button{font-size:.7rem;padding:9px 4px;letter-spacing:.5px;}
+
+  /* === EVENT POPUP — split image/text layout === */
+  .ev-popup{display:flex;flex-direction:row;width:100%;max-height:88dvh;
+    border:1px solid var(--amber);border-radius:11px;overflow:hidden;
+    background:var(--bg);box-shadow:0 12px 46px var(--shadow);}
+  .ev-left{flex:0 0 38%;overflow:hidden;background:#000;display:flex;align-items:flex-start;}
+  .ev-left img{width:100%;display:block;object-fit:contain;}
+  .ev-right{flex:1 1 0;display:flex;flex-direction:column;padding:14px 13px 12px;
+    border-left:1px solid var(--border);min-height:0;}
+  .ev-body{flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+    font-size:.88rem;line-height:1.6;color:var(--text);text-align:center;overflow-y:auto;}
+  .ev-body b{color:var(--amber);}
+  .ev-acts{flex:0 0 auto;display:flex;flex-direction:column;gap:7px;margin-top:12px;}
+  .ev-acts button{font-size:.8rem;padding:10px 8px;letter-spacing:.5px;}
+  .ev-status{font-size:.8rem;color:var(--dim);text-align:center;margin-bottom:4px;}
+  .ev-warn{font-size:.72rem;color:var(--dim);text-align:center;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -525,27 +541,27 @@ if (typeof document !== "undefined") {
     let marketEvent=null;
     if(gk && S.day===gk.day){
       if(dest===gk.district){
-        marketEvent=(next)=>toast(gk.lines[0], gk.lines[1], 'BIG DADDY J', next);
+        marketEvent=(next)=>showEvent('bigdaddy', `<b>${gk.lines[0]}</b><br><br>${gk.lines[1]}`, 'BIG DADDY J', next);
       } else {
-        marketEvent=(next)=>toast('BIG DADDY J IS ACROSS TOWN', `He's making moves in ${gk.district}. Every price there is climbing.`, 'NOTED', next);
+        marketEvent=(next)=>showEvent('bigdaddy', `<b>BIG DADDY J IS ACROSS TOWN</b><br><br>He's making moves in ${gk.district}. Every price there is climbing.`, 'NOTED', next);
       }
     } else if(sr && S.day===sr.day){
       if(dest===sr.district){
-        marketEvent=(next)=>toast(sr.lines[0], sr.lines[1]+' Every price in the district is climbing.', "LET'S GO", next);
+        marketEvent=(next)=>showEvent('celeb', `<b>${sr.lines[0]}</b><br><br>${sr.lines[1]} Every price in the district is climbing.`, "LET'S GO", next);
       } else {
-        marketEvent=(next)=>toast(sr.lines[0], sr.lines[1]+` Head to ${sr.district} for the action.`, 'NOTED', next);
+        marketEvent=(next)=>showEvent('celeb', `<b>${sr.lines[0]}</b><br><br>${sr.lines[1]} Head to ${sr.district} for the action.`, 'NOTED', next);
       }
     } else if(re && S.day===re.day){
       const reDrug=DRUG[re.commodity];
       if(dest===re.district){
-        marketEvent=(next)=>toast(re.lines[0], re.lines[1], 'INTERESTING', next);
+        marketEvent=(next)=>showEvent('intel', `<b>${re.lines[0]}</b><br><br>${re.lines[1]}`, 'INTERESTING', next);
       } else if(reDrug){
-        marketEvent=(next)=>toast(re.lines[0], re.lines[1]+` ${reDrug.name} surging in ${re.district}.`, 'NOTED', next);
+        marketEvent=(next)=>showEvent('intel', `<b>${re.lines[0]}</b><br><br>${re.lines[1]} ${reDrug.name} surging in ${re.district}.`, 'NOTED', next);
       }
     } else if(anomaly){
-      const titles={spike:'SHORTAGE',surge:'BUYING FRENZY',flood:'FLOODED MARKET'};
+      const anomalyImg={spike:'shortage',surge:'frenzy',flood:'flood'};
       const body=pick(ANOMALY_BODIES[anomaly.type]).replace(/{ITEM}/g, anomaly.itemName);
-      marketEvent=(next)=>toast(titles[anomaly.type], body, 'NOTED', next);
+      marketEvent=(next)=>showEvent(anomalyImg[anomaly.type], body, 'NOTED', next);
     }
 
     runTravelEvents(()=>{ render(); }, marketEvent);
@@ -561,9 +577,58 @@ if (typeof document !== "undefined") {
     let i=0; const next=()=>{ if(S.over)return; if(i>=queue.length){ save(); done(); return; } queue[i++](next); };
     next();
   }
+  const EV_IMG={
+    feds:     'events/the_feds.png',
+    mugging:  'events/ambushed_rolled.png',
+    find:     'events/dead_drop.png',
+    gun:      'events/packing_iron.png',
+    stash:    'events/upgrade_available.png',
+    shortage: 'events/shortage.png',
+    frenzy:   'events/buying_frenzy.png',
+    flood:    'events/flooded_market.png',
+    celeb:    'events/super_rare_event.png',
+    intel:    'events/rare_event_intel.png',
+    bigdaddy: 'cards/big-daddy-j.png',
+  };
+
+  /* Single-button event popup with split image/text layout */
+  function showEvent(imgKey, body, btn, cb){
+    modal=function(){
+      app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
+        <div class="ev-left"><img src="${EV_IMG[imgKey]||EV_IMG.intel}" alt=""></div>
+        <div class="ev-right">
+          <div class="ev-body"><div>${body}</div></div>
+          <div class="ev-acts"><button class="amber full" id="ok">${btn||'OK'}</button></div>
+        </div>
+      </div></div>`;
+      document.getElementById("ok").onclick=()=>{ modal=null; cb(); };
+    };
+    render();
+  }
+
+  /* Two-button choice popup (BUY/PASS style) */
+  function showEventAsk(imgKey, body, yesLabel, noLabel, onYes, onNo){
+    modal=function(){
+      app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
+        <div class="ev-left"><img src="${EV_IMG[imgKey]||EV_IMG.intel}" alt=""></div>
+        <div class="ev-right">
+          <div class="ev-body"><div>${body}</div></div>
+          <div class="ev-acts">
+            <button class="amber full" id="yes">${yesLabel}</button>
+            <button class="full" id="no">${noLabel}</button>
+          </div>
+        </div>
+      </div></div>`;
+      document.getElementById("yes").onclick=onYes;
+      document.getElementById("no").onclick=onNo;
+    };
+    render();
+  }
+
+  /* Legacy plain-card toast (used by bank/Don modals — no image) */
   function toast(title, body, btn, cb){
     modal=function(){
-      app.innerHTML = `<div class="modal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      app.innerHTML=`<div class="modal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <h2 id="modal-title">${title}</h2><p>${body}</p>
         <button class="full amber" id="ok">${btn||"OK"}</button>
       </div></div>`;
@@ -583,7 +648,7 @@ if (typeof document !== "undefined") {
       ["OUTSMARTED",      `You were robbed by a man pretending to be a lamppost. In hindsight the signs were there. ${money(loss)} gone and your pride in tatters.`],
       ["CAPONE'S REGARDS",`A man in a very good suit handed you an envelope and took ${money(loss)} from your coat. He said Mr Capone sends his regards. You didn't argue.`],
     ]);
-    toast(mugV[0], mugV[1], "DAMN", next);
+    showEvent('mugging', mugV[1], "DAMN", next);
   }
   function eventFind(next){
     if (spaceLeft(S)<=0){ next(); return; }
@@ -594,45 +659,35 @@ if (typeof document !== "undefined") {
       ["VALENTINE'S LEFTOVERS", `Whatever went down in that garage on Clark Street, the men who stashed these <b>${n} ${d.name}</b> won't be collecting them. You will.`],
       ["GENNA BROTHERS' GIFT",  `The Gennas are finished and their operation is scattered to the wind. <b>${n} ${d.name}</b> left in a Cicero warehouse with no one left to claim it.`],
     ]);
-    toast(findV[0], findV[1], "NICE", next);
+    showEvent('find', findV[1], "NICE", next);
   }
   function eventStash(next){
     const add=pick([10,15,20,30]); const cost=add*randInt(90,110);
     if (S.cash<cost){ next(); return; }
-    modal=function(){
-      app.innerHTML = `<div class="modal"><div class="card">
-        ${(()=>{const sv=pick([
-          ["UPGRADE AVAILABLE", `A mechanic at the yard can fit <b>+${add}</b> extra hidden crates into your vehicle for <span class="price">${money(cost)}</span>. Do it?`],
-          ["HENRY'S FINEST",    `A Ford engineer — allegedly — offers to modify your Model T with <b>+${add}</b> hidden crates for <span class="price">${money(cost)}</span>. He claims Mr Ford himself suggested the design. This is almost certainly not true.`],
-          ["NO QUESTIONS ASKED",`A grease-stained man slides a card across the bar. Says he can build <b>+${add}</b> hidden crates into your vehicle for <span class="price">${money(cost)}</span>. Doesn't ask what you're carrying. Doesn't want to know.`],
-        ]); return `<h2>${sv[0]}</h2><p>${sv[1]}</p>`;})()}
-        <div class="btns"><button class="amber" id="yes">BUY</button><button id="no">PASS</button></div>
-      </div></div>`;
-      document.getElementById("yes").onclick=()=>{ S.cash-=cost; S.space+=add; logMsg(`+${add} stash space.`); modal=null; next(); };
-      document.getElementById("no").onclick=()=>{ modal=null; next(); };
-      bindModalCard(app.querySelector(".card"));
-    };
-    render();
+    const sv=pick([
+      `A mechanic at the yard can fit <b>+${add}</b> extra hidden crates into your vehicle for <span class="price">${money(cost)}</span>. Do it?`,
+      `A Ford engineer — allegedly — offers to modify your Model T with <b>+${add}</b> hidden crates for <span class="price">${money(cost)}</span>. He claims Mr Ford himself suggested the design. This is almost certainly not true.`,
+      `A grease-stained man slides a card across the bar. Says he can build <b>+${add}</b> hidden crates into your vehicle for <span class="price">${money(cost)}</span>. Doesn't ask what you're carrying. Doesn't want to know.`,
+    ]);
+    showEventAsk('stash', sv, 'BUY',
+      ()=>{ S.cash-=cost; S.space+=add; logMsg(`+${add} stash space.`); modal=null; next(); },
+      'PASS', ()=>{ modal=null; next(); }
+    );
   }
   function eventGun(next){
     const cost=randInt(1500,2500);
     if (S.cash<cost){ next(); return; }
-    modal=function(){
-      app.innerHTML = `<div class="modal"><div class="card">
-        ${(()=>{const gv=pick([
-          ["PACKING IRON",              `Someone's selling out of a bag in the alley. Clean piece, <span class="price">${money(cost)}</span>. The Feds won't wait for you to be unarmed.`],
-          ["CAPONE'S SURPLUS",          `A man claims he's moving hardware left over from one of Capone's operations. Clean piece, <span class="price">${money(cost)}</span>, no serial number. Take it or leave it.`],
-          ["ARMY SURPLUS",              `A contact with War Department connections is quietly moving government-issue hardware. <span class="price">${money(cost)}</span> gets you something Eliot Ness himself would respect.`],
-          ["VALENTINE'S SPECIAL",       `The piece on the table has a history you don't want to know about. <span class="price">${money(cost)}</span>, no questions, no paperwork. In this city that's a bargain.`],
-          ["THE UNTOUCHABLES' PROBLEM", `Ness's boys confiscated these from the Circus Café last Tuesday. By Wednesday they were back on the street. <span class="price">${money(cost)}</span> and it's yours. Don't ask how.`],
-        ]); return `<h2>${gv[0]}</h2><p>${gv[1]}</p>`;})()}
-        <div class="btns"><button class="amber" id="yes">BUY</button><button id="no">PASS</button></div>
-      </div></div>`;
-      document.getElementById("yes").onclick=()=>{ S.cash-=cost; S.guns+=1; logMsg(`Bought a gun.`); modal=null; next(); };
-      document.getElementById("no").onclick=()=>{ modal=null; next(); };
-      bindModalCard(app.querySelector(".card"));
-    };
-    render();
+    const gv=pick([
+      `Someone's selling out of a bag in the alley. Clean piece, <span class="price">${money(cost)}</span>. The Feds won't wait for you to be unarmed.`,
+      `A man claims he's moving hardware left over from one of Capone's operations. Clean piece, <span class="price">${money(cost)}</span>, no serial number. Take it or leave it.`,
+      `A contact with War Department connections is quietly moving government-issue hardware. <span class="price">${money(cost)}</span> gets you something Eliot Ness himself would respect.`,
+      `The piece on the table has a history you don't want to know about. <span class="price">${money(cost)}</span>, no questions, no paperwork. In this city that's a bargain.`,
+      `Ness's boys confiscated these from the Circus Café last Tuesday. By Wednesday they were back on the street. <span class="price">${money(cost)}</span> and it's yours. Don't ask how.`,
+    ]);
+    showEventAsk('gun', gv, 'BUY',
+      ()=>{ S.cash-=cost; S.guns+=1; logMsg(`Bought a gun.`); modal=null; next(); },
+      'PASS', ()=>{ modal=null; next(); }
+    );
   }
   /* Feds encounter — same combat math as the original cop fight */
   function eventFeds(next){
@@ -640,22 +695,25 @@ if (typeof document !== "undefined") {
     const draw=(msg)=>{
       modal=function(){
         const canFight=S.guns>0;
-        app.innerHTML = `<div class="modal"><div class="card">
-          <h2 style="color:var(--red)">THE FEDS!</h2>
-          <p>Agent Hayes spotted you — <b>${cops}</b> ${cops>1?'agents':'agent'} closing in.
-             You: ${S.health}/${CONFIG.startHealth} · ${S.guns} gun${S.guns!==1?'s':''}.</p>
-          ${msg?`<p class="price">${msg}</p>`:''}
-          <div class="btns3">
-            <button class="red" id="fight" ${canFight?'':'disabled'}>FIGHT</button>
-            <button id="run">RUN</button>
-            <button class="amber" id="bribe">PAYOFF</button>
+        app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
+          <div class="ev-left"><img src="${EV_IMG.feds}" alt="The Feds"></div>
+          <div class="ev-right">
+            <div class="ev-body"><div>
+              Agent Hayes spotted you — <b>${cops}</b> ${cops>1?'agents':'agent'} closing in.<br><br>
+              HP: <b>${S.health}/${CONFIG.startHealth}</b> &nbsp;·&nbsp; Guns: <b>${S.guns}</b>
+              ${msg?`<br><br><span style="color:var(--red)">${msg}</span>`:''}
+            </div></div>
+            <div class="ev-acts">
+              <button class="red full" id="fight" ${canFight?'':'disabled'}>FIGHT</button>
+              <button class="full" id="run">RUN</button>
+              <button class="amber full" id="bribe">PAYOFF</button>
+              ${!canFight?'<span class="ev-warn">No gun — can\'t fight back.</span>':''}
+            </div>
           </div>
-          ${!canFight?'<p class="na" style="font-size:.72rem">No gun — can\'t fight back.</p>':''}
         </div></div>`;
         document.getElementById("run").onclick=doRun;
         document.getElementById("bribe").onclick=doBribe;
         const f=document.getElementById("fight"); if(canFight) f.onclick=doFight;
-        bindModalCard(app.querySelector(".card"));
       };
       render();
     };
@@ -670,7 +728,7 @@ if (typeof document !== "undefined") {
           ["ANOTHER VICTORY FOR ORGANISED CRIME",`Capone himself couldn't have handled it cleaner. <span class="price">${money(reward)}</span> off the floor, coat straightened, gone before the echo fades.`],
           ["IZZY PICKED THE WRONG MARK",         `The disguise was convincing — you'll give him that. But a fishmonger who moves like a middleweight is a fishmonger worth questioning. <span class="price">${money(reward)}</span> richer, one legend humbled.`],
         ]);
-        toast(winV[0], winV[1], "GO", next); return; }
+        showEvent('feds', winV[1], "GO", next); return; }
       if (chance(0.35)){ if(hit())return; draw("You took a hit!"); } else draw("You missed — they're still on you.");
     };
     const doRun=()=>{
@@ -681,7 +739,7 @@ if (typeof document !== "undefined") {
           ["THE BACK WAY",     "Three alleys, a fire escape, and a borrowed hat. By the time they reached the corner you were four blocks north having a coffee."],
           ["LOST IN THE PARADE","By sheer luck a temperance march turned onto the street at precisely the right moment. You joined the procession, took a pamphlet, and were gone before anyone noticed the irony."],
         ]);
-        toast(runV[0], runV[1], "PHEW", next); return; }
+        showEvent('mugging', runV[1], "PHEW", next); return; }
       if (hit()) return;
       const owned=Object.keys(S.inventory);
       if (owned.length){ const id=pick(owned); const lost=Math.min(S.inventory[id],randInt(1,5));
@@ -699,7 +757,7 @@ if (typeof document !== "undefined") {
         ["CIVIC DONATION",     `You explained to the officers that <span class="price">${money(cost)}</span> was a voluntary contribution to the Policemen's Benevolent Fund. They thanked you for your generosity and wished you a good evening.`],
         ["ABOVE BOARD",        `You told them it was a consulting fee for advice on avoiding criminal activity. They accepted <span class="price">${money(cost)}</span> and advised you to use the north exit. Everybody wins.`],
       ]);
-      toast(brV[0], brV[1], "OK", next);
+      showEvent('feds', brV[1], "OK", next);
     };
     draw(null);
   }
