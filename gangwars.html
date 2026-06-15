@@ -213,7 +213,7 @@ if (typeof document !== "undefined") {
     localStorage.setItem(HS_KEY, JSON.stringify(hs.slice(0,10).map(({score:s,worth:w,date:d})=>({score:s,worth:w,date:d}))));
     return pos;
   }
-  function rankCard(r){ return r==='Big Daddy J'?'godfather':r.toLowerCase().replace(/ /g,'-'); }
+  function rankCard(r){ return r.toLowerCase().replace(/ /g,'-'); }
   function logMsg(t){ S.log.unshift(`Day ${S.day}: ${t}`); S.log = S.log.slice(0,12); }
 
   function bindModalCard(card){
