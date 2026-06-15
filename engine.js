@@ -139,6 +139,12 @@ function spaceLeft(s){ return s.space - spaceUsed(s.inventory); }
 function netWorth(s){ return s.cash + s.bank - s.debt; }
 function classicScore(s){ return Math.max(0, Math.min(100, Math.round(Math.sqrt(Math.max(0,netWorth(s))/157.5)))); }
 
+const RANKS = [
+  'Nobody','Pickpocket','Hustler','Rum Runner','Bootlegger',
+  'Racketeer','Wise Guy','Crew Boss','Underboss','Godfather','Big Daddy J',
+];
+function getRank(score){ return RANKS[Math.min(10, Math.floor(Math.max(0, score) / 10))]; }
+
 function applyDailyInterest(s){
   s.debt = Math.round(s.debt * (1 + CONFIG.loanInterest));
   if (CONFIG.bankInterest > 0) s.bank = Math.round(s.bank * (1 + CONFIG.bankInterest));
@@ -285,7 +291,7 @@ if (typeof module !== "undefined") {
   module.exports = {
     CONFIG, DRUGS, DRUG, LOCATIONS, HOME, LOCATION_FLAVOR, TERRITORY_MODIFIERS,
     FAM_ALCOHOL, FAM_LUXURY, FAM_CRIMINAL, RARE_EVENTS, SUPER_RARE_EVENTS, GODLIKE_LINES,
-    rollMarket, applyTerritoryPrice, spaceUsed, spaceLeft, netWorth, classicScore,
+    rollMarket, applyTerritoryPrice, spaceUsed, spaceLeft, netWorth, classicScore, getRank, RANKS,
     applyDailyInterest, buy, sell, bankRepay, bankBorrow, bankDeposit, bankWithdraw,
     avgCost, profitPct, newGame, migrateSave, resolveTravelMarket,
     randInt, chance, pick,

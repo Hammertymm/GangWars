@@ -4,7 +4,7 @@ const {
   CONFIG, DRUG, DRUGS, HOME, LOCATIONS, RARE_EVENTS, SUPER_RARE_EVENTS,
   rollMarket, buy, sell, newGame, migrateSave, resolveTravelMarket,
   bankBorrow, bankRepay, avgCost, profitPct, applyTerritoryPrice,
-  TERRITORY_MODIFIERS, FAM_LUXURY,
+  TERRITORY_MODIFIERS, FAM_LUXURY, getRank, RANKS,
 } = require('./engine.js');
 
 describe('rollMarket', () => {
@@ -123,6 +123,24 @@ describe('newGame', () => {
     const s = newGame();
     assert.equal(s.location, HOME);
     assert.equal(s.day, 1);
-    assert.ok(s.prices.bathgin != null || s.prices.cigars != null);
+    assert.ok(s.prices.moonshine != null || s.prices.cigars != null);
   });
+});
+
+describe('getRank', () => {
+  it('has 11 ranks matching the table', () => {
+    assert.equal(RANKS.length, 11);
+  });
+
+  it('returns Nobody at 0', () => assert.equal(getRank(0), 'Nobody'));
+  it('returns Pickpocket at 10', () => assert.equal(getRank(10), 'Pickpocket'));
+  it('returns Wise Guy at 60', () => assert.equal(getRank(60), 'Wise Guy'));
+  it('returns Wise Guy at 67', () => assert.equal(getRank(67), 'Wise Guy'));
+  it('returns Crew Boss at 70', () => assert.equal(getRank(70), 'Crew Boss'));
+  it('returns Crew Boss at 74', () => assert.equal(getRank(74), 'Crew Boss'));
+  it('returns Godfather at 90', () => assert.equal(getRank(90), 'Godfather'));
+  it('returns Godfather at 92', () => assert.equal(getRank(92), 'Godfather'));
+  it('returns Big Daddy J at 100', () => assert.equal(getRank(100), 'Big Daddy J'));
+  it('returns Big Daddy J for scores above 100', () => assert.equal(getRank(150), 'Big Daddy J'));
+  it('returns Nobody for negative scores', () => assert.equal(getRank(-5), 'Nobody'));
 });

@@ -302,10 +302,10 @@ if (typeof document !== "undefined") {
     app.innerHTML = `<div class="play">
       <div class="loc">TOP EARNERS</div>
       <div class="market" style="overflow:auto">
-        <table><tr><th>#</th><th class="r">Take</th><th class="r">Score</th><th class="r">Date</th></tr>
+        <table><tr><th>#</th><th class="r">Take</th><th class="r">Score</th><th>Rank</th><th class="r">Date</th></tr>
         ${hs.length?hs.map((h,i)=>`<tr><td>${i+1}</td><td class="r price">${money(h.worth)}</td>
-          <td class="r">${h.score}/100</td><td class="r na">${h.date}</td></tr>`).join("")
-          :`<tr><td colspan="4" class="na">No finished runs yet. The streets are waiting.</td></tr>`}
+          <td class="r">${h.score}/100</td><td class="amber" style="font-size:.78rem;padding-left:10px">${getRank(h.score)}</td><td class="r na">${h.date}</td></tr>`).join("")
+          :`<tr><td colspan="5" class="na">No finished runs yet. The streets are waiting.</td></tr>`}
         </table>
       </div>
       <button class="full" id="back" style="margin-top:10px">BACK</button>
@@ -687,7 +687,7 @@ if (typeof document !== "undefined") {
         <p>${S.overReason}</p>
         <p class="big serif">${money(worth)}</p>
         <p class="na scr">final take · cash ${money(S.cash)} + bank ${money(S.bank)} − Don ${money(S.debt)}</p>
-        <p>Score <b>${score}/100</b> ${score>=100?'— you ran the city!':''}</p>
+        <p>Score <b>${score}/100</b> &nbsp;·&nbsp; <span class="amber">${getRank(score)}</span>${score>=100?' — you ran the city!':''}</p>
       </div>
       <button class="full amber" id="again" style="margin-top:12px">PLAY AGAIN</button>
       <button class="full" id="scores" style="margin-top:8px">HIGH SCORES</button>
