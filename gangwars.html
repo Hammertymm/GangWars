@@ -175,6 +175,8 @@
   .market-play .bot-val{font-size:clamp(.88rem, 4.2vw, 1.08rem);line-height:1.15;color:var(--amber);}
   .bot-val{font-size:1.08rem;line-height:1.2;color:var(--amber);}
   .bot-val.red{color:var(--red);}
+  .debt-warn{flex:0 0 auto;margin:0 0 4px;padding:0 2px;font-size:clamp(.52rem, 2.2vw, .62rem);
+    line-height:1.25;color:var(--amber);text-align:center;letter-spacing:.2px;}
   .market-play .bot-val.dim{font-size:clamp(.72rem, 3.2vw, .88rem);color:var(--text);}
   .bot-val.dim{font-size:.9rem;color:var(--text);}
   .bar{height:4px;background:var(--bartrack);border-radius:3px;margin:3px 0 6px;overflow:hidden;}
@@ -560,6 +562,7 @@ if (typeof document !== "undefined") {
           <div class="bot-stat"><span class="bot-label">STASH</span><span class="bot-val dim">${used}/${S.space}</span></div>
           <div class="bot-stat right"><span class="bot-label">HP</span><span class="bot-val dim">${S.health}/${CONFIG.startHealth}</span></div>
         </div>
+        ${S.debt>=CONFIG.maxTotalDebt*0.9?'<p class="debt-warn" role="status">The Don is losing patience, get in over $100k and its curtains</p>':''}
         <p class="save-err" id="save-err" role="alert"></p>
         <div class="actions">
           <button class="amber" id="travel">MOVE ▶</button>
