@@ -66,6 +66,36 @@
   .market-mid th{font-size:.6rem;position:static;}
   .market-mid .market-actions button{padding:3px 8px;font-size:.66rem;}
   .market-mid .actlog{flex:0 0 auto;border-bottom:1px solid var(--border);}
+
+  /* TRAVEL — static territory picker */
+  .travel-screen{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;overflow:hidden;
+    border:1px solid var(--border);border-radius:8px;background:var(--bg);}
+  .travel-head{flex:0 0 auto;display:flex;gap:10px;align-items:center;
+    padding:10px 12px;border-bottom:1px solid var(--border);background:var(--panel);}
+  .travel-head img{width:72px;height:auto;flex:0 0 72px;display:block;
+    object-fit:contain;image-rendering:pixelated;image-rendering:crisp-edges;}
+  .travel-head-body{flex:1 1 auto;min-width:0;}
+  .travel-head-title{font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
+    font-size:1.05rem;font-weight:700;color:var(--amber);letter-spacing:1px;line-height:1.15;
+    text-transform:uppercase;}
+  .travel-head-sub{font-size:.72rem;color:var(--dim);margin-top:3px;line-height:1.35;}
+  .travel-list{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+  .travel-row{flex:1 1 0;min-height:0;display:flex;align-items:center;gap:0;
+    padding:5px 10px;border:0;border-bottom:1px solid var(--rowline);border-radius:0;
+    background:transparent;color:var(--text);text-align:left;cursor:pointer;width:100%;
+    font-family:inherit;}
+  .travel-row:last-of-type{border-bottom:none;}
+  .travel-row img{width:44px;height:44px;flex:0 0 44px;display:block;
+    object-fit:contain;image-rendering:pixelated;image-rendering:crisp-edges;}
+  .travel-row-sep{width:1px;height:40px;flex:0 0 1px;background:var(--border);margin:0 10px;}
+  .travel-row-body{flex:1 1 auto;min-width:0;}
+  .travel-row-name{display:block;font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
+    font-size:.8rem;font-weight:700;color:var(--amber);letter-spacing:.6px;text-transform:uppercase;}
+  .travel-row-desc{display:block;font-size:.64rem;color:var(--dim);line-height:1.32;margin-top:2px;}
+  .travel-row.here,.travel-row:disabled{opacity:.42;cursor:default;pointer-events:none;}
+  .travel-row:active:not(.here):not(:disabled){background:rgba(231,200,121,.08);}
+  .travel-foot{flex:0 0 auto;padding:8px 10px 10px;border-top:1px solid var(--border);background:var(--panel);}
+  .travel-foot button{width:100%;letter-spacing:1px;}
   .loc{font-size:.78rem;color:var(--amber);letter-spacing:1px;
     padding:4px 10px 3px;display:flex;justify-content:space-between;align-items:baseline;
     border-left:1px solid var(--border);border-right:1px solid var(--border);}
@@ -225,6 +255,14 @@ if (typeof document !== "undefined") {
     "Uptown":             "assets/uptown.png",
     "Warehouse District": "assets/warehouse-district.png",
     "City Hall":          "assets/city-hall.png",
+  };
+  const TRAVEL_FLAVOR = {
+    "Little Italy":       "The heart of old-world power. Respect matters more than money here.",
+    "Dock #13":           "Smugglers' Paradise. High-risk trading and black-market goods rule these foggy docks.",
+    "Kitty Kat Club":     "Jazz, gin & secrets. Information is as valuable as cash in this speakeasy district.",
+    "Uptown":             "Where the money lives. Bigger profits, bigger customers, and bigger targets.",
+    "Warehouse District": "Industry and opportunity. Bulk goods and underground operations move big money here.",
+    "City Hall":          "The seat of power. Bribes, favors, and connections open every door.",
   };
 
 
@@ -548,15 +586,32 @@ if (typeof document !== "undefined") {
   /* ---------- move + day events ---------- */
   function renderTravel(){
     modal = function(){
-      app.innerHTML = `<div class="modal"><div class="card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <h2 id="modal-title">ON THE MOVE</h2><p>Pick your next territory. Moving costs you a day.</p>
-        <div class="grid2">
-        ${LOCATIONS.map(l=>`<button data-go="${l}" ${l===S.location?'disabled':''}>${l}</button>`).join("")}
+      app.innerHTML = `<div class="play travel-screen" role="dialog" aria-modal="true" aria-labelledby="travel-title">
+        <div class="travel-head">
+          <img src="assets/travel-car.png" alt="">
+          <div class="travel-head-body">
+            <div class="travel-head-title" id="travel-title">ON THE MOVE</div>
+            <div class="travel-head-sub">Pick your next territory. Moving costs you a day.</div>
+          </div>
         </div>
-        <button class="full" id="cancel" style="margin-top:8px;color:#fff">GO BACK</button>
-      </div></div>`;
-      app.querySelectorAll("[data-go]").forEach(b=> b.onclick=()=> travelTo(b.dataset.go));
-      bindModalCard(app.querySelector(".card"));
+        <div class="travel-list">
+        ${LOCATIONS.map(l=>{
+          const here = l === S.location;
+          return `<button type="button" class="travel-row${here?' here':''}" data-go="${l}" ${here?'disabled':''} aria-label="Travel to ${l}">
+            <img src="${DISTRICT_IMG[l]}" alt="">
+            <span class="travel-row-sep" aria-hidden="true"></span>
+            <span class="travel-row-body">
+              <span class="travel-row-name">${l}</span>
+              <span class="travel-row-desc">${TRAVEL_FLAVOR[l]||""}</span>
+            </span>
+          </button>`;
+        }).join("")}
+        </div>
+        <div class="travel-foot">
+          <button type="button" class="full" id="cancel">GO BACK</button>
+        </div>
+      </div>`;
+      app.querySelectorAll("[data-go]:not([disabled])").forEach(b=> b.onclick=()=> travelTo(b.dataset.go));
       document.getElementById("cancel").onclick=dismissModal;
     };
     render();
