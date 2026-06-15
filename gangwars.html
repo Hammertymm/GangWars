@@ -106,34 +106,34 @@
   .market-mid .actlog{flex:0 0 auto;font-size:clamp(.56rem, 2.4vw, .64rem);color:var(--dim);
     padding:4px 10px 5px;line-height:1.25;border-top:1px solid var(--border);}
 
-  /* TRAVEL — fixed single-screen territory picker (no scroll) */
+  /* TRAVEL — locked standard: full car header, stacked districts, zero dead space (see docs/ui-standards/travel.png) */
   .travel-play{overflow:hidden;}
   .travel-screen{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-    border:1px solid var(--amber);border-radius:8px;background:var(--bg);}
-  .travel-head{flex:0 0 14%;min-height:76px;max-height:108px;display:flex;gap:8px;align-items:stretch;
-    padding:4px 8px 4px 4px;border-bottom:1px solid var(--amber);background:var(--panel);}
+    border:3px double var(--amber);border-radius:8px;background:var(--bg);}
+  .travel-head{flex:0 0 15%;min-height:84px;max-height:114px;display:flex;gap:10px;align-items:stretch;
+    padding:5px 10px 5px 5px;border-bottom:1px solid var(--amber);background:var(--panel);}
   .travel-head img{flex:0 0 auto;height:100%;width:auto;
-    min-width:clamp(88px, 28vw, 140px);max-width:46%;
-    display:block;object-fit:contain;object-position:center;
+    min-width:clamp(96px, 30vw, 150px);max-width:48%;
+    display:block;object-fit:contain;object-position:left center;
     image-rendering:pixelated;image-rendering:crisp-edges;
-    border:1px solid var(--btnborder);border-radius:4px;background:rgba(0,0,0,.4);}
+    border:none;border-radius:0;background:transparent;}
   .travel-head-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;}
-  .travel-head-title{font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
-    font-size:clamp(1.15rem, 5.8vw, 1.55rem);font-weight:900;color:var(--amber);letter-spacing:2px;
+  .travel-head-title{font-family:inherit;
+    font-size:clamp(1.2rem, 6vw, 1.6rem);font-weight:700;color:var(--amber);letter-spacing:1.5px;
     line-height:1.05;text-transform:uppercase;width:100%;
-    padding:5px 10px;border:1px solid var(--amber);border-radius:5px;
-    background:rgba(231,200,121,.08);box-sizing:border-box;}
+    padding:0;border:none;border-radius:0;background:transparent;box-sizing:border-box;}
   .travel-head-sub{font-size:clamp(.6rem, 2.6vw, .72rem);color:var(--dim);line-height:1.3;padding:0 2px;}
   .travel-list{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-    gap:5px;padding:6px 8px;}
-  .travel-row{flex:1 1 0;min-height:0;display:flex;align-items:stretch;gap:6px;
-    padding:3px 8px 3px 3px;border:1px solid var(--btnborder);border-radius:6px;
-    background:var(--panel);color:var(--text);text-align:left;cursor:pointer;width:100%;
+    gap:0;padding:0;}
+  .travel-row{flex:1 1 0;min-height:0;display:flex;align-items:stretch;gap:8px;
+    padding:2px 8px 2px 3px;border:none;border-bottom:1px solid var(--btnborder);border-radius:0;
+    background:var(--bg);color:var(--text);text-align:left;cursor:pointer;width:100%;
     font-family:inherit;}
+  .travel-row:first-child{border-top:1px solid var(--btnborder);}
   .travel-row img{flex:0 0 auto;height:100%;width:auto;
-    min-width:clamp(52px, 15vw, 84px);max-width:40%;aspect-ratio:1;
-    display:block;object-fit:cover;object-position:center;border-radius:4px;
-    border:1px solid var(--btnborder);
+    min-width:clamp(56px, 16vw, 88px);max-width:38%;aspect-ratio:1;
+    display:block;object-fit:cover;object-position:center;border-radius:0;
+    border:none;
     image-rendering:pixelated;image-rendering:crisp-edges;}
   .travel-row-body{flex:1 1 auto;min-width:0;overflow:hidden;padding-right:2px;
     display:flex;flex-direction:column;justify-content:center;}
@@ -143,11 +143,11 @@
   .travel-row-desc{display:block;font-size:clamp(.56rem, 2.4vw, .66rem);color:var(--dim);line-height:1.28;
     margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
   .travel-row.here,.travel-row:disabled{opacity:.35;cursor:default;pointer-events:none;
-    border-color:var(--border);background:rgba(32,26,17,.5);}
+    background:rgba(32,26,17,.5);}
   .travel-row.here img,.travel-row:disabled img{filter:brightness(1.1) grayscale(.7);}
   .travel-row.here .travel-row-name,.travel-row:disabled .travel-row-name{color:var(--dim);}
-  .travel-row:active:not(.here):not(:disabled){background:rgba(231,200,121,.12);border-color:var(--amber);}
-  .travel-foot{flex:0 0 10%;min-height:44px;max-height:58px;padding:6px 10px 7px;
+  .travel-row:active:not(.here):not(:disabled){background:rgba(231,200,121,.12);}
+  .travel-foot{flex:0 0 auto;min-height:42px;max-height:52px;padding:5px 10px 6px;
     border-top:1px solid var(--amber);background:var(--panel);display:flex;align-items:stretch;}
   .travel-foot button{width:100%;letter-spacing:1px;font-size:clamp(.72rem, 3.2vw, .84rem);
     padding:clamp(6px, 2vw, 10px) 8px;border-color:var(--amber);}
@@ -225,7 +225,7 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px;}
 
   .modal{position:fixed;inset:0;background:rgba(0,0,0,.74);display:flex;align-items:center;
-    justify-content:center;padding:16px;z-index:100;}
+    justify-content:center;padding:10px 8px;z-index:100;}
   .card{width:100%;max-width:420px;max-height:92dvh;overflow:hidden;background:var(--panel);
     border:1px solid var(--amber);border-radius:11px;padding:16px;box-shadow:0 12px 46px var(--shadow);}
   .card h2{margin:.1rem 0 .6rem;font-size:1.05rem;color:var(--amber);letter-spacing:2px;}
@@ -256,16 +256,18 @@
   .tutorial .card-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:2px 0;}
 
-  /* === END-OF-GAME SPLIT SCREEN === */
-  .eos{flex:1 1 auto;display:flex;flex-direction:row;min-height:0;overflow:hidden;}
-  .eos-left{flex:0 0 35%;display:flex;align-items:center;justify-content:center;
-    min-height:0;padding:4px 0;border-right:1px solid var(--border);overflow:hidden;}
+  /* === END-OF-GAME SPLIT SCREEN — locked standard (see docs/ui-standards/end-screen.png) === */
+  .eos{flex:1 1 auto;display:flex;flex-direction:row;gap:8px;min-height:0;overflow:hidden;align-items:stretch;}
+  .eos-left{flex:0 0 36%;min-width:0;display:flex;align-items:center;justify-content:center;
+    min-height:0;padding:0;border:3px double var(--amber);border-radius:8px;
+    overflow:hidden;background:var(--panel);}
   .eos-left img{width:100%;height:100%;object-fit:contain;display:block;}
-  .eos-right{flex:1 1 0;display:flex;flex-direction:column;min-height:0;overflow:hidden;
-    padding:8px 10px 6px;}
+  .eos-right{flex:1 1 0;min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden;
+    padding:8px 10px 6px;border:3px double var(--amber);border-radius:8px;background:var(--bg);}
   .eos-title{font-size:.58rem;color:var(--dim);letter-spacing:3px;text-align:center;margin-bottom:1px;}
-  .eos-amount{font-size:clamp(1.1rem,4.5vw,1.55rem);color:var(--amber);font-weight:900;
-    text-align:center;letter-spacing:1px;line-height:1.15;margin-bottom:5px;}
+  .eos-amount-wrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:5px;}
+  .eos-amount{flex:1 1 auto;font-size:clamp(1rem,4.2vw,1.45rem);color:var(--amber);font-weight:900;
+    text-align:center;letter-spacing:1px;line-height:1.15;min-width:0;}
   .eos-hs-header{font-size:.56rem;color:var(--dim);letter-spacing:2px;text-align:center;margin-bottom:3px;}
   .eos-rows{flex:1 1 auto;overflow:hidden;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:1px;}
   .eos-row{display:flex;align-items:baseline;gap:2px;padding:1.5px 0;font-size:.68rem;line-height:1.3;}
@@ -275,22 +277,24 @@
   .eos-fill::before{content:'·················································';}
   .eos-val{flex:0 0 auto;color:var(--text);white-space:nowrap;}
   .eos-tag{flex:0 0 auto;font-size:.56rem;color:var(--amber);letter-spacing:.5px;padding-left:2px;}
-  .eos-row.you{background:rgba(231,200,121,.09);border-radius:3px;padding:2px 3px;margin:1px -3px;}
+  .eos-row.you{background:rgba(231,200,121,.09);border:1px solid var(--btnborder);border-radius:3px;padding:2px 3px;margin:1px -3px;}
   .eos-row.you .eos-name,.eos-row.you .eos-val{color:var(--amber);}
   .eos-sep{border:none;border-top:1px solid var(--border);margin:3px 0;}
   .eos-btns{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:6px;}
   .eos-btns button{font-size:.7rem;padding:9px 4px;letter-spacing:.5px;}
 
-  /* === EVENT POPUP — split image/text layout === */
-  .ev-popup{display:flex;flex-direction:row;align-items:stretch;width:100%;max-height:88dvh;
-    border:1px solid var(--amber);border-radius:11px;overflow:hidden;
+  /* === EVENT POPUP — locked standard: full-bleed left art (see docs/ui-standards/popup.png) === */
+  .modal .ev-popup{width:100%;}
+  .ev-popup{display:flex;flex-direction:row;align-items:stretch;width:100%;
+    max-width:min(520px, 100%);min-height:min(300px, 72dvh);max-height:88dvh;
+    border:1px solid var(--amber);border-radius:12px;overflow:hidden;
     background:var(--bg);box-shadow:0 12px 46px var(--shadow);}
-  .ev-left{flex:0 0 38%;align-self:stretch;overflow:hidden;background:#000;position:relative;min-height:0;}
-  .ev-left img{position:absolute;inset:1px 0 1px 1px;width:100%;height:100%;display:block;
-    object-fit:contain;object-position:left center;
+  .ev-left{flex:0 0 50%;align-self:stretch;overflow:hidden;background:#000;position:relative;min-height:0;min-width:0;}
+  .ev-left img{position:absolute;inset:0;width:100%;height:100%;display:block;
+    object-fit:cover;object-position:top center;
     image-rendering:pixelated;image-rendering:crisp-edges;}
   .ev-right{flex:1 1 0;display:flex;flex-direction:column;padding:14px 13px 12px;
-    border-left:1px solid var(--border);min-height:0;}
+    border-left:1px solid var(--amber);min-height:0;min-width:0;}
   .ev-body{flex:1 1 auto;display:flex;align-items:center;justify-content:center;
     font-size:.88rem;line-height:1.6;color:var(--text);text-align:center;overflow-y:auto;}
   .ev-body b{color:var(--amber);}
@@ -1013,7 +1017,7 @@ if (typeof document !== "undefined") {
       </div>
       <div class="eos-right">
         <div class="eos-title">— FINAL SCORE —</div>
-        <div class="eos-amount">${money(worth)}</div>
+        <div class="eos-amount-wrap"><div class="eos-amount">${money(worth)}</div></div>
         <div class="eos-hs-header">— ALL TIME HIGH SCORES —</div>
         <div class="eos-rows">${rows}${playerRow}</div>
         <div class="eos-btns">

@@ -1,0 +1,44 @@
+---
+description: Locked UI layout standards for popups, travel screen, and end screens — do not alter without explicit user approval
+globs: gangwars.html
+alwaysApply: false
+---
+
+# Gang Wars — Locked UI Layout Standards
+
+These three layouts are **unchangeable standards**. Match `docs/ui-standards/*.png` exactly. Do not refactor, restyle, or "improve" them.
+
+## 1. Event popups (`.ev-popup`)
+
+Reference: `docs/ui-standards/popup.png`
+
+- **50/50 split**: `.ev-left` at 50%, `.ev-right` for text + CTA
+- **Full-bleed art**: event image fills the entire left panel edge-to-edge — no letterboxing, inset offsets, inner borders, or clipping gaps
+- Use `object-fit: cover; object-position: top center; inset: 0` on `.ev-left img`
+- Gold vertical divider between panels (`border-left: 1px solid var(--amber)`)
+- All narrative/event popups use `showEvent` / `showEventAsk` / feds `draw()` — never plain `.card` for events
+- Standard event art: 10 PNGs in `events/` from `assets/event-grid-source.png` via `scripts/split-event-grid.py` — do not hand-edit; re-slice from source if needed
+- Form modals (trade qty, bank) stay on `.card` — they are exempt
+
+## 2. Travel screen (`.travel-play`)
+
+Reference: `docs/ui-standards/travel.png`
+
+- **Header**: full car image (`assets/travel-car.png`) with no border/background box; title "ON THE MOVE" plain (no bordered pill)
+- **District list**: six equal-height rows, **zero gap** — stacked with horizontal dividers only, no rounded card gaps or dead space
+- **Footer**: compact "GO BACK" bar
+- Outer frame: `3px double var(--amber)` on `.travel-screen`
+- Single-screen, no scroll
+
+## 3. End screens (`.eos`)
+
+Reference: `docs/ui-standards/end-screen.png`
+
+- **Left panel (~36%)**: rank card image in double-border frame (`cards/{rank}.png`)
+- **Right panel**: double-border frame with — FINAL SCORE —, amount, — ALL TIME HIGH SCORES —, dotted leaderboard rows, optional ← YOU row, PLAY AGAIN / MAIN MENU
+- Every game-over path must use `renderGameOver()` / `.eos` — no alternate end layouts
+- Single-screen, no scroll
+
+## When editing
+
+If a task would change popup, travel, or end-screen structure, spacing, image fit, or borders — **stop and ask the user first**.
