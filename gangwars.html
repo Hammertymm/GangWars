@@ -211,41 +211,54 @@
   .title-hit-scores{left:51.975%;width:43.867%;top:89.063%;height:7.227%;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
-  /* CRIME LEDGER */
-  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;gap:8px;}
-  .ledger-screen{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;
-    border:3px double var(--amber);border-radius:8px;background:var(--bg);}
-  .ledger-head{flex:0 0 auto;text-align:center;padding:10px 8px 8px;border-bottom:1px solid var(--amber);}
-  .ledger-head h2{margin:0;font-size:clamp(.92rem,4.2vw,1.08rem);color:var(--amber);letter-spacing:2px;}
-  .ledger-sub{font-size:clamp(.62rem,2.8vw,.72rem);color:var(--dim);margin-top:4px;letter-spacing:.8px;}
-  .ledger-crime-lord{flex:0 0 auto;margin-top:6px;padding:4px 8px;border:1px solid var(--amber);
-    border-radius:4px;font-size:clamp(.58rem,2.5vw,.66rem);color:var(--amber);letter-spacing:1px;}
-  .ledger-list{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:0;padding:0;}
-  .ledger-row{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;
-    padding:6px 10px;border:none;border-bottom:1px solid var(--btnborder);border-radius:0;
-    background:var(--bg);color:var(--amber);text-align:center;cursor:pointer;width:100%;
-    font-family:inherit;font-size:clamp(.72rem,3.2vw,.84rem);letter-spacing:1.2px;}
-  .ledger-row:last-child{border-bottom:none;}
-  .ledger-row:active{background:rgba(231,200,121,.12);}
-  .ledger-ach-list{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
-    gap:1px;padding:6px 8px;background:var(--panel);border-top:1px solid var(--border);}
-  .ledger-ach{flex:0 0 auto;display:flex;align-items:flex-start;gap:6px;padding:5px 4px;
-    font-size:clamp(.58rem,2.6vw,.68rem);line-height:1.35;border-bottom:1px solid var(--rowline);}
-  .ledger-ach:last-child{border-bottom:none;}
-  .ledger-ach-mark{flex:0 0 1.2em;color:var(--green);}
-  .ledger-ach-text{flex:1 1 auto;color:var(--text);word-break:break-word;}
-  .ledger-ach.hidden .ledger-ach-text{color:var(--dim);letter-spacing:1px;}
-  .ledger-ach.reveal-focus .ledger-ach-text{color:var(--amber);}
-  .ledger-foot{flex:0 0 auto;min-height:42px;max-height:52px;padding:5px 10px 6px;
-    border-top:1px solid var(--amber);background:var(--panel);}
-  .ledger-foot button{width:100%;letter-spacing:1px;font-size:clamp(.72rem,3.2vw,.84rem);
-    padding:clamp(6px,2vw,10px) 8px;border-color:var(--amber);}
+  /* CRIME LEDGER — uploaded art screens (481×1024), hit regions + dynamic overlays only */
+  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#0a0a0a;}
+  .ledger-art-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;
+    justify-content:center;overflow:hidden;background:#0a0a0a;container-type:size;
+    padding:env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);}
+  .ledger-art-frame{position:relative;aspect-ratio:481/1024;
+    width:min(100cqw,calc(100cqh * 481 / 1024));max-height:100cqh;}
+  .ledger-art-frame img{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;pointer-events:none;}
+  .ledger-hit{position:absolute;border:0;background:transparent;cursor:pointer;padding:0;margin:0;
+    border-radius:0;min-height:0;min-width:0;-webkit-tap-highlight-color:transparent;}
+  .ledger-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
+  .ledger-hit-back{left:4.2%;width:91.6%;top:91.2%;height:6.4%;}
+  .ledger-total-count{position:absolute;left:0;right:0;top:47.8%;text-align:center;
+    font-size:clamp(.58rem,2.6vw,.68rem);letter-spacing:1.2px;color:#c9a85a;pointer-events:none;}
+  .ledger-row-count{position:absolute;right:14%;text-align:right;
+    font-size:clamp(.52rem,2.3vw,.62rem);letter-spacing:.8px;color:#9a8860;pointer-events:none;}
+  .ledger-cat-count{position:absolute;left:0;right:0;top:33.6%;text-align:center;
+    font-size:clamp(.56rem,2.5vw,.66rem);letter-spacing:1px;color:#c9a85a;pointer-events:none;}
+  .ledger-list-panel{position:absolute;left:3.6%;right:3.6%;top:38.4%;bottom:11.2%;
+    overflow:hidden;display:flex;flex-direction:column;background:#080808;}
+  .ledger-list-row{flex:1 1 0;min-height:0;display:flex;align-items:center;gap:clamp(6px,2vw,10px);
+    padding:0 clamp(6px,2vw,10px);border-bottom:1px solid #1a1610;}
+  .ledger-list-row:last-child{border-bottom:none;}
+  .ledger-row-icon{flex:0 0 clamp(28px,8vw,34px);width:clamp(28px,8vw,34px);height:clamp(28px,8vw,34px);
+    border:1px solid var(--amber);border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(.58rem,2.4vw,.66rem);color:var(--amber);}
+  .ledger-row-icon.locked{border-color:#5a5040;color:#5a5040;}
+  .ledger-row-copy{flex:1 1 auto;min-width:0;line-height:1.25;}
+  .ledger-row-title{font-size:clamp(.56rem,2.4vw,.66rem);letter-spacing:.6px;color:var(--amber);}
+  .ledger-row-title.hidden{color:#5a5040;}
+  .ledger-row-desc{font-size:clamp(.48rem,2.1vw,.56rem);color:#7a6e58;margin-top:1px;}
+  .ledger-row-desc:empty{display:none;margin:0;}
+  .ledger-row-mark{flex:0 0 1em;color:var(--green);font-size:clamp(.62rem,2.6vw,.72rem);}
+  .ledger-list-row.reveal-focus .ledger-row-title{color:var(--amber);}
   .ledger-complete{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:16px;gap:10px;border:3px double var(--amber);border-radius:8px;}
   .ledger-complete h2{margin:0;font-size:clamp(.88rem,4vw,1rem);color:var(--amber);letter-spacing:2px;line-height:1.35;}
   .ledger-complete p{margin:0;font-size:clamp(.68rem,3vw,.78rem);color:var(--dim);letter-spacing:1px;}
   .ledger-complete.master h2{font-size:clamp(.82rem,3.6vw,.94rem);}
   .ledger-complete.master .ledger-master-tag{font-size:clamp(.72rem,3.2vw,.82rem);color:var(--text);letter-spacing:1.5px;margin-top:6px;}
+  .ach-card-reveal{position:fixed;inset:0;z-index:150;background:#000;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 12px);
+    animation:achCardFade .35s ease;}
+  .ach-card-reveal img{max-width:min(92vw,420px);max-height:min(68dvh,560px);width:auto;height:auto;object-fit:contain;}
+  .ach-card-next{margin-top:14px;border:1px solid var(--amber);color:var(--amber);background:transparent;
+    padding:10px 36px;font-family:inherit;font-size:clamp(.72rem,3.2vw,.84rem);letter-spacing:2px;cursor:pointer;border-radius:7px;}
+  .ach-card-next:active{background:var(--amber);color:#1a1206;}
+  @keyframes achCardFade{from{opacity:0}to{opacity:1}}
   .ach-found-popup{text-align:center;padding:4px 2px;}
   .ach-found-rule{color:var(--amber);letter-spacing:1px;font-size:clamp(.62rem,2.8vw,.72rem);margin:2px 0;}
   .ach-found-title{font-size:clamp(.84rem,3.8vw,.96rem);color:var(--amber);letter-spacing:2px;margin:8px 0 6px;}
@@ -394,6 +407,21 @@ if (typeof document !== "undefined") {
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
   const TITLE_SCREEN = "title-screen.png";
+  const LEDGER_SCREENS = {
+    home: "assets/ledger/crime-ledger-home.png",
+    general: "assets/ledger/ledger-general.png",
+    rare: "assets/ledger/ledger-rare.png",
+    superRare: "assets/ledger/ledger-super-rare.png",
+    godlike: "assets/ledger/ledger-godlike.png",
+    goldenGodlike: "assets/ledger/ledger-golden-godlike.png",
+  };
+  const LEDGER_HOME_ROWS = [
+    { id: "general", top: 52.4, height: 7.4 },
+    { id: "rare", top: 60.1, height: 7.4 },
+    { id: "superRare", top: 67.8, height: 7.4 },
+    { id: "godlike", top: 75.5, height: 7.4 },
+    { id: "goldenGodlike", top: 83.2, height: 7.4 },
+  ];
   const DISTRICT_IMG = {
     "Little Italy":       "assets/little-italy.png",
     "Dock #13":           "assets/dock-13.png",
@@ -521,7 +549,7 @@ if (typeof document !== "undefined") {
           <div class="ach-found-rule">════════════════════</div>
           <div class="ach-found-title">ACHIEVEMENT FOUND</div>
           <div class="ach-found-body">A NEW ENTRY HAS BEEN<br>ADDED TO YOUR LEDGER</div>
-          <button type="button" class="full amber" id="achView">VIEW</button>
+          <button type="button" class="full amber" id="achView">OK</button>
           <div class="ach-found-rule">════════════════════</div>
         </div>
       </div></div>`;
@@ -532,7 +560,9 @@ if (typeof document !== "undefined") {
         modalEscape = null;
         if (!id) { render(); return; }
         captureLedgerReturn();
-        openLedgerReveal(id);
+        const catId = getCategoryForAchievement(id);
+        if (catId === "general") openLedgerReveal(id);
+        else showAchievementCardReveal(id);
       };
       modalEscape = ()=>{
         modal._achFlow = false;
@@ -586,8 +616,47 @@ if (typeof document !== "undefined") {
     ledgerFocusId = null;
     render();
   }
+  function getAchievementCardImage(id){
+    const cat = getCategoryForAchievement(id);
+    if (cat === "rare") return `events/rare_${id}.png`;
+    if (cat === "superRare") return `events/super_${id}.png`;
+    if (cat === "godlike") return `events/godlike_${id}.png`;
+    if (cat === "goldenGodlike") return "events/godlike_golden.png";
+    return null;
+  }
+  function showAchievementCardReveal(achievementId){
+    const img = getAchievementCardImage(achievementId);
+    modal = function(){
+      modal._achFlow = true;
+      app.innerHTML = `<div class="ach-card-reveal" id="achCardReveal" role="dialog" aria-modal="true">
+        <img src="${img}" alt="${getAchievementTitle(achievementId)}" decoding="async">
+        <button type="button" class="ach-card-next" id="achCardNext">NEXT</button>
+      </div>`;
+      const advance = ()=>{
+        revealAchievement(ledger, achievementId);
+        saveLedger();
+        modal._achFlow = false;
+        modal = null;
+        modalEscape = null;
+        openLedgerReveal(achievementId);
+      };
+      document.getElementById("achCardNext").onclick = advance;
+      document.getElementById("achCardReveal").onclick = e=>{
+        if (e.target.id === "achCardReveal") advance();
+      };
+      modalEscape = advance;
+    };
+    render();
+  }
+  function ledgerArtShell(imgSrc, innerHtml){
+    return `<div class="play ledger-play"><div class="ledger-art-screen"><div class="ledger-art-frame">
+      <img src="${imgSrc}" width="481" height="1024" decoding="async" alt="">
+      ${innerHtml}
+      <button type="button" class="ledger-hit ledger-hit-back" id="back" aria-label="Back"></button>
+    </div></div></div>`;
+  }
   function openLedgerReveal(achievementId){
-    ledgerView = 'category';
+    ledgerView = "category";
     ledgerViewCat = getCategoryForAchievement(achievementId);
     ledgerFocusId = achievementId;
     render();
@@ -602,7 +671,7 @@ if (typeof document !== "undefined") {
       if (tryShowAchievementFlow()) return;
       return;
     }
-    ledgerView = 'home';
+    ledgerView = "home";
     ledgerViewCat = null;
     ledgerFocusId = null;
     render();
@@ -615,30 +684,22 @@ if (typeof document !== "undefined") {
   function renderLedgerScreen(){
     document.getElementById("crt").classList.remove("title-mode");
     document.getElementById("crt").classList.add("game-mode");
-    if (ledgerView === 'category' && ledgerViewCat) renderLedgerCategory(ledgerViewCat);
+    if (ledgerView === "category" && ledgerViewCat) renderLedgerCategory(ledgerViewCat);
     else renderLedgerHome();
   }
   function renderLedgerHome(){
     const found = countDiscovered(ledger);
-    const crimeLord = ledger.masterComplete
-      ? `<div class="ledger-crime-lord">CRIME LORD<br>✓ COMPLETED</div>` : '';
-    const rows = LEDGER_CATEGORIES.map(cat => {
-      const n = countUnlocked(ledger, cat.id);
-      return `<button type="button" class="ledger-row" data-cat="${cat.id}">${cat.title}<br><span class="ledger-sub">${n} / ${cat.achievements.length}</span></button>`;
-    }).join('');
-    app.innerHTML = `<div class="play ledger-play">
-      <div class="ledger-screen">
-        <div class="ledger-head">
-          <h2>CRIME LEDGER</h2>
-          <div class="ledger-sub">${found} / ${LEDGER_TOTAL} FOUND</div>
-          ${crimeLord}
-        </div>
-        <div class="ledger-list">${rows}</div>
-        <div class="ledger-foot"><button type="button" class="full" id="back">BACK</button></div>
-      </div>
-    </div>`;
+    const rowHits = LEDGER_HOME_ROWS.map(r=>{
+      const cat = LEDGER_CATEGORIES.find(c => c.id === r.id);
+      const n = countUnlocked(ledger, r.id);
+      return `<button type="button" class="ledger-hit" data-cat="${r.id}" aria-label="${cat.title}"
+        style="left:3.6%;width:92.8%;top:${r.top}%;height:${r.height}%"></button>
+        <div class="ledger-row-count" style="top:${r.top + r.height * 0.28}%">${n} / ${cat.achievements.length}</div>`;
+    }).join("");
+    app.innerHTML = ledgerArtShell(LEDGER_SCREENS.home,
+      `<div class="ledger-total-count">${found} / ${LEDGER_TOTAL} FOUND</div>${rowHits}`);
     app.querySelectorAll("[data-cat]").forEach(b => b.onclick = ()=>{
-      ledgerView = 'category';
+      ledgerView = "category";
       ledgerViewCat = b.dataset.cat;
       ledgerFocusId = null;
       render();
@@ -649,37 +710,36 @@ if (typeof document !== "undefined") {
     const cat = LEDGER_CATEGORIES.find(c => c.id === catId);
     if (!cat) { exitLedgerCategory(); return; }
     const found = countUnlocked(ledger, catId);
-    const rows = cat.achievements.map(a => {
+    const img = LEDGER_SCREENS[catId] || LEDGER_SCREENS.general;
+    const rows = cat.achievements.map(a=>{
       const unlocked = isUnlocked(ledger, a.id);
       const revealed = isRevealed(ledger, a.id);
       const showName = revealed;
-      const focus = ledgerFocusId === a.id ? ' reveal-focus' : '';
-      const mark = revealed ? '✓' : ' ';
-      const text = showName ? a.title : '???';
-      return `<div class="ledger-ach${showName ? '' : ' hidden'}${focus}" data-aid="${a.id}">
-        <span class="ledger-ach-mark">${mark}</span>
-        <span class="ledger-ach-text" data-full="${a.title.replace(/"/g,'&quot;')}">${text}</span>
-      </div>`;
-    }).join('');
-    app.innerHTML = `<div class="play ledger-play">
-      <div class="ledger-screen">
-        <div class="ledger-head">
-          <h2>${cat.title}</h2>
-          <div class="ledger-sub">${found} / ${cat.achievements.length} FOUND</div>
+      const focus = ledgerFocusId === a.id ? " reveal-focus" : "";
+      const iconCls = showName ? "" : " locked";
+      const icon = showName ? "★" : "🔒";
+      const title = showName ? a.title : "UNKNOWN";
+      const desc = showName ? a.title : "Achievement not yet discovered.";
+      const mark = showName && unlocked ? "✓" : "";
+      return `<div class="ledger-list-row${focus}" data-aid="${a.id}">
+        <span class="ledger-row-icon${iconCls}">${icon}</span>
+        <div class="ledger-row-copy">
+          <div class="ledger-row-title${showName ? "" : " hidden"}">${title}</div>
+          <div class="ledger-row-desc">${showName ? "" : desc}</div>
         </div>
-        <div class="ledger-ach-list">${rows}</div>
-        <div class="ledger-foot"><button type="button" class="full" id="back">BACK</button></div>
-      </div>
-    </div>`;
+        <span class="ledger-row-mark">${mark}</span>
+      </div>`;
+    }).join("");
+    app.innerHTML = ledgerArtShell(img,
+      `<div class="ledger-cat-count">${found} OF ${cat.achievements.length} DISCOVERED</div>
+      <div class="ledger-list-panel">${rows}</div>`);
     document.getElementById("back").onclick = exitLedgerCategory;
     if (ledgerFocusId && isUnlocked(ledger, ledgerFocusId) && !isRevealed(ledger, ledgerFocusId)) {
-      const backBtn = document.getElementById("back");
-      backBtn.disabled = true;
-      const el = app.querySelector(`[data-aid="${ledgerFocusId}"] .ledger-ach-text`);
-      if (el) runRevealAnimation(el, getAchievementTitle(ledgerFocusId), ()=>{
+      const row = app.querySelector(`[data-aid="${ledgerFocusId}"] .ledger-row-title`);
+      if (row) runRevealAnimation(row, getAchievementTitle(ledgerFocusId), ()=>{
         revealAchievement(ledger, ledgerFocusId);
         saveLedger();
-        backBtn.disabled = false;
+        renderLedgerCategory(catId);
       });
     }
   }
@@ -689,17 +749,22 @@ if (typeof document !== "undefined") {
     const duration = Math.min(1000, Math.max(500, chars * 35));
     const stepMs = duration / steps;
     let i = 0;
-    el.textContent = '???';
-    el.closest('.ledger-ach')?.classList.add('reveal-focus');
+    el.textContent = "UNKNOWN";
+    el.classList.add("hidden");
+    el.closest(".ledger-list-row")?.classList.add("reveal-focus");
     const tick = ()=>{
       i++;
       const shown = Math.ceil((i / steps) * chars);
-      el.textContent = fullText.slice(0, shown) + '?'.repeat(Math.max(0, chars - shown));
+      el.textContent = fullText.slice(0, shown) + "?".repeat(Math.max(0, chars - shown));
       if (i >= steps) {
         el.textContent = fullText;
-        el.closest('.ledger-ach')?.classList.remove('hidden');
-        const markEl = el.closest('.ledger-ach')?.querySelector('.ledger-ach-mark');
-        if (markEl) markEl.textContent = '✓';
+        el.classList.remove("hidden");
+        const markEl = el.closest(".ledger-list-row")?.querySelector(".ledger-row-mark");
+        if (markEl) markEl.textContent = "✓";
+        const iconEl = el.closest(".ledger-list-row")?.querySelector(".ledger-row-icon");
+        if (iconEl) { iconEl.textContent = "★"; iconEl.classList.remove("locked"); }
+        const descEl = el.closest(".ledger-list-row")?.querySelector(".ledger-row-desc");
+        if (descEl) descEl.textContent = "";
         onDone();
         return;
       }
