@@ -248,10 +248,11 @@
   .ledger-complete p{margin:0;font-size:clamp(.68rem,3vw,.78rem);color:var(--dim);letter-spacing:1px;}
   .ledger-complete.master h2{font-size:clamp(.82rem,3.6vw,.94rem);}
   .ledger-complete.master .ledger-master-tag{font-size:clamp(.72rem,3.2vw,.82rem);color:var(--text);letter-spacing:1.5px;margin-top:6px;}
-  .ach-found-popup{text-align:center;padding:8px 4px;}
-  .ach-found-rule{color:var(--amber);letter-spacing:1px;font-size:clamp(.62rem,2.8vw,.72rem);margin:4px 0;}
-  .ach-found-title{font-size:clamp(.92rem,4.2vw,1.05rem);color:var(--amber);letter-spacing:2px;margin:10px 0;}
-  .ach-found-body{font-size:clamp(.72rem,3.2vw,.82rem);color:var(--text);line-height:1.55;margin:8px 0 14px;}
+  .ach-found-popup{text-align:center;padding:4px 2px;}
+  .ach-found-rule{color:var(--amber);letter-spacing:1px;font-size:clamp(.62rem,2.8vw,.72rem);margin:2px 0;}
+  .ach-found-title{font-size:clamp(.84rem,3.8vw,.96rem);color:var(--amber);letter-spacing:2px;margin:8px 0 6px;}
+  .ach-found-body{font-size:clamp(.68rem,3vw,.78rem);color:var(--text);line-height:1.45;margin:6px 0 10px;}
+  .card.ach-found-card{width:auto;max-width:min(88vw,300px);padding:12px 14px 10px;}
 
   button{font-family:inherit;background:var(--btnbg);color:var(--text);border:1px solid var(--btnborder);
     padding:12px 12px;font-size:.84rem;letter-spacing:1px;cursor:pointer;border-radius:7px;}
@@ -517,25 +518,30 @@ if (typeof document !== "undefined") {
   function showAchievementFoundPopup(){
     modal = function(){
       modal._achFlow = true;
-      app.innerHTML = `<div class="modal"><div class="card" role="dialog" aria-modal="true">
+      app.innerHTML = `<div class="modal"><div class="card ach-found-card" role="dialog" aria-modal="true">
         <div class="ach-found-popup">
           <div class="ach-found-rule">════════════════════</div>
           <div class="ach-found-title">ACHIEVEMENT FOUND</div>
           <div class="ach-found-body">A NEW ENTRY HAS BEEN<br>ADDED TO YOUR LEDGER</div>
-          <button class="full amber" id="view">VIEW</button>
+          <button type="button" class="full amber" id="achView">VIEW</button>
           <div class="ach-found-rule">════════════════════</div>
         </div>
       </div></div>`;
-      document.getElementById("view").onclick = ()=>{
+      document.getElementById("achView").onclick = ()=>{
         const id = pendingUnlockQueue[0];
-        if (!id) { modal = null; modal._achFlow = false; render(); return; }
-        captureLedgerReturn();
+        modal._achFlow = false;
         modal = null;
         modalEscape = null;
-        modal._achFlow = false;
+        if (!id) { render(); return; }
+        captureLedgerReturn();
         openLedgerReveal(id);
       };
-      modalEscape = ()=>{ modal = null; modal._achFlow = false; modalEscape = null; render(); };
+      modalEscape = ()=>{
+        modal._achFlow = false;
+        modal = null;
+        modalEscape = null;
+        render();
+      };
     };
     render();
   }
@@ -565,8 +571,8 @@ if (typeof document !== "undefined") {
           saveLedger();
         }
         pendingCompleteQueue = pendingCompleteQueue.filter(k => k !== kind);
-        modal = null;
         modal._achFlow = false;
+        modal = null;
         modalEscape = null;
         if (pendingUnlockQueue.length) showAchievementFoundPopup();
         else if (pendingCompleteQueue.length) showLedgerCompletionPopup(pendingCompleteQueue[0]);
