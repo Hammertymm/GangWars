@@ -48,7 +48,7 @@
   .play{flex:1 1 auto;display:flex;flex-direction:column;min-height:0;}
 
   /* Sepia pixel-art assets — lighten ~10% for readability on dark UI */
-  .goods-icon,.market-play .loc-header img,.travel-head img,.travel-row img,.ev-left img,.eos-left img{
+  .goods-icon,.market-play .loc-header img,.travel-head img,.travel-row img,.eos-left img{
     filter:brightness(1.1);}
 
   /* MARKET SCREEN — fixed single-screen layout (no scroll) */
@@ -92,7 +92,8 @@
   .market-row.dead{opacity:.42;}
   .goods-cell{display:flex;align-items:center;gap:5px;min-width:0;overflow:hidden;}
   .goods-icon{width:clamp(26px, 6.5vw, 34px);height:clamp(26px, 6.5vw, 34px);flex:0 0 clamp(26px, 6.5vw, 34px);
-    display:block;object-fit:contain;image-rendering:pixelated;image-rendering:crisp-edges;
+    display:block;object-fit:contain;
+    image-rendering:pixelated;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;
     border:1px solid var(--btnborder);border-radius:4px;background:rgba(0,0,0,.35);padding:1px;}
   .goods-name{color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .price-cell{text-align:right;color:var(--amber);white-space:nowrap;}
@@ -110,12 +111,11 @@
   .travel-play{overflow:hidden;}
   .travel-screen{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;
     border:3px double var(--amber);border-radius:8px;background:var(--bg);}
-  .travel-head{flex:0 0 15%;min-height:84px;max-height:114px;display:flex;gap:10px;align-items:stretch;
-    padding:5px 10px 5px 5px;border-bottom:1px solid var(--amber);background:var(--panel);}
-  .travel-head img{flex:0 0 auto;height:100%;width:auto;
-    min-width:clamp(96px, 30vw, 150px);max-width:48%;
+  .travel-head{flex:0 0 16%;min-height:88px;max-height:118px;display:flex;gap:10px;align-items:center;
+    padding:4px 10px 4px 6px;border-bottom:1px solid var(--amber);background:var(--panel);}
+  .travel-head img{flex:0 0 auto;height:100%;width:auto;max-width:44%;min-width:0;
     display:block;object-fit:contain;object-position:left center;
-    image-rendering:pixelated;image-rendering:crisp-edges;
+    image-rendering:pixelated;image-rendering:-webkit-optimize-contrast;image-rendering:crisp-edges;
     border:none;border-radius:0;background:transparent;}
   .travel-head-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:4px;}
   .travel-head-title{font-family:inherit;
@@ -285,15 +285,14 @@
 
   /* === EVENT POPUP — locked standard: full-bleed left art (see docs/ui-standards/popup.png) === */
   .modal .ev-popup{width:100%;}
-  .ev-popup{display:flex;flex-direction:row;align-items:stretch;width:100%;
-    max-width:min(520px, 100%);min-height:min(300px, 72dvh);max-height:88dvh;
+  .ev-popup{display:grid;grid-template-columns:1fr 1fr;align-items:stretch;width:100%;
+    max-width:min(520px, 100%);max-height:88dvh;
     border:1px solid var(--amber);border-radius:12px;overflow:hidden;
     background:var(--bg);box-shadow:0 12px 46px var(--shadow);}
-  .ev-left{flex:0 0 50%;align-self:stretch;overflow:hidden;background:#000;position:relative;min-height:0;min-width:0;}
-  .ev-left img{position:absolute;inset:0;width:100%;height:100%;display:block;
-    object-fit:cover;object-position:top center;
-    image-rendering:pixelated;image-rendering:crisp-edges;}
-  .ev-right{flex:1 1 0;display:flex;flex-direction:column;padding:14px 13px 12px;
+  .ev-left{grid-column:1;align-self:stretch;min-height:0;min-width:0;overflow:hidden;padding:0;margin:0;
+    background-color:#000;background-size:cover;background-position:top left;background-repeat:no-repeat;
+    filter:brightness(1.1);}
+  .ev-right{grid-column:2;display:flex;flex-direction:column;padding:14px 13px 12px;
     border-left:1px solid var(--amber);min-height:0;min-width:0;}
   .ev-body{flex:1 1 auto;display:flex;align-items:center;justify-content:center;
     font-size:.88rem;line-height:1.6;color:var(--text);text-align:center;overflow-y:auto;}
@@ -808,7 +807,7 @@ if (typeof document !== "undefined") {
   function showEvent(imgKey, body, btn, cb){
     modal=function(){
       app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-        <div class="ev-left"><img src="${eventImgSrc(imgKey)}" alt=""></div>
+        <div class="ev-left" style="background-image:url('${eventImgSrc(imgKey)}')" role="img" aria-label="Event illustration"></div>
         <div class="ev-right">
           <div class="ev-body"><div>${body}</div></div>
           <div class="ev-acts"><button class="amber full" id="ok">${btn||'OK'}</button></div>
@@ -825,7 +824,7 @@ if (typeof document !== "undefined") {
   function showEventAsk(imgKey, body, yesLabel, onYes, noLabel, onNo){
     modal=function(){
       app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-        <div class="ev-left"><img src="${eventImgSrc(imgKey)}" alt=""></div>
+        <div class="ev-left" style="background-image:url('${eventImgSrc(imgKey)}')" role="img" aria-label="Event illustration"></div>
         <div class="ev-right">
           <div class="ev-body"><div>${body}</div></div>
           <div class="ev-acts">
@@ -920,7 +919,7 @@ if (typeof document !== "undefined") {
       modal=function(){
         const canFight=S.guns>0;
         app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-          <div class="ev-left"><img src="${EV_IMG.feds}" alt="The Feds"></div>
+          <div class="ev-left" style="background-image:url('${EV_IMG.feds}')" role="img" aria-label="The Feds"></div>
           <div class="ev-right">
             <div class="ev-body"><div>
               Agent Hayes spotted you — <b>${cops}</b> ${cops>1?'agents':'agent'} closing in.<br><br>
@@ -965,7 +964,7 @@ if (typeof document !== "undefined") {
           ["THE BACK WAY",     "Three alleys, a fire escape, and a borrowed hat. By the time they reached the corner you were four blocks north having a coffee."],
           ["LOST IN THE PARADE","By sheer luck a temperance march turned onto the street at precisely the right moment. You joined the procession, took a pamphlet, and were gone before anyone noticed the irony."],
         ]);
-        showEvent('mugging', runV[1], "PHEW", next); return; }
+        showEvent('feds', runV[1], "PHEW", next); return; }
       if (hit()) return;
       const owned=Object.keys(S.inventory);
       if (owned.length){ const id=pick(owned); const lost=Math.min(S.inventory[id],randInt(1,5));

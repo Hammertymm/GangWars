@@ -12,9 +12,9 @@ These three layouts are **unchangeable standards**. Match `docs/ui-standards/*.p
 
 Reference: `docs/ui-standards/popup.png`
 
-- **50/50 split**: `.ev-left` at 50%, `.ev-right` for text + CTA
-- **Full-bleed art**: event image fills the entire left panel edge-to-edge — no letterboxing, inset offsets, inner borders, or clipping gaps
-- Use `object-fit: cover; object-position: top center; inset: 0` on `.ev-left img`
+- **50/50 split**: CSS grid `1fr 1fr` — `.ev-left` column 1, `.ev-right` column 2
+- **Full-bleed art**: zero padding on `.ev-left`; `background-size:cover; background-position:top left` — no letterboxing or gaps
+- All tier event PNGs (`rare_*`, `super_*`, `godlike_*`) normalized to 662px height via `scripts/normalize-event-art.py`
 - Gold vertical divider between panels (`border-left: 1px solid var(--amber)`)
 - All narrative/event popups use `showEvent` / `showEventAsk` / feds `draw()` — never plain `.card` for events
 - Standard event art: 10 PNGs in `events/` from `assets/event-grid-source.png` via `scripts/split-event-grid.py` — do not hand-edit; re-slice from source if needed
@@ -24,7 +24,7 @@ Reference: `docs/ui-standards/popup.png`
 
 Reference: `docs/ui-standards/travel.png`
 
-- **Header**: full car image (`assets/travel-car.png`) with no border/background box; title "ON THE MOVE" plain (no bordered pill)
+- **Header**: full side-view car (`assets/travel-car.png`) via `scripts/extract-travel-car.py` from `docs/ui-standards/travel.png` — `object-fit:contain`, `height:100%`, `max-width:44%`, vertically centered; no border box; never crop the car
 - **District list**: six equal-height rows, **zero gap** — stacked with horizontal dividers only, no rounded card gaps or dead space
 - **Footer**: compact "GO BACK" bar
 - Outer frame: `3px double var(--amber)` on `.travel-screen`

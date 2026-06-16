@@ -245,7 +245,7 @@ async function main() {
         document.getElementById('crt').classList.remove('title-mode');
         document.getElementById('crt').classList.add('game-mode');
         document.getElementById('app').innerHTML = `<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-          <div class="ev-left"><img src="${sample.img}" alt=""></div>
+          <div class="ev-left" style="background-image:url('${sample.img}')" role="img" aria-label="Event illustration"></div>
           <div class="ev-right">
             <div class="ev-body"><div>${sample.body}</div></div>
             <div class="ev-acts"><button class="amber full">${sample.btn}</button></div>

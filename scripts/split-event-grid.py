@@ -4,12 +4,16 @@
 from __future__ import annotations
 
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from event_art import export_panel  # noqa: E402
+
 SOURCE = ROOT / "assets" / "event-grid-source.png"
 FALLBACK_SOURCE = Path(
     r"C:\Users\jarro\.cursor\projects\c-Projects-gang-wars-GangWars\assets"
@@ -17,7 +21,6 @@ FALLBACK_SOURCE = Path(
     r"_images_image-9b10f273-468d-4512-8b7e-1718b8c9ef96.png"
 )
 OUT_DIR = ROOT / "events"
-TARGET_SIZE = (388, 662)  # 2× legacy 194×331 — sharp in popup cover crop
 
 # row-major: top row L→R, then bottom row L→R
 EVENTS = [
@@ -64,19 +67,6 @@ def row_bounds(height: int) -> list[tuple[int, int]]:
     ]
 
 
-def enhance_panel(img: Image.Image) -> Image.Image:
-    img = ImageEnhance.Contrast(img).enhance(1.06)
-    img = ImageEnhance.Color(img).enhance(1.04)
-    img = ImageEnhance.Sharpness(img).enhance(1.2)
-    img = img.filter(ImageFilter.UnsharpMask(radius=1.1, percent=110, threshold=2))
-    return img
-
-
-def fit_popup_panel(img: Image.Image, size: tuple[int, int]) -> Image.Image:
-    """Scale to fill popup left panel — top-aligned, matches object-fit: cover."""
-    return ImageOps.fit(img, size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.0))
-
-
 def backup_existing() -> Path | None:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     backup = OUT_DIR / f"_backup-standard-{stamp}"
@@ -106,8 +96,7 @@ def main() -> None:
     for ry, (y0, y1) in enumerate(rows):
         for cx, (x0, x1) in enumerate(cols):
             panel = im.crop((x0, y0, x1, y1))
-            panel = enhance_panel(panel)
-            panel = fit_popup_panel(panel, TARGET_SIZE)
+            panel = export_panel(panel)
             out = OUT_DIR / EVENTS[idx]
             panel.save(out, optimize=True)
             print(f"  {EVENTS[idx]:24s}  {panel.size}  (grid r{ry}c{cx})")
