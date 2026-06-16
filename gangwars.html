@@ -40,7 +40,7 @@
     padding:3px 0;margin:0 0 3px;}
   #crt.game-mode{padding:calc(env(safe-area-inset-top, 0px) + 1px) 8px env(safe-area-inset-bottom, 0px) 8px;}
   #crt.game-mode .masthead{padding:2px 0;margin:0 0 15px;}
-  #crt.ledger-mode{padding:env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;background:#0a0a0a;}
+  #crt.ledger-mode{padding:env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;background:#000;}
   #crt.ledger-mode .masthead{display:none;}
   #crt.ledger-mode #app{flex:1 1 auto;min-height:0;}
   #crt.game-mode h1{font-size:clamp(1.1rem, 6.5vw, 2rem);}
@@ -214,48 +214,41 @@
   .title-hit-scores{left:51.975%;width:43.867%;top:89.063%;height:7.227%;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
-  /* CRIME LEDGER — uploaded art screens (481×1024), masked overlays + hit regions */
-  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#0a0a0a;}
+  /* CRIME LEDGER — master reference screens (481×1024), masked dynamic data only */
+  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#000;}
   .ledger-art-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;
-    justify-content:center;overflow:hidden;background:#0a0a0a;container-type:size;}
+    justify-content:center;overflow:hidden;background:#000;container-type:size;}
   .ledger-art-frame{position:relative;aspect-ratio:481/1024;
     width:min(100cqw,calc(100cqh * 481 / 1024));max-height:100cqh;}
-  .ledger-art-frame img{position:relative;z-index:0;width:100%;height:100%;display:block;
-    user-select:none;-webkit-user-drag:none;pointer-events:none;}
+  .ledger-art-frame img{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;
+    user-select:none;-webkit-user-drag:none;pointer-events:none;object-fit:fill;}
   .ledger-overlay-layer{position:absolute;inset:0;z-index:1;pointer-events:none;}
   .ledger-hit{position:absolute;border:0;background:transparent;cursor:pointer;padding:0;margin:0;
     border-radius:0;min-height:0;min-width:0;-webkit-tap-highlight-color:transparent;
-    pointer-events:auto;z-index:3;}
+    pointer-events:auto;z-index:4;}
   .ledger-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
-  .ledger-hit-back{left:4.2%;width:91.6%;top:91.2%;height:6.4%;}
-  .ledger-count-slot{position:absolute;display:flex;align-items:center;justify-content:center;
-    pointer-events:none;background:#0a0a0a;color:#c9a85a;letter-spacing:1px;white-space:nowrap;z-index:2;}
-  .ledger-count-slot.total{top:46.6%;left:26%;right:26%;height:2.6%;
-    font-size:clamp(.56rem,2.4vw,.66rem);}
-  .ledger-count-slot.cat{top:32.2%;left:20%;right:20%;height:2.8%;
-    font-size:clamp(.54rem,2.3vw,.64rem);}
-  .ledger-count-slot.row{font-size:clamp(.5rem,2.1vw,.6rem);color:#9a8860;height:2.4%;
-    left:61%;right:13%;justify-content:flex-end;}
-  .ledger-list-panel{position:absolute;left:3.5%;right:3.5%;top:36.6%;bottom:11.4%;
-    overflow:hidden;display:flex;flex-direction:column;background:#0a0a0a;z-index:2;
-    pointer-events:none;}
-  .ledger-list-row{flex:0 0 calc(100% / var(--ledger-rows, 10));max-height:calc(100% / var(--ledger-rows, 10));
-    min-height:0;display:flex;align-items:center;gap:clamp(5px,1.8vw,8px);
-    padding:0 clamp(5px,1.8vw,8px);border-bottom:1px solid #1a1610;box-sizing:border-box;}
+  .ledger-mask-text{position:absolute;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;background:#000;color:#c9a85a;letter-spacing:.9px;white-space:nowrap;
+    z-index:2;font-size:clamp(.5rem,2.15vw,.62rem);}
+  .ledger-mask-text.dim{color:#9a8860;font-size:clamp(.48rem,2.05vw,.58rem);}
+  .ledger-list-panel{position:absolute;display:flex;flex-direction:column;overflow:hidden;
+    background:#000;z-index:2;pointer-events:none;}
+  .ledger-list-panel.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .ledger-list-row{flex:0 0 auto;display:flex;align-items:center;gap:clamp(6px,2vw,10px);
+    padding:0 clamp(8px,2.2vw,12px);border-bottom:1px solid #1c1810;box-sizing:border-box;
+    min-height:var(--row-h, 28px);height:var(--row-h, 28px);}
   .ledger-list-row:last-child{border-bottom:none;}
-  .ledger-row-icon{flex:0 0 clamp(26px,7.5vw,32px);width:clamp(26px,7.5vw,32px);height:clamp(26px,7.5vw,32px);
-    border:1px solid var(--amber);border-radius:5px;display:flex;align-items:center;justify-content:center;
-    font-size:clamp(.52rem,2.2vw,.6rem);color:var(--amber);line-height:1;}
+  .ledger-row-icon{flex:0 0 clamp(28px,8vw,34px);width:clamp(28px,8vw,34px);height:clamp(28px,8vw,34px);
+    border:1px solid #8a7340;border-radius:6px;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(.55rem,2.3vw,.65rem);color:#c9a85a;line-height:1;}
   .ledger-row-icon.locked{border-color:#5a5040;color:#5a5040;}
-  .ledger-row-copy{flex:1 1 auto;min-width:0;line-height:1.2;overflow:hidden;}
-  .ledger-row-title{font-size:clamp(.52rem,2.2vw,.62rem);letter-spacing:.5px;color:var(--amber);
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ledger-row-title.hidden{color:#5a5040;}
-  .ledger-row-desc{font-size:clamp(.46rem,2vw,.54rem);color:#7a6e58;margin-top:1px;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .ledger-row-desc:empty{display:none;margin:0;}
-  .ledger-row-mark{flex:0 0 .9em;color:var(--green);font-size:clamp(.58rem,2.4vw,.66rem);}
-  .ledger-list-row.reveal-focus .ledger-row-title{color:var(--amber);}
+  .ledger-row-icon.revealed{border-color:#c9a85a;color:#c9a85a;}
+  .ledger-row-copy{flex:1 1 auto;min-width:0;line-height:1.25;overflow:hidden;}
+  .ledger-row-title{font-size:clamp(.54rem,2.25vw,.64rem);letter-spacing:.45px;color:#c9a85a;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase;}
+  .ledger-row-title.hidden{color:#6a5e48;}
+  .ledger-row-mark{flex:0 0 1em;color:#c9a85a;font-size:clamp(.6rem,2.5vw,.7rem);text-align:right;}
+  .ledger-list-row.reveal-focus .ledger-row-title{color:#e7c879;}
   .ledger-complete{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:16px;gap:10px;border:3px double var(--amber);border-radius:8px;}
   .ledger-complete h2{margin:0;font-size:clamp(.88rem,4vw,1rem);color:var(--amber);letter-spacing:2px;line-height:1.35;}
@@ -264,12 +257,14 @@
   .ledger-complete.master .ledger-master-tag{font-size:clamp(.72rem,3.2vw,.82rem);color:var(--text);letter-spacing:1.5px;margin-top:6px;}
   .ach-card-reveal{position:fixed;inset:0;z-index:150;background:#000;display:flex;flex-direction:column;
     align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top, 0px) + 12px) 16px calc(env(safe-area-inset-bottom, 0px) + 12px);
-    animation:achCardFade .35s ease;}
+    animation:achCardFade .45s ease;}
+  .ach-card-reveal.golden img{max-width:min(94vw,440px);max-height:min(72dvh,580px);
+    animation:achCardFade .6s ease;}
   .ach-card-reveal img{max-width:min(92vw,420px);max-height:min(68dvh,560px);width:auto;height:auto;object-fit:contain;}
-  .ach-card-next{margin-top:14px;border:1px solid var(--amber);color:var(--amber);background:transparent;
+  .ach-card-next{margin-top:16px;border:1px solid var(--amber);color:var(--amber);background:transparent;
     padding:10px 36px;font-family:inherit;font-size:clamp(.72rem,3.2vw,.84rem);letter-spacing:2px;cursor:pointer;border-radius:7px;}
   .ach-card-next:active{background:var(--amber);color:#1a1206;}
-  @keyframes achCardFade{from{opacity:0}to{opacity:1}}
+  @keyframes achCardFade{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
   .ach-found-popup{text-align:center;padding:4px 2px;}
   .ach-found-rule{color:var(--amber);letter-spacing:1px;font-size:clamp(.62rem,2.8vw,.72rem);margin:2px 0;}
   .ach-found-title{font-size:clamp(.84rem,3.8vw,.96rem);color:var(--amber);letter-spacing:2px;margin:8px 0 6px;}
@@ -426,13 +421,49 @@ if (typeof document !== "undefined") {
     godlike: "assets/ledger/ledger-godlike.png",
     goldenGodlike: "assets/ledger/ledger-golden-godlike.png",
   };
-  const LEDGER_HOME_ROWS = [
-    { id: "general", top: 51.6, height: 5.1, countTop: 52.4 },
-    { id: "rare", top: 57.0, height: 5.1, countTop: 57.8 },
-    { id: "superRare", top: 62.4, height: 5.1, countTop: 63.2 },
-    { id: "godlike", top: 67.8, height: 5.1, countTop: 68.6 },
-    { id: "goldenGodlike", top: 73.2, height: 5.1, countTop: 74.0 },
-  ];
+  const LEDGER_BACK = { top: 91.2, left: 4.2, width: 91.6, height: 6.4 };
+  const LEDGER_LAYOUT = {
+    home: {
+      total: { top: 46.7, left: 27, right: 27, height: 3.0 },
+      rows: [
+        { id: "general",       hitTop: 51.4, hitH: 4.85, countTop: 51.9, countLeft: 57, countRight: 11, countH: 2.4 },
+        { id: "rare",          hitTop: 56.5, hitH: 4.85, countTop: 57.0, countLeft: 57, countRight: 11, countH: 2.4 },
+        { id: "superRare",     hitTop: 61.6, hitH: 4.85, countTop: 62.1, countLeft: 57, countRight: 11, countH: 2.4 },
+        { id: "godlike",       hitTop: 66.7, hitH: 4.85, countTop: 67.2, countLeft: 57, countRight: 11, countH: 2.4 },
+        { id: "goldenGodlike", hitTop: 71.8, hitH: 4.85, countTop: 72.3, countLeft: 57, countRight: 11, countH: 2.4 },
+      ],
+    },
+    general: {
+      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
+      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
+      rowPx: "6.8%",
+      scroll: true,
+    },
+    rare: {
+      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
+      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
+      rowPx: "8.4%",
+      scroll: false,
+    },
+    superRare: {
+      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
+      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
+      rowPx: "8.4%",
+      scroll: false,
+    },
+    godlike: {
+      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
+      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
+      rowPx: "10.2%",
+      scroll: false,
+    },
+    goldenGodlike: {
+      counter: { top: 37.8, left: 10, right: 10, height: 3.2 },
+      list: { top: 41.6, left: 3.6, right: 3.6, bottom: 11.6 },
+      rowPx: "7.5%",
+      scroll: false,
+    },
+  };
   function ledgerCategoryById(catId){
     return LEDGER_CATEGORIES.find(c => c.id === catId) || null;
   }
@@ -443,8 +474,18 @@ if (typeof document !== "undefined") {
     ledgerFocusId = null;
     render();
   }
-  function ledgerCountSlot(cls, text, style){
-    return `<div class="ledger-count-slot ${cls}"${style ? ` style="${style}"` : ""}>${text}</div>`;
+  function ledgerRectStyle(r){
+    return `top:${r.top}%;left:${r.left}%;right:${r.right}%;height:${r.height}%`;
+  }
+  function ledgerPanelStyle(p){
+    return `top:${p.top}%;left:${p.left}%;right:${p.right}%;bottom:${p.bottom}%`;
+  }
+  function ledgerMaskText(text, style, dim){
+    return `<div class="ledger-mask-text${dim ? " dim" : ""}" style="${style}">${text}</div>`;
+  }
+  function categoryProgressText(catId, found, total){
+    if (catId === "general") return `${found} / ${total} FOUND`;
+    return `${found} OF ${total} DISCOVERED`;
   }
   const DISTRICT_IMG = {
     "Little Italy":       "assets/little-italy.png",
@@ -650,9 +691,11 @@ if (typeof document !== "undefined") {
   }
   function showAchievementCardReveal(achievementId){
     const img = getAchievementCardImage(achievementId);
+    const cat = getCategoryForAchievement(achievementId);
+    const golden = cat === "goldenGodlike";
     modal = function(){
       modal._achFlow = true;
-      app.innerHTML = `<div class="ach-card-reveal" id="achCardReveal" role="dialog" aria-modal="true">
+      app.innerHTML = `<div class="ach-card-reveal${golden ? " golden" : ""}" id="achCardReveal" role="dialog" aria-modal="true">
         <img src="${img}" alt="${getAchievementTitle(achievementId)}" decoding="async">
         <button type="button" class="ach-card-next" id="achCardNext">NEXT</button>
       </div>`;
@@ -673,29 +716,35 @@ if (typeof document !== "undefined") {
     render();
   }
   function ledgerArtShell(imgSrc, innerHtml){
+    const b = LEDGER_BACK;
     return `<div class="play ledger-play"><div class="ledger-art-screen"><div class="ledger-art-frame">
       <img src="${imgSrc}" width="481" height="1024" decoding="async" alt="">
       <div class="ledger-overlay-layer">${innerHtml}</div>
-      <button type="button" class="ledger-hit ledger-hit-back" id="back" aria-label="Back"></button>
+      <button type="button" class="ledger-hit" id="back" aria-label="Back"
+        style="left:${b.left}%;width:${b.width}%;top:${b.top}%;height:${b.height}%"></button>
     </div></div></div>`;
   }
   function buildLedgerListRows(cat, focusId){
+    const isGeneral = cat.id === "general";
     return cat.achievements.map(a=>{
       const unlocked = isUnlocked(ledger, a.id);
       const revealed = isRevealed(ledger, a.id);
-      const showName = revealed;
       const focus = focusId === a.id ? " reveal-focus" : "";
-      const iconCls = showName ? "" : " locked";
-      const icon = showName ? "★" : "◆";
-      const title = showName ? a.title : "UNKNOWN";
-      const desc = showName ? "" : "Achievement not yet discovered.";
-      const mark = showName && unlocked ? "✓" : "";
+      let iconCls = "locked", icon = "◆", title = "", mark = "";
+      if (revealed) {
+        iconCls = "revealed";
+        icon = "★";
+        title = a.title;
+        if (unlocked) mark = "✓";
+      } else if (isGeneral) {
+        title = "???";
+      } else {
+        title = "UNKNOWN";
+      }
+      const titleCls = revealed ? "" : " hidden";
       return `<div class="ledger-list-row${focus}" data-aid="${a.id}">
-        <span class="ledger-row-icon${iconCls}">${icon}</span>
-        <div class="ledger-row-copy">
-          <div class="ledger-row-title${showName ? "" : " hidden"}">${title}</div>
-          <div class="ledger-row-desc">${desc}</div>
-        </div>
+        <span class="ledger-row-icon ${iconCls}">${icon}</span>
+        <div class="ledger-row-copy"><div class="ledger-row-title${titleCls}">${title}</div></div>
         <span class="ledger-row-mark">${mark}</span>
       </div>`;
     }).join("");
@@ -739,17 +788,20 @@ if (typeof document !== "undefined") {
     }
   }
   function renderLedgerHome(){
+    const layout = LEDGER_LAYOUT.home;
     const found = countDiscovered(ledger);
-    const rowHits = LEDGER_HOME_ROWS.map(r=>{
+    const overlays = LEDGER_LAYOUT.home.rows.map(r=>{
       const cat = ledgerCategoryById(r.id);
       const n = countUnlocked(ledger, r.id);
-      return `<button type="button" class="ledger-hit" data-cat="${r.id}" aria-label="${cat.title}"
-        style="left:3.6%;width:92.8%;top:${r.top}%;height:${r.height}%"></button>
-        ${ledgerCountSlot("row", `${n} / ${cat.achievements.length}`, `top:${r.countTop}%`)}`;
+      const hit = `<button type="button" class="ledger-hit" data-cat="${r.id}" aria-label="${cat.title}"
+        style="left:3.6%;width:92.8%;top:${r.hitTop}%;height:${r.hitH}%"></button>`;
+      const count = ledgerMaskText(`${n} / ${cat.achievements.length}`,
+        `top:${r.countTop}%;left:${r.countLeft}%;right:${r.countRight}%;height:${r.countH}%`, true);
+      return hit + count;
     }).join("");
     app.innerHTML = ledgerArtShell(LEDGER_SCREENS.home,
-      `${ledgerCountSlot("total", `${found} / ${LEDGER_TOTAL} FOUND`)}${rowHits}`);
-    LEDGER_HOME_ROWS.forEach(r=>{
+      ledgerMaskText(`${found} / ${LEDGER_TOTAL} FOUND`, ledgerRectStyle(layout.total)) + overlays);
+    layout.rows.forEach(r=>{
       const btn = app.querySelector(`[data-cat="${r.id}"]`);
       if (btn) btn.onclick = () => openLedgerCategory(r.id);
     });
@@ -757,18 +809,20 @@ if (typeof document !== "undefined") {
   }
   function renderLedgerCategory(catId){
     const cat = ledgerCategoryById(catId);
-    if (!cat || !LEDGER_SCREENS[catId]) {
+    const layout = LEDGER_LAYOUT[catId];
+    if (!cat || !layout || !LEDGER_SCREENS[catId]) {
       if (ledgerReturn) restoreLedgerReturn();
       else { ledgerView = "home"; ledgerViewCat = null; render(); }
       return;
     }
     const found = countUnlocked(ledger, catId);
     const rows = buildLedgerListRows(cat, ledgerFocusId);
+    const scrollCls = layout.scroll ? " scroll" : "";
     app.innerHTML = ledgerArtShell(LEDGER_SCREENS[catId],
-      `${ledgerCountSlot("cat", `${found} OF ${cat.achievements.length} DISCOVERED`)}
-      <div class="ledger-list-panel" style="--ledger-rows:${cat.achievements.length}">${rows}</div>`);
+      ledgerMaskText(categoryProgressText(catId, found, cat.achievements.length), ledgerRectStyle(layout.counter))
+      + `<div class="ledger-list-panel${scrollCls}" style="${ledgerPanelStyle(layout.list)};--row-h:${layout.rowPx}">${rows}</div>`);
     document.getElementById("back").onclick = exitLedgerCategory;
-    if (ledgerFocusId && isUnlocked(ledger, ledgerFocusId) && !isRevealed(ledger, ledgerFocusId)) {
+    if (ledgerFocusId && isUnlocked(ledger, ledgerFocusId) && !isRevealed(ledger, ledgerFocusId) && catId === "general") {
       const row = app.querySelector(`[data-aid="${ledgerFocusId}"] .ledger-row-title`);
       if (row) runRevealAnimation(row, getAchievementTitle(ledgerFocusId), ()=>{
         revealAchievement(ledger, ledgerFocusId);
@@ -779,11 +833,11 @@ if (typeof document !== "undefined") {
   }
   function runRevealAnimation(el, fullText, onDone){
     const chars = fullText.length;
-    const steps = chars;
+    const steps = Math.max(chars, 1);
     const duration = Math.min(1000, Math.max(500, chars * 35));
     const stepMs = duration / steps;
     let i = 0;
-    el.textContent = "UNKNOWN";
+    el.textContent = "???";
     el.classList.add("hidden");
     el.closest(".ledger-list-row")?.classList.add("reveal-focus");
     const tick = ()=>{
@@ -793,10 +847,11 @@ if (typeof document !== "undefined") {
       if (i >= steps) {
         el.textContent = fullText;
         el.classList.remove("hidden");
-        const markEl = el.closest(".ledger-list-row")?.querySelector(".ledger-row-mark");
+        const row = el.closest(".ledger-list-row");
+        const markEl = row?.querySelector(".ledger-row-mark");
         if (markEl) markEl.textContent = "✓";
-        const iconEl = el.closest(".ledger-list-row")?.querySelector(".ledger-row-icon");
-        if (iconEl) { iconEl.textContent = "★"; iconEl.classList.remove("locked"); }
+        const iconEl = row?.querySelector(".ledger-row-icon");
+        if (iconEl) { iconEl.textContent = "★"; iconEl.classList.remove("locked"); iconEl.classList.add("revealed"); }
         onDone();
         return;
       }
