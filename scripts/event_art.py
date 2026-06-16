@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter
 
 POPUP_ART_HEIGHT = 662
+POPUP_PAD = 1  # black border each side; exported PNGs are POPUP_ART_HEIGHT + 2*POPUP_PAD tall
 TRIM_THRESHOLD = 18
 
 
@@ -30,21 +31,30 @@ def enhance_panel(img: Image.Image) -> Image.Image:
     return img.filter(ImageFilter.UnsharpMask(radius=1.1, percent=110, threshold=2))
 
 
+def pad_on_black(img: Image.Image, border: int = 1) -> Image.Image:
+    """Center art on a black canvas one pixel larger on each side."""
+    w, h = img.size
+    canvas = Image.new("RGB", (w + 2 * border, h + 2 * border), (0, 0, 0))
+    canvas.paste(img, (border, border))
+    return canvas
+
+
 def export_panel(panel: Image.Image, target_h: int = POPUP_ART_HEIGHT) -> Image.Image:
-    """Trim gutter, enhance, scale to popup height — no letterboxing."""
+    """Trim gutter, enhance, scale to popup height, pad on black — no letterboxing."""
     panel = trim_black(panel)
     panel = enhance_panel(panel)
     w, h = panel.size
     if h != target_h:
         scale = target_h / h
         panel = panel.resize((max(1, int(w * scale)), target_h), Image.Resampling.LANCZOS)
-    return panel
+    return pad_on_black(panel, border=POPUP_PAD)
 
 
 def needs_normalize(path: Path) -> bool:
     im = Image.open(path)
     w, h = im.size
-    if h < POPUP_ART_HEIGHT - 4 or h > POPUP_ART_HEIGHT + 4:
+    export_h = POPUP_ART_HEIGHT + 2 * POPUP_PAD
+    if h < export_h - 4 or h > export_h + 4:
         return True
     arr = np.array(im.convert("RGB"))
     mask = arr.max(axis=2) > TRIM_THRESHOLD
