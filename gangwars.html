@@ -214,12 +214,12 @@
   .title-hit-scores{left:51.975%;width:43.867%;top:89.063%;height:7.227%;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
-  /* CRIME LEDGER — master reference screens (481×1024), masked dynamic data only */
+  /* CRIME LEDGER — reference base PNG (473×1024) + transparent dynamic overlays */
   .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#000;}
   .ledger-art-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;
     justify-content:center;overflow:hidden;background:#000;container-type:size;}
-  .ledger-art-frame{position:relative;aspect-ratio:481/1024;
-    width:min(100cqw,calc(100cqh * 481 / 1024));max-height:100cqh;}
+  .ledger-art-frame{position:relative;aspect-ratio:473/1024;
+    width:min(100cqw,calc(100cqh * 473 / 1024));max-height:100cqh;}
   .ledger-art-frame img{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;
     user-select:none;-webkit-user-drag:none;pointer-events:none;object-fit:fill;}
   .ledger-overlay-layer{position:absolute;inset:0;z-index:1;pointer-events:none;}
@@ -227,16 +227,19 @@
     border-radius:0;min-height:0;min-width:0;-webkit-tap-highlight-color:transparent;
     pointer-events:auto;z-index:4;}
   .ledger-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
-  .ledger-mask-text{position:absolute;display:flex;align-items:center;justify-content:center;
-    pointer-events:none;background:#000;color:#c9a85a;letter-spacing:.9px;white-space:nowrap;
+  .ledger-counter{position:absolute;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;background:transparent;color:#c9a85a;letter-spacing:.9px;white-space:nowrap;
     z-index:2;font-size:clamp(.5rem,2.15vw,.62rem);}
-  .ledger-mask-text.dim{color:#9a8860;font-size:clamp(.48rem,2.05vw,.58rem);}
-  .ledger-list-panel{position:absolute;display:flex;flex-direction:column;overflow:hidden;
-    background:#000;z-index:2;pointer-events:none;}
+  .ledger-counter.total{font-size:clamp(.52rem,2.2vw,.64rem);}
+  .ledger-counter.row{justify-content:flex-start;padding-left:2px;color:#9a8860;
+    font-size:clamp(.48rem,2.05vw,.58rem);}
+  .ledger-counter.cat{font-size:clamp(.52rem,2.2vw,.64rem);}
+  .ledger-list-panel{position:absolute;overflow:hidden;background:#000;z-index:2;pointer-events:none;}
   .ledger-list-panel.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .ledger-list-inner{display:flex;flex-direction:column;min-height:min-content;}
   .ledger-list-row{flex:0 0 auto;display:flex;align-items:center;gap:clamp(6px,2vw,10px);
     padding:0 clamp(8px,2.2vw,12px);border-bottom:1px solid #1c1810;box-sizing:border-box;
-    min-height:var(--row-h, 28px);height:var(--row-h, 28px);}
+    height:var(--row-h, 38px);min-height:var(--row-h, 38px);}
   .ledger-list-row:last-child{border-bottom:none;}
   .ledger-row-icon{flex:0 0 clamp(28px,8vw,34px);width:clamp(28px,8vw,34px);height:clamp(28px,8vw,34px);
     border:1px solid #8a7340;border-radius:6px;display:flex;align-items:center;justify-content:center;
@@ -392,6 +395,7 @@
 
 <script src="engine.js"></script>
 <script src="ledger.js"></script>
+<script src="ledger-ui.js"></script>
 <script>
 if (typeof document !== "undefined") {
 (function lockPortrait(){
@@ -413,79 +417,24 @@ if (typeof document !== "undefined") {
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
   const TITLE_SCREEN = "title-screen.png";
-  const LEDGER_SCREENS = {
-    home: "assets/ledger/crime-ledger-home.png",
-    general: "assets/ledger/ledger-general.png",
-    rare: "assets/ledger/ledger-rare.png",
-    superRare: "assets/ledger/ledger-super-rare.png",
-    godlike: "assets/ledger/ledger-godlike.png",
-    goldenGodlike: "assets/ledger/ledger-golden-godlike.png",
-  };
-  const LEDGER_BACK = { top: 91.2, left: 4.2, width: 91.6, height: 6.4 };
-  const LEDGER_LAYOUT = {
-    home: {
-      total: { top: 46.7, left: 27, right: 27, height: 3.0 },
-      rows: [
-        { id: "general",       hitTop: 51.4, hitH: 4.85, countTop: 51.9, countLeft: 57, countRight: 11, countH: 2.4 },
-        { id: "rare",          hitTop: 56.5, hitH: 4.85, countTop: 57.0, countLeft: 57, countRight: 11, countH: 2.4 },
-        { id: "superRare",     hitTop: 61.6, hitH: 4.85, countTop: 62.1, countLeft: 57, countRight: 11, countH: 2.4 },
-        { id: "godlike",       hitTop: 66.7, hitH: 4.85, countTop: 67.2, countLeft: 57, countRight: 11, countH: 2.4 },
-        { id: "goldenGodlike", hitTop: 71.8, hitH: 4.85, countTop: 72.3, countLeft: 57, countRight: 11, countH: 2.4 },
-      ],
-    },
-    general: {
-      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
-      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
-      rowPx: "6.8%",
-      scroll: true,
-    },
-    rare: {
-      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
-      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
-      rowPx: "8.4%",
-      scroll: false,
-    },
-    superRare: {
-      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
-      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
-      rowPx: "8.4%",
-      scroll: false,
-    },
-    godlike: {
-      counter: { top: 33.6, left: 12, right: 12, height: 3.4 },
-      list: { top: 37.4, left: 3.6, right: 3.6, bottom: 11.6 },
-      rowPx: "10.2%",
-      scroll: false,
-    },
-    goldenGodlike: {
-      counter: { top: 37.8, left: 10, right: 10, height: 3.2 },
-      list: { top: 41.6, left: 3.6, right: 3.6, bottom: 11.6 },
-      rowPx: "7.5%",
-      scroll: false,
-    },
-  };
-  function ledgerCategoryById(catId){
-    return LEDGER_CATEGORIES.find(c => c.id === catId) || null;
-  }
   function openLedgerCategory(catId){
-    if (!LEDGER_SCREENS[catId] || !ledgerCategoryById(catId)) return;
+    if (!LEDGER_CATEGORIES.find(c => c.id === catId)) return;
     ledgerView = "category";
     ledgerViewCat = catId;
     ledgerFocusId = null;
     render();
   }
-  function ledgerRectStyle(r){
-    return `top:${r.top}%;left:${r.left}%;right:${r.right}%;height:${r.height}%`;
-  }
-  function ledgerPanelStyle(p){
-    return `top:${p.top}%;left:${p.left}%;right:${p.right}%;bottom:${p.bottom}%`;
-  }
-  function ledgerMaskText(text, style, dim){
-    return `<div class="ledger-mask-text${dim ? " dim" : ""}" style="${style}">${text}</div>`;
-  }
-  function categoryProgressText(catId, found, total){
-    if (catId === "general") return `${found} / ${total} FOUND`;
-    return `${found} OF ${total} DISCOVERED`;
+  function ledgerUiCtx(){
+    return {
+      view: ledgerView,
+      catId: ledgerViewCat,
+      focusId: ledgerFocusId,
+      ledger,
+      onOpenCategory: openLedgerCategory,
+      onBackHome: exitLedgerHome,
+      onBackCategory: exitLedgerCategory,
+      onRevealComplete: ()=>{ saveLedger(); render(); },
+    };
   }
   const DISTRICT_IMG = {
     "Little Italy":       "assets/little-italy.png",
@@ -715,40 +664,6 @@ if (typeof document !== "undefined") {
     };
     render();
   }
-  function ledgerArtShell(imgSrc, innerHtml){
-    const b = LEDGER_BACK;
-    return `<div class="play ledger-play"><div class="ledger-art-screen"><div class="ledger-art-frame">
-      <img src="${imgSrc}" width="481" height="1024" decoding="async" alt="">
-      <div class="ledger-overlay-layer">${innerHtml}</div>
-      <button type="button" class="ledger-hit" id="back" aria-label="Back"
-        style="left:${b.left}%;width:${b.width}%;top:${b.top}%;height:${b.height}%"></button>
-    </div></div></div>`;
-  }
-  function buildLedgerListRows(cat, focusId){
-    const isGeneral = cat.id === "general";
-    return cat.achievements.map(a=>{
-      const unlocked = isUnlocked(ledger, a.id);
-      const revealed = isRevealed(ledger, a.id);
-      const focus = focusId === a.id ? " reveal-focus" : "";
-      let iconCls = "locked", icon = "◆", title = "", mark = "";
-      if (revealed) {
-        iconCls = "revealed";
-        icon = "★";
-        title = a.title;
-        if (unlocked) mark = "✓";
-      } else if (isGeneral) {
-        title = "???";
-      } else {
-        title = "UNKNOWN";
-      }
-      const titleCls = revealed ? "" : " hidden";
-      return `<div class="ledger-list-row${focus}" data-aid="${a.id}">
-        <span class="ledger-row-icon ${iconCls}">${icon}</span>
-        <div class="ledger-row-copy"><div class="ledger-row-title${titleCls}">${title}</div></div>
-        <span class="ledger-row-mark">${mark}</span>
-      </div>`;
-    }).join("");
-  }
   function openLedgerReveal(achievementId){
     ledgerView = "category";
     ledgerViewCat = getCategoryForAchievement(achievementId);
@@ -779,85 +694,11 @@ if (typeof document !== "undefined") {
     document.getElementById("crt").classList.remove("title-mode");
     document.getElementById("crt").classList.add("ledger-mode");
     document.getElementById("crt").classList.remove("game-mode");
-    if (ledgerView === "category" && ledgerViewCat && LEDGER_SCREENS[ledgerViewCat]) {
-      renderLedgerCategory(ledgerViewCat);
-    } else {
+    if (ledgerView !== "category") {
       ledgerView = "home";
       ledgerViewCat = null;
-      renderLedgerHome();
     }
-  }
-  function renderLedgerHome(){
-    const layout = LEDGER_LAYOUT.home;
-    const found = countDiscovered(ledger);
-    const overlays = LEDGER_LAYOUT.home.rows.map(r=>{
-      const cat = ledgerCategoryById(r.id);
-      const n = countUnlocked(ledger, r.id);
-      const hit = `<button type="button" class="ledger-hit" data-cat="${r.id}" aria-label="${cat.title}"
-        style="left:3.6%;width:92.8%;top:${r.hitTop}%;height:${r.hitH}%"></button>`;
-      const count = ledgerMaskText(`${n} / ${cat.achievements.length}`,
-        `top:${r.countTop}%;left:${r.countLeft}%;right:${r.countRight}%;height:${r.countH}%`, true);
-      return hit + count;
-    }).join("");
-    app.innerHTML = ledgerArtShell(LEDGER_SCREENS.home,
-      ledgerMaskText(`${found} / ${LEDGER_TOTAL} FOUND`, ledgerRectStyle(layout.total)) + overlays);
-    layout.rows.forEach(r=>{
-      const btn = app.querySelector(`[data-cat="${r.id}"]`);
-      if (btn) btn.onclick = () => openLedgerCategory(r.id);
-    });
-    document.getElementById("back").onclick = exitLedgerHome;
-  }
-  function renderLedgerCategory(catId){
-    const cat = ledgerCategoryById(catId);
-    const layout = LEDGER_LAYOUT[catId];
-    if (!cat || !layout || !LEDGER_SCREENS[catId]) {
-      if (ledgerReturn) restoreLedgerReturn();
-      else { ledgerView = "home"; ledgerViewCat = null; render(); }
-      return;
-    }
-    const found = countUnlocked(ledger, catId);
-    const rows = buildLedgerListRows(cat, ledgerFocusId);
-    const scrollCls = layout.scroll ? " scroll" : "";
-    app.innerHTML = ledgerArtShell(LEDGER_SCREENS[catId],
-      ledgerMaskText(categoryProgressText(catId, found, cat.achievements.length), ledgerRectStyle(layout.counter))
-      + `<div class="ledger-list-panel${scrollCls}" style="${ledgerPanelStyle(layout.list)};--row-h:${layout.rowPx}">${rows}</div>`);
-    document.getElementById("back").onclick = exitLedgerCategory;
-    if (ledgerFocusId && isUnlocked(ledger, ledgerFocusId) && !isRevealed(ledger, ledgerFocusId) && catId === "general") {
-      const row = app.querySelector(`[data-aid="${ledgerFocusId}"] .ledger-row-title`);
-      if (row) runRevealAnimation(row, getAchievementTitle(ledgerFocusId), ()=>{
-        revealAchievement(ledger, ledgerFocusId);
-        saveLedger();
-        renderLedgerCategory(catId);
-      });
-    }
-  }
-  function runRevealAnimation(el, fullText, onDone){
-    const chars = fullText.length;
-    const steps = Math.max(chars, 1);
-    const duration = Math.min(1000, Math.max(500, chars * 35));
-    const stepMs = duration / steps;
-    let i = 0;
-    el.textContent = "???";
-    el.classList.add("hidden");
-    el.closest(".ledger-list-row")?.classList.add("reveal-focus");
-    const tick = ()=>{
-      i++;
-      const shown = Math.ceil((i / steps) * chars);
-      el.textContent = fullText.slice(0, shown) + "?".repeat(Math.max(0, chars - shown));
-      if (i >= steps) {
-        el.textContent = fullText;
-        el.classList.remove("hidden");
-        const row = el.closest(".ledger-list-row");
-        const markEl = row?.querySelector(".ledger-row-mark");
-        if (markEl) markEl.textContent = "✓";
-        const iconEl = row?.querySelector(".ledger-row-icon");
-        if (iconEl) { iconEl.textContent = "★"; iconEl.classList.remove("locked"); iconEl.classList.add("revealed"); }
-        onDone();
-        return;
-      }
-      setTimeout(tick, stepMs);
-    };
-    setTimeout(tick, stepMs);
+    LedgerUI.render(app, ledgerUiCtx());
   }
   function rankCard(r){ return r.toLowerCase().replace(/ /g,'-'); }
   function logMsg(t){ S.log.unshift(`Day ${S.day}: ${t}`); S.log = S.log.slice(0,12); }
