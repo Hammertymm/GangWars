@@ -20,7 +20,7 @@ It establishes:
 | Popup, travel, end-screen **layout** | `docs/ui-standards/*.png`, `.cursor/rules/ui-layout-standards.mdc` |
 | Event PNG **processing** | `scripts/event_art.py`, `scripts/split-*-events.py` |
 | Rank card **processing** | `scripts/prepare-eos-assets.py` |
-| Crime Ledger **integration** | `docs/crime-ledger-integration-prompt.md`, `ledger-ui.js`, `window.GangWarsLedger` |
+| Crime Ledger **integration** | Shipped in `ledger-ui.js`; brief for art refreshes: `docs/crime-ledger-integration-prompt.md` |
 
 If future artwork conflicts with shipped assets, **the shipped assets are correct**.
 
@@ -252,16 +252,18 @@ Whenever a prompt contains **Big Daddy J**, **BDJ**, **The Boss**, **Boss Man**,
 
 # CRIME LEDGER ARTWORK
 
-Crime Ledger graphics are **pending integration**. Achievement rules remain in [`ledger.js`](../../ledger.js).
+Crime Ledger is **integrated** (473×1024 reference screens, base PNG + dynamic overlays). Achievement rules live in [`ledger.js`](../../ledger.js); rendering in [`ledger-ui.js`](../../ledger-ui.js).
 
-**Integration brief:** [`docs/crime-ledger-integration-prompt.md`](crime-ledger-integration-prompt.md)
+**Reference screens:** [`docs/ui-standards/ledger-home.png`](ui-standards/ledger-home.png), [`ledger-general.png`](ui-standards/ledger-general.png), [`ledger-rare.png`](ui-standards/ledger-rare.png), [`ledger-super-rare.png`](ui-standards/ledger-super-rare.png), [`ledger-godlike.png`](ui-standards/ledger-godlike.png), [`ledger-golden-godlike.png`](ui-standards/ledger-golden-godlike.png)
 
-Mount points:
+**Replacing art:** [`docs/crime-ledger-integration-prompt.md`](crime-ledger-integration-prompt.md) — agent brief for a new graphics pack.
 
-- `ledger-ui.js` — implement `LedgerUI.render(app, ctx)`
-- `gangwars.html` — routing via `renderLedgerRoute()` and `window.GangWarsLedger`
-- `assets/ledger/` — drop screen PNGs here
-- `scripts/ledger-blueprint.json` — hit/counter rects after art is measured
+| Piece | Location |
+|-------|----------|
+| Screen `-base` PNGs | `assets/ledger/*-base.png` |
+| Achievement icons | `assets/ledger/icons/{id}.png` |
+| Layout rects | `scripts/ledger-blueprint.json` |
+| Asset prep | `scripts/prepare-ledger-assets.py`, `scripts/split-ledger-icons.py` |
 
 Do not reference deleted legacy ledger PNG paths from commits before `9956b89`.
 

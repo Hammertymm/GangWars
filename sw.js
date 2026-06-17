@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v54';
+const CACHE = 'gangwars-v55';
 const ASSETS = [
   './gangwars.html',
   './engine.js',
@@ -127,6 +127,8 @@ const ASSETS = [
 ];
 
 const ICON_PATTERN = /(?:apple-touch-icon|icon-(?:180|192|512))\.png$/;
+/** App shell — network-first so ledger/UI fixes reach installed PWAs without a stale trap. */
+const SHELL_PATTERN = /\/(gangwars\.html|engine\.js|ledger\.js|ledger-ui\.js|sw\.js)$/;
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -142,9 +144,27 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
 self.addEventListener('fetch', e => {
   const path = new URL(e.request.url).pathname;
   if (ICON_PATTERN.test(path)) {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE).then(c => c.put(e.request, copy));
+          }
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+  if (SHELL_PATTERN.test(path)) {
     e.respondWith(
       fetch(e.request)
         .then(res => {

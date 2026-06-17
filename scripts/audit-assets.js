@@ -28,11 +28,12 @@ function readFile(p) {
 
 function extractRefs() {
   const refs = new Set();
-  const files = ['gangwars.html', 'engine.js', 'sw.js', 'manifest.json', 'index.html', 'README.md'];
+  const files = ['gangwars.html', 'engine.js', 'ledger.js', 'ledger-ui.js', 'sw.js', 'manifest.json', 'index.html', 'README.md'];
   const patterns = [
     /(?:src|href)=["']([^"']+\.(?:png|jpg|jpeg|webp))["']/gi,
     /['"]((?:assets|events|cards|title-screen|icon|apple-touch)[^'"]+\.(?:png|jpg|jpeg))['"]/gi,
     /\.\/(?:assets|events|cards|title-screen|icon|apple-touch)[^\s'"]+\.(?:png|jpg|jpeg)/gi,
+    /assets\/ledger\/[^\s'"]+\.png/g,
   ];
   for (const f of files) {
     try {
@@ -190,6 +191,7 @@ function main() {
       goods: onDisk.filter(f => f.startsWith('assets/goods/')),
       events: onDisk.filter(f => f.startsWith('events/')),
       cards: onDisk.filter(f => f.startsWith('cards/')),
+      ledger: onDisk.filter(f => f.startsWith('assets/ledger/')),
       root: onDisk.filter(f => !f.includes('/') && IMAGE_EXT.has(path.extname(f))),
     },
     summary: {

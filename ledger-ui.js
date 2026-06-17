@@ -128,7 +128,7 @@ function ledgerShell(baseAsset, innerHtml, backRect) {
   return `<div class="play ledger-play"><div class="ledger-art-screen"><div class="ledger-art-frame">
     <img src="${ledgerAssetPath(baseAsset)}" width="${w}" height="${h}" decoding="async" alt="">
     <div class="ledger-overlay-layer">${innerHtml}</div>
-    <button type="button" class="ledger-hit" id="ledgerBack" aria-label="Back" style="${ledgerRectStyle(backRect)}"></button>
+    <button type="button" class="ledger-hit ledger-back-btn" id="ledgerBack" aria-label="Back" style="${ledgerRectStyle(backRect)}">BACK</button>
   </div></div></div>`;
 }
 

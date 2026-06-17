@@ -1,5 +1,7 @@
 # Crime Ledger Graphics Integration — Agent Prompt
 
+> **Status:** Integrated on `main` (commit `a77291d` and later). Use this brief when **refreshing** Crime Ledger screen art or icon grids — not for initial wiring.
+
 Use this document as the full task brief when integrating a new Crime Ledger graphics pack.
 Attach all screen artwork to the same conversation.
 
@@ -46,7 +48,7 @@ Before writing code, read:
 |------|---------|
 | `ledger.js` | Achievement definitions & data API — **DO NOT change contracts** |
 | `ledger.test.js` | Must pass unchanged |
-| `ledger-ui.js` | Stub UI module — **implement render here** |
+| `ledger-ui.js` | UI renderer — `LedgerUI.render(app, ctx)` |
 | `gangwars.html` | Routing, `renderLedgerRoute()`, `window.GangWarsLedger` |
 | `docs/style-specification.md` | UI palette, visual lanes |
 | `.cursor/rules/ui-layout-standards.mdc` | Portrait-only; do not alter popup/travel/end screens |
@@ -115,7 +117,7 @@ Before writing code, read:
 LedgerUI.render(app, ledgerUiCtx());
 ```
 
-Implement `LedgerUI.render` in `ledger-ui.js`. Do not move routing state out of `gangwars.html`.
+Implement or update `LedgerUI.render` in `ledger-ui.js`. Do not move routing state out of `gangwars.html`.
 
 ---
 
@@ -192,7 +194,7 @@ Normalize to portrait canvas matching attached art aspect ratio. Document final 
 - General list: 14 rows, scroll if needed
 - Back button hit target on every screen (not Escape-only)
 
-Shared helper available in stub:
+Shared helper in `ledger-ui.js`:
 
 ```javascript
 ledgerRectStyle(r)  // r = { x, y, w, h } in canvas pixels
@@ -206,9 +208,9 @@ Follow title-screen art-frame pattern (`container-type: size`, aspect-ratio fram
 
 ### 4. Re-enable achievement presentation flow
 
-`tryShowAchievementFlow()` in `gangwars.html` currently returns `false`. Re-implement:
+`tryShowAchievementFlow()` in `gangwars.html` drives unlock presentation:
 
-1. `pendingUnlockQueue` non-empty → "Achievement Found" popup (new art style)
+1. `pendingUnlockQueue` non-empty → "Achievement Found" popup
 2. On dismiss:
    - **general** → `captureLedgerReturn()`; `openLedgerReveal(id)`; run reveal animation;
      `revealAchievement()`; `onRevealComplete()`

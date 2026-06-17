@@ -86,6 +86,28 @@ The rarest roll in the game. Every district. One day. Ten times normal prices ev
 
 -----
 
+## Crime Ledger
+
+Account-wide **40-entry achievement collection** — progress persists across runs in `localStorage` (`gw:ledger`).
+
+Open **LEDGER** from the title screen to browse five categories:
+
+| Category | Entries | Examples |
+|----------|--------:|----------|
+| General | 14 | Made Man, First Million, Survivor |
+| Rare | 10 | Historical figures trigger district price spikes |
+| Super Rare | 10 | City-wide headline events (Lindbergh, Ruth, Ziegfeld…) |
+| Godlike | 5 | Big Daddy J visits one district at 10× prices |
+| Golden Godlike | 1 | Golden Shower — every district at 10× for one day |
+
+Unlocks during a run show an **Achievement Found** popup, then either a title reveal (general) or full event card (rare+), and finally the entry in the ledger list with icon, title, and description.
+
+Complete all 40 to earn **Crime Lord** status.
+
+Visual reference screens: [`docs/ui-standards/ledger-*.png`](docs/ui-standards/). Integration spec: [`docs/crime-ledger-integration-prompt.md`](docs/crime-ledger-integration-prompt.md).
+
+-----
+
 ## The Feds
 
 Getting caught means choosing fast:
@@ -125,9 +147,14 @@ Once installed, the game works fully offline.
 
 |File              |Purpose                                              |
 |------------------|-----------------------------------------------------|
-|`gangwars.html`   |Game UI, styles, and event copy                      |
+|`gangwars.html`   |Game UI, styles, routing, and event copy             |
 |`engine.js`       |Pure game logic — prices, travel, bank, save migration|
 |`engine.test.js`  |Node unit tests for the engine                       |
+|`ledger.js`       |Crime Ledger achievement definitions and unlock logic|
+|`ledger-ui.js`    |Crime Ledger screen rendering (base PNG + overlays)  |
+|`ledger.test.js`  |Node unit tests for the ledger                       |
+|`assets/ledger/`  |Crime Ledger screen art, `-base` variants, and icons |
+|`scripts/ledger-blueprint.json`|Hit/counter rects for ledger UI overlays   |
 |`title-screen.png`|Title screen artwork                               |
 |`manifest.json`   |PWA manifest — name, icons, display settings         |
 |`sw.js`           |Service worker — caches the game for offline play    |
@@ -143,9 +170,9 @@ Once installed, the game works fully offline.
 - **No dependencies** — vanilla JavaScript, no frameworks, no build step
 - **No backend** — all game state lives in `localStorage`; nothing is sent anywhere
 - **No accounts** — no login, no data collection, no tracking
-- **Engine/UI split** — testable logic in `engine.js`; UI and themed copy in `gangwars.html`
+- **Engine/UI split** — testable logic in `engine.js` and `ledger.js`; UI in `gangwars.html` and `ledger-ui.js`
 - **Offline** — service worker caches all files on first load; works with no connection thereafter
-- **Save state** — current run and high scores save automatically to browser local storage
+- **Save state** — current run (`gw:save`), high scores (`gw:highscores`), and Crime Ledger (`gw:ledger`) persist in browser local storage
 
 -----
 
