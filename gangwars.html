@@ -211,17 +211,20 @@
   .title-hit-scores{left:51.975%;width:43.867%;top:89.063%;height:7.227%;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
-  /* CRIME LEDGER — reference base PNG (473×1024) + transparent dynamic overlays */
+  /* CRIME LEDGER - base scene PNG (473x1024) + normal-flow text overlays.
+     Frame height comes from the in-flow <img>, so percentage overlays resolve
+     identically on iOS Safari and Chromium. No container-type:size/aspect-ratio/cqh. */
   #crt.ledger-mode{padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);background:#000;}
   #crt.ledger-mode .masthead{display:none;}
   #crt.ledger-mode #app{flex:1 1 auto;min-height:0;}
-  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#000;}
-  .ledger-art-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;
-    justify-content:center;overflow:hidden;background:#000;container-type:size;}
-  .ledger-art-frame{position:relative;aspect-ratio:473/1024;container-type:size;
-    width:min(100cqw,calc(100cqh * 473 / 1024));max-height:100cqh;background:#000;}
-  .ledger-art-frame img{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block;
-    user-select:none;-webkit-user-drag:none;pointer-events:none;object-fit:fill;}
+  .ledger-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;background:#000;}
+  .ledger-art-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;
+    align-items:flex-start;justify-content:center;background:#000;}
+  .ledger-art-frame{position:relative;container-type:inline-size;margin:0 auto;background:#000;
+    width:min(100%,calc(100vh * 473 / 1024));width:min(100%,calc(100dvh * 473 / 1024));}
+  .ledger-art-frame img{display:block;width:100%;height:auto;z-index:0;
+    user-select:none;-webkit-user-drag:none;pointer-events:none;}
   .ledger-overlay-layer{position:absolute;inset:0;z-index:1;pointer-events:none;}
   .ledger-header-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;}
   .ledger-hit{position:absolute;border:0;background:transparent;cursor:pointer;padding:0;margin:0;
@@ -229,38 +232,32 @@
     pointer-events:auto;z-index:4;}
   .ledger-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
   .ledger-counter{position:absolute;display:flex;align-items:center;justify-content:center;
-    pointer-events:none;background:transparent;color:#c9a85a;letter-spacing:.9px;white-space:nowrap;
-    overflow:hidden;font-size:clamp(7px,2.65cqw,11px);}
-  .ledger-counter.total{font-size:clamp(7px,2.75cqw,11px);}
-  .ledger-counter.row{justify-content:flex-start;padding-left:1px;color:#9a8860;
-    font-size:clamp(7px,2.5cqw,10px);}
+    pointer-events:none;background:transparent;color:#c9a85a;letter-spacing:.14em;white-space:nowrap;
+    font-size:clamp(8px,3.0cqw,14px);}
+  .ledger-counter.total{color:#9a8860;font-size:clamp(8px,2.9cqw,13px);}
   .ledger-row-label{position:absolute;display:flex;align-items:center;justify-content:flex-start;
-    pointer-events:none;overflow:hidden;white-space:nowrap;color:#9a8860;letter-spacing:.55px;
-    font-size:clamp(7px,2.35cqw,10px);}
-  .ledger-counter.cat{font-size:clamp(7px,2.75cqw,11px);}
-  .ledger-list-panel{position:absolute;overflow:hidden;background:#000;z-index:2;pointer-events:none;}
-  .ledger-list-panel.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .ledger-list-inner{display:flex;flex-direction:column;height:100%;box-sizing:border-box;}
-  .ledger-list-row{flex:0 0 var(--row-h);height:var(--row-h);max-height:var(--row-h);display:flex;align-items:center;
-    gap:clamp(4px,1.5vw,8px);padding:0 clamp(4px,1.5vw,8px) 0 var(--icon-pad,1.8%);
-    border-bottom:1px solid #1a1610;box-sizing:border-box;overflow:hidden;}
+    pointer-events:none;white-space:nowrap;color:#9a8860;letter-spacing:.08em;
+    font-size:clamp(8px,2.9cqw,13px);}
+  .ledger-list-panel{position:absolute;overflow:hidden;z-index:2;pointer-events:none;}
+  .ledger-list-panel.scroll{overflow-y:auto;-webkit-overflow-scrolling:touch;pointer-events:auto;}
+  .ledger-list-inner{display:flex;flex-direction:column;}
+  .ledger-list-row{display:flex;align-items:center;gap:3cqw;padding:2.1cqw 1.6cqw;
+    border-bottom:1px solid rgba(201,168,90,.10);box-sizing:border-box;}
   .ledger-list-row:last-child{border-bottom:none;}
-  .ledger-row-icon,.ledger-row-icon-spacer{position:relative;flex:0 0 var(--icon-w);width:var(--icon-w);height:var(--icon-h);
-    max-width:var(--icon-w);max-height:var(--icon-h);min-width:0;min-height:0;
-    border:1px solid #5a5040;border-radius:6px;overflow:hidden;background:#080808;box-sizing:border-box;}
-  .ledger-row-icon-spacer{border-color:#3a3428;background:transparent;}
+  .ledger-row-icon{position:relative;flex:0 0 auto;width:11cqw;height:11cqw;
+    border:1px solid #5a5040;border-radius:6px;overflow:hidden;background:#0c0a06;
+    display:flex;box-sizing:border-box;}
   .ledger-row-icon.locked{border-color:#5a5040;}
   .ledger-row-icon.revealed{border-color:#c9a85a;}
-  .ledger-row-icon img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;
-    pointer-events:none;}
-  .ledger-row-copy{flex:1 1 auto;min-width:0;line-height:1.25;overflow:hidden;}
-  .ledger-row-title{font-size:clamp(.54rem,2.25vw,.64rem);letter-spacing:.45px;color:#c9a85a;
+  .ledger-row-icon img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;}
+  .ledger-row-copy{flex:1 1 auto;min-width:0;line-height:1.2;overflow:hidden;}
+  .ledger-row-title{font-size:3.5cqw;letter-spacing:.05em;color:#c9a85a;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ledger-row-title.hidden{color:#6a5e48;}
-  .ledger-row-desc{font-size:clamp(.46rem,2vw,.54rem);color:#7a6e58;margin-top:1px;
+  .ledger-row-desc{font-size:3.0cqw;color:#7a6e58;margin-top:.4cqw;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .ledger-row-desc.placeholder{color:#5a5040;}
-  .ledger-row-mark{flex:0 0 1em;color:#c9a85a;font-size:clamp(.6rem,2.5vw,.7rem);text-align:right;}
+  .ledger-row-mark{flex:0 0 1.4em;color:#c9a85a;font-size:4cqw;text-align:center;}
   .ledger-list-row.reveal-focus .ledger-row-title{color:#e7c879;}
   .ledger-complete{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
     text-align:center;padding:16px;gap:10px;border:3px double var(--amber);border-radius:8px;}

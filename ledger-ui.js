@@ -6,7 +6,7 @@
 const LEDGER_CANVAS = { w: 473, h: 1024 };
 const LEDGER_ASSET_PREFIX = "assets/ledger/";
 const LEDGER_ICON_PREFIX = "assets/ledger/icons/";
-const LEDGER_ASSET_VERSION = "61";
+const LEDGER_ASSET_VERSION = "62";
 
 function ledgerRectStyle(r) {
   const { w: W, h: H } = LEDGER_CANVAS;
@@ -26,7 +26,9 @@ function ledgerCounterHtml(text, rect, cls) {
 }
 
 function ledgerRowLabelHtml(title, count, total, rect) {
-  return `<div class="ledger-row-label" style="${ledgerRectStyle(rect)}">${title} ${count} / ${total}</div>`;
+  // The category NAME is baked into the home art; the overlay supplies only the
+  // live count so there is never a second copy of the name to ghost on iOS.
+  return `<div class="ledger-row-label" style="${ledgerRectStyle(rect)}">${count} / ${total}</div>`;
 }
 
 function categoryCounterText(catId, found, total) {
@@ -35,13 +37,8 @@ function categoryCounterText(catId, found, total) {
 }
 
 function listPanelStyleVars(bp) {
-  const { w: W, h: H } = LEDGER_CANVAS;
-  return [
-    `--row-h:${((bp.rowHeight / H) * 100).toFixed(4)}cqh`,
-    `--icon-w:${((bp.iconBox.w / W) * 100).toFixed(4)}cqw`,
-    `--icon-h:${((bp.iconBox.h / H) * 100).toFixed(4)}cqh`,
-    `--icon-pad:${((bp.iconBox.x / W) * 100).toFixed(4)}cqw`,
-  ].join(";");
+  // Rows are content-sized in normal flow now; no container-query vars needed.
+  return "";
 }
 
 const HIDDEN_ACHIEVEMENT_DESC = "Achievement not yet discovered.";
@@ -60,7 +57,7 @@ function buildListRows(cat, ledger, focusId) {
     if (revealed) {
       title = getAchievementTitle(a.id);
       desc = getAchievementDescription(a.id);
-      if (unlocked) mark = "✓";
+      if (unlocked) mark = "\u2713";
       iconHtml = `<div class="ledger-row-icon revealed"><img src="${ledgerIconPath(a.id)}" alt="" decoding="async"></div>`;
     }
     const titleCls = revealed ? "" : " hidden";
@@ -118,7 +115,7 @@ function runRevealAnimation(rowEl, achievementId, onDone) {
         descEl.classList.remove("placeholder");
       }
       const markEl = rowEl.querySelector(".ledger-row-mark");
-      if (markEl) markEl.textContent = "✓";
+      if (markEl) markEl.textContent = "\u2713";
       if (iconImg) iconImg.src = ledgerIconPath(achievementId);
       if (iconWrap) {
         iconWrap.classList.remove("locked");
