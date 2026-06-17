@@ -18,9 +18,9 @@ It establishes:
 | Topic | Document |
 |-------|----------|
 | Popup, travel, end-screen **layout** | `docs/ui-standards/*.png`, `.cursor/rules/ui-layout-standards.mdc` |
-| Crime Ledger **layout** | `docs/ui-standards/ledger-blueprint.md` |
 | Event PNG **processing** | `scripts/event_art.py`, `scripts/split-*-events.py` |
 | Rank card **processing** | `scripts/prepare-eos-assets.py` |
+| Crime Ledger **integration** | `ledger.js`, `window.GangWarsLedger` in `gangwars.html` |
 
 If future artwork conflicts with shipped assets, **the shipped assets are correct**.
 
@@ -252,14 +252,15 @@ Whenever a prompt contains **Big Daddy J**, **BDJ**, **The Boss**, **Boss Man**,
 
 # CRIME LEDGER ARTWORK
 
-Crime Ledger UI is currently shelved; assets and blueprint are preserved for reactivation.
+Crime Ledger **visuals are not shipped** — legacy PNG layouts and UI were removed. Achievement rules remain in [`ledger.js`](../../ledger.js).
 
-- Canvas: **473×1024** portrait (`scripts/prepare-ledger-assets.py`)
-- Baked PNG frames in `assets/ledger/` with gold serif masthead
-- Achievement tier screens mirror event tier naming (general, rare, super rare, godlike, golden godlike)
-- Ledger list art should match the corresponding **event tier lane** (B or C) for each category
+Future graphics integrate via:
 
-Reference PNGs: `docs/ui-standards/ledger-*.png`.
+- Data: `ledger.js` exports (`LEDGER_CATEGORIES`, unlock/reveal helpers, counters)
+- Runtime: `window.GangWarsLedger` in `gangwars.html` (view state, pending queues, navigation hooks)
+- Navigation: title-screen LEDGER button → `openLedgerFromTitle()` → `ledgerView` route (empty `#app` mount)
+
+Do not reference removed `assets/ledger/` paths or old blueprint rects.
 
 ---
 
