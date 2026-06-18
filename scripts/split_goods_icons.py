@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_SRC = ROOT / "assets" / "goods-grid-source.png"
 OUT_DIR = ROOT / "assets" / "goods"
 TARGET = 136  # 4× clamp(26px, 6.5vw, 34px) max display
+ZOOM = 1.42    # fill canvas — artwork is centred with margin in source cells
 BLACK_THRESHOLD = 18
 
 # (filename_stem, column, row) — top row 0, bottom row 1
@@ -59,14 +60,18 @@ def black_to_alpha(img: Image.Image) -> Image.Image:
     return rgba
 
 
-def fit_square(img: Image.Image, size: int = TARGET) -> Image.Image:
-    """Contain icon in square canvas without cropping artwork."""
+def fit_square(img: Image.Image, size: int = TARGET, zoom: float = ZOOM) -> Image.Image:
+    """Contain icon in square canvas; zoom trims transparent margins from grid cells."""
     img = black_to_alpha(img)
     w, h = img.size
-    scale = min(size / w, size / h)
+    scale = min(size / w, size / h) * zoom
     nw = max(1, round(w * scale))
     nh = max(1, round(h * scale))
     resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
+    if nw >= size and nh >= size:
+        left = (nw - size) // 2
+        top = (nh - size) // 2
+        return resized.crop((left, top, left + size, top + size))
     out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
     out.paste(resized, ((size - nw) // 2, (size - nh) // 2), resized)
     return out
