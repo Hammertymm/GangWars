@@ -21,6 +21,6 @@ classes = {
 for key, cls in classes.items():
     r = data["hits"][key]
     print(
-        f".{cls}{{left:{r['x']/W*100:.3f}%;top:{r['y']/H*100:.3f}%;"
-        f"width:{r['w']/W*100:.3f}%;height:{r['h']/H*100:.3f}%;}}"
+        f".{cls}{{left:{r['x']/W*100:.3f}cqw;top:{r['y']/H*100:.3f}cqh;"
+        f"width:{r['w']/W*100:.3f}cqw;height:{r['h']/H*100:.3f}cqh;}}"
     )
