@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
-<link rel="preload" as="image" href="title-screen.png?v=7" fetchpriority="high" />
+<link rel="preload" as="image" href="title-screen.png?v=8" fetchpriority="high" />
 <title>GANG WARS</title>
 <style>
   :root{
@@ -534,7 +534,7 @@ if (typeof document !== "undefined") {
   let pendingUnlockQueue = [], pendingCompleteQueue = [];
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
-  const TITLE_SCREEN = "title-screen.png?v=7";
+  const TITLE_SCREEN = "title-screen.png?v=8";
   const TITLE_CANVAS = { w: 474, h: 1024 };
   function layoutTitleScreen(){
     const cover = document.querySelector(".title-cover");
@@ -1737,7 +1737,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=72').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=73').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
