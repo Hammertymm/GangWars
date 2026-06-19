@@ -77,10 +77,10 @@ Historical figures — Capone, Luciano, Rothstein, Armstrong and others — trig
 A major city event drives all prices in one district to 3× normal for a single day. Babe Ruth. Lindbergh. The Prince of Wales.
 
 **Godlike (~1 in 200 runs):**
-Big Daddy J comes to town. One district. One day. Ten times normal prices. The stuff of legend.
+??????????
 
 **Golden Godlike (~1 in 1,000 runs):**
-The rarest roll in the game. Every district. One day. Ten times normal prices everywhere. If you see it, move.
+??????????
 
 -----
 
@@ -95,8 +95,8 @@ Open **LEDGER** from the title screen to browse five categories:
 | General | 14 | Made Man, First Million, Survivor |
 | Rare | 10 | Historical figures trigger district price spikes |
 | Super Rare | 10 | City-wide headline events (Lindbergh, Ruth, Ziegfeld…) |
-| Godlike | 5 | Big Daddy J visits one district at 10× prices |
-| Golden Godlike | 1 | Golden Shower — every district at 10× for one day |
+| Godlike | 5 | ?????????? |
+| Golden Godlike | 1 | ?????????? |
 
 Unlocks during a run show an **Achievement Found** popup, then either a title reveal (general) or full event card (rare+), and finally the entry in the ledger list with icon, title, and description.
 
