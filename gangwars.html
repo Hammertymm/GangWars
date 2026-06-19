@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
-<link rel="preload" as="image" href="title-screen.png?v=6" fetchpriority="high" />
+<link rel="preload" as="image" href="title-screen.png?v=7" fetchpriority="high" />
 <title>GANG WARS</title>
 <style>
   :root{
@@ -220,14 +220,14 @@
     pointer-events:none;image-rendering:-webkit-optimize-contrast;}
   .title-hit{position:absolute;box-sizing:border-box;border:0;background:transparent;cursor:pointer;padding:0!important;margin:0;
     border-radius:0;min-height:0;min-width:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-  .title-hit:active:not(:disabled){background:rgba(231,200,121,.12);}
+  .title-hit:active:not(:disabled){background:transparent;}
   .title-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
   .title-hit:disabled{cursor:default;pointer-events:none;opacity:0;}
-  /* Title hit rects on 472×1024 canvas; cqw/cqh = title-cover box */
-  .title-hit-new{left:4.025cqw;top:81.738cqh;width:42.161cqw;height:6.836cqh;}
-  .title-hit-cont{left:52.966cqw;top:81.738cqh;width:43.432cqw;height:6.836cqh;}
-  .title-hit-ledger{left:5.297cqw;top:90.820cqh;width:40.042cqw;height:7.227cqh;}
-  .title-hit-scores{left:53.602cqw;top:90.820cqh;width:41.525cqw;height:7.227cqh;}
+  /* Title hit rects on 474×1024 canvas; cqw/cqh = title-cover box */
+  .title-hit-new{left:2.532cqw;top:78.418cqh;width:47.468cqw;height:8.301cqh;}
+  .title-hit-cont{left:52.532cqw;top:78.418cqh;width:44.937cqw;height:8.301cqh;}
+  .title-hit-ledger{left:2.532cqw;top:87.695cqh;width:47.468cqw;height:8.301cqh;}
+  .title-hit-scores{left:52.532cqw;top:87.695cqh;width:44.937cqw;height:8.301cqh;}
   .audio-mute-btn{font-family:inherit;background:transparent;color:var(--amber);border:1px solid var(--amber);
     padding:2px 7px;font-size:clamp(.62rem,2.8vw,.72rem);letter-spacing:0;cursor:pointer;border-radius:4px;
     line-height:1.2;min-height:0;}
@@ -534,8 +534,8 @@ if (typeof document !== "undefined") {
   let pendingUnlockQueue = [], pendingCompleteQueue = [];
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
-  const TITLE_SCREEN = "title-screen.png?v=6";
-  const TITLE_CANVAS = { w: 472, h: 1024 };
+  const TITLE_SCREEN = "title-screen.png?v=7";
+  const TITLE_CANVAS = { w: 474, h: 1024 };
   function layoutTitleScreen(){
     const cover = document.querySelector(".title-cover");
     if (!cover) return;
@@ -1040,7 +1040,7 @@ if (typeof document !== "undefined") {
     app.innerHTML = `<div class="play title-play">
       <div class="title-screen">
         <div class="title-cover">
-          <img src="${TITLE_SCREEN}" width="472" height="1024" decoding="async" fetchpriority="high"
+          <img src="${TITLE_SCREEN}" width="474" height="1024" decoding="async" fetchpriority="high"
             alt="Gang Wars — Prohibition 1929">
           <button type="button" class="title-hit title-hit-new" id="new" aria-label="New Game"></button>
           <button type="button" class="title-hit title-hit-cont" id="cont" aria-label="Continue" ${saved?"":"disabled"}></button>
@@ -1737,7 +1737,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=68').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=69').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
