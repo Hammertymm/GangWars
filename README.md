@@ -22,7 +22,7 @@ Each day you can:
 
 The market is volatile. Shortages send prices through the roof. Flooded supply crashes them. Events — from police raids to celebrity appearances — can reshape the market for a day. Today’s price is all you get on the buy screen; when you sell, the game shows your average cost and profit % vs the current quote. Read the city, move fast.
 
-**Your score** is your net worth on day 30: cash + bank − debt. Score scales smoothly from 0 to **100**; a perfect **100** requires **$10M** net (Big Daddy J).
+**Your score** is your net worth on day 30: cash + bank − debt. Score scales smoothly from 0 to **100**; a perfect **100** requires **$50M** net (Big Daddy J).
 
 -----
 
