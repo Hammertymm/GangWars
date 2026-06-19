@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
-<link rel="preload" as="image" href="title-screen.png?v=4" fetchpriority="high" />
+<link rel="preload" as="image" href="title-screen.png?v=5" fetchpriority="high" />
 <title>GANG WARS</title>
 <style>
   :root{
@@ -208,28 +208,23 @@
     background:var(--panel);font-size:.82rem;line-height:1.4;}
   .hud b{color:var(--amber);} .hud .red{color:var(--red);}
   #crt.title-mode .masthead{display:none;}
-  #crt.title-mode{background:#000;padding:env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) 0;}
-  #crt.title-mode #app{flex:1 1 auto;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
-  .title-play{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;overflow:hidden;}
-  .title-screen{flex:1 1 auto;min-height:0;width:100%;display:flex;align-items:center;
-    justify-content:center;overflow:hidden;background:#000;container-type:size;}
-  .title-art{position:relative;container-type:size;
-    width:min(100cqw,calc(100cqh * 472 / 1024));
-    height:min(100cqh,calc(100cqw * 1024 / 472));
-    max-width:100cqw;max-height:100cqh;}
-  .title-art img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;
-    pointer-events:none;object-fit:contain;image-rendering:-webkit-optimize-contrast;}
+  #crt.title-mode{max-width:none;width:100%;background:#000;padding:0;}
+  #crt.title-mode #app{flex:1 1 auto;min-height:0;height:100%;overflow:hidden;display:flex;flex-direction:column;}
+  .title-play{flex:1 1 auto;min-height:0;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden;}
+  .title-screen{position:relative;flex:1 1 auto;min-height:0;width:100%;height:100%;overflow:hidden;background:#000;}
+  .title-cover{position:absolute;container-type:size;}
+  .title-cover img{width:100%;height:100%;display:block;user-select:none;-webkit-user-drag:none;
+    pointer-events:none;image-rendering:-webkit-optimize-contrast;}
   .title-hit{position:absolute;box-sizing:border-box;border:0;background:transparent;cursor:pointer;padding:0!important;margin:0;
     border-radius:0;min-height:0;min-width:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
   .title-hit:active:not(:disabled){background:rgba(231,200,121,.12);}
   .title-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
   .title-hit:disabled{cursor:default;pointer-events:none;opacity:0;}
-  /* Title hit rects on 472×1024 canvas; cqw/cqh = title-art box */
+  /* Title hit rects on 473×1024 canvas; cqw/cqh = title-cover box */
   .title-hit-new{left:4.025cqw;top:81.738cqh;width:42.161cqw;height:6.836cqh;}
   .title-hit-cont{left:52.966cqw;top:81.738cqh;width:43.432cqw;height:6.836cqh;}
   .title-hit-ledger{left:5.297cqw;top:90.820cqh;width:40.042cqw;height:7.227cqh;}
   .title-hit-scores{left:53.602cqw;top:90.820cqh;width:41.525cqw;height:7.227cqh;}
-  .title-hit-mute{left:88cqw;top:2.5cqh;width:9cqw;height:6cqh;}
   .audio-mute-btn{font-family:inherit;background:transparent;color:var(--amber);border:1px solid var(--amber);
     padding:2px 7px;font-size:clamp(.62rem,2.8vw,.72rem);letter-spacing:0;cursor:pointer;border-radius:4px;
     line-height:1.2;min-height:0;}
@@ -536,7 +531,22 @@ if (typeof document !== "undefined") {
   let pendingUnlockQueue = [], pendingCompleteQueue = [];
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
-  const TITLE_SCREEN = "title-screen.png?v=4";
+  const TITLE_SCREEN = "title-screen.png?v=5";
+  const TITLE_CANVAS = { w: 473, h: 1024 };
+  function layoutTitleScreen(){
+    const screen = document.querySelector(".title-screen");
+    const cover = document.querySelector(".title-cover");
+    if (!screen || !cover) return;
+    const { w: W, h: H } = TITLE_CANVAS;
+    const cw = screen.clientWidth, ch = screen.clientHeight;
+    if (!cw || !ch) return;
+    const scale = Math.max(cw / W, ch / H);
+    const sw = W * scale, sh = H * scale;
+    cover.style.width = sw + "px";
+    cover.style.height = sh + "px";
+    cover.style.left = ((cw - sw) / 2) + "px";
+    cover.style.top = ((ch - sh) / 2) + "px";
+  }
   function openLedgerCategory(catId){
     if (!LEDGER_CATEGORIES.find(c => c.id === catId)) return;
     ledgerView = "category";
@@ -1023,10 +1033,9 @@ if (typeof document !== "undefined") {
     const saved = load();
     app.innerHTML = `<div class="play title-play">
       <div class="title-screen">
-        <div class="title-art">
-          <img src="${TITLE_SCREEN}" width="472" height="1024" decoding="async" fetchpriority="high"
+        <div class="title-cover">
+          <img src="${TITLE_SCREEN}" width="473" height="1024" decoding="async" fetchpriority="high"
             alt="Gang Wars — Prohibition 1929">
-          <button type="button" class="title-hit title-hit-mute audio-mute-btn" id="title-audio-mute" data-audio-mute aria-label="Toggle sound">&#128266;</button>
           <button type="button" class="title-hit title-hit-new" id="new" aria-label="New Game"></button>
           <button type="button" class="title-hit title-hit-cont" id="cont" aria-label="Continue" ${saved?"":"disabled"}></button>
           <button type="button" class="title-hit title-hit-ledger" id="ledger" aria-label="Crime Ledger"></button>
@@ -1034,7 +1043,14 @@ if (typeof document !== "undefined") {
         </div>
       </div>
     </div>`;
-    bindMuteButton(document.getElementById("title-audio-mute"));
+    layoutTitleScreen();
+    const coverImg = app.querySelector(".title-cover img");
+    if (coverImg && !coverImg.complete) coverImg.addEventListener("load", layoutTitleScreen, { once: true });
+    if (!window._titleLayoutBound) {
+      window._titleLayoutBound = true;
+      window.addEventListener("resize", layoutTitleScreen);
+      window.addEventListener("orientationchange", layoutTitleScreen);
+    }
     bindMuteButton(document.getElementById("audio-mute"));
     if (A()) A().preload("music.title");
     document.getElementById("new").onclick = ()=>{ startNewGame(); render(); maybeTutorial(); };
