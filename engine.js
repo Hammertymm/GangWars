@@ -4,10 +4,10 @@
 const CONFIG = {
   days: 30,
   startCash: 10000,
-  startDebt: 22000,
+  startDebt: 25000,
   startSpace: 100,
   startHealth: 10,
-  loanInterest: 0.07,
+  loanInterest: 0.10,
   bankInterest: 0.06,
   conservativeBankBonus: 0.02,
   unavailableChance: 1/8,
