@@ -214,7 +214,7 @@
   .bot-stat{display:flex;flex-direction:column;justify-content:center;}
   .bot-stat.right{align-items:flex-end;text-align:right;}
   .market-play .bot-stats{flex:0 0 auto;margin-bottom:0;}
-  .bot-sub{flex:0 0 auto;display:flex;justify-content:space-between;gap:10px;margin-top:7px;
+  .bot-sub{flex:0 0 auto;display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;margin-top:7px;
     padding-top:7px;border-top:1px solid var(--rowline);
     font-size:clamp(.74rem,3.3vw,.88rem);color:var(--dim);letter-spacing:.3px;white-space:nowrap;}
   .bot-label{font-size:clamp(.54rem, 2.3vw, .62rem);color:var(--dim);letter-spacing:.3px;line-height:1.1;}
@@ -1166,8 +1166,10 @@ if (typeof document !== "undefined") {
           <div class="bot-stat right"><span class="bot-label">DON DEBT</span><span class="bot-val red">${money(S.debt)}</span></div>
         </div>
         <div class="bot-sub">
-          <span>BANK ${money(S.bank)}&nbsp;&nbsp;&nbsp;GUNS ${S.guns}</span>
-          <span>STASH ${used}/${S.space}&nbsp;&nbsp;&nbsp;HP ${S.health}/${CONFIG.startHealth}</span>
+          <span>BANK ${money(S.bank)}</span>
+          <span>STASH ${used}/${S.space}</span>
+          <span>GUNS ${S.guns}</span>
+          <span>HP ${S.health}/${CONFIG.startHealth}</span>
         </div>
         ${S.debt>=CONFIG.maxTotalDebt*0.9?'<p class="debt-warn" role="status">The Don is losing patience, get in over $100k and its curtains</p>':''}
         <p class="save-err" id="save-err" role="alert"></p>
@@ -1768,7 +1770,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=84').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=85').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
