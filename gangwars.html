@@ -717,8 +717,8 @@ if (typeof document !== "undefined") {
         </div>
         <div class="bot-sub">
           <span>BANK ${money(S.bank)}</span>
-          <span>STASH ${used}/${S.space}</span>
           <span>GUNS ${S.guns}</span>
+          <span>STASH ${used}/${S.space}</span>
           <span>HP ${S.health}/${CONFIG.startHealth}</span>
         </div>
         ${S.debt>=CONFIG.maxTotalDebt*0.9?'<p class="debt-warn" role="status">The Don is losing patience, get in over $100k and its curtains</p>':''}
@@ -1331,7 +1331,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=105').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=106').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
