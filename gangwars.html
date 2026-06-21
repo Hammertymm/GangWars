@@ -662,7 +662,7 @@ if (typeof document !== "undefined") {
         <div class="scores-hero-overlay"></div>
         <div class="scores-hero-title">
           <span class="eos-orn-line"></span>
-          <span class="scores-hero-text">ALL TIME HIGH SCORES</span>
+          <span class="scores-hero-text">HIGH SCORES</span>
           <span class="eos-orn-line r"></span>
         </div>
       </div>
@@ -1332,7 +1332,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=98').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=99').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;
