@@ -242,14 +242,7 @@
   .title-hit-cont{left:50.317cqw;top:77.637cqh;width:47.569cqw;height:11.426cqh;}
   .title-hit-ledger{left:2.326cqw;top:86.914cqh;width:47.357cqw;height:7.812cqh;}
   .title-hit-scores{left:50.317cqw;top:86.914cqh;width:47.569cqw;height:7.812cqh;}
-  .audio-mute-btn{font-family:inherit;background:transparent;color:var(--amber);border:1px solid var(--amber);
-    padding:2px 7px;font-size:clamp(.62rem,2.8vw,.72rem);letter-spacing:0;cursor:pointer;border-radius:4px;
-    line-height:1.2;min-height:0;}
-  .audio-mute-btn:active{background:var(--amber);color:#1a1206;}
-  .audio-mute-btn:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
-  #crt.game-mode .masthead{position:relative;padding-right:36px;}
-  #crt.game-mode .masthead .audio-mute-btn{position:absolute;right:0;top:50%;transform:translateY(-50%);
-    padding:1px 5px;font-size:.62rem;}
+  #crt.game-mode .masthead{position:relative;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
   /* CRIME LEDGER v63 — unified template
