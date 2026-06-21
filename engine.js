@@ -361,6 +361,7 @@ function newGame(rates){
     if (gl) events.godlike = {...gl, day: randInt(5, 25), district: pick(LOCATIONS)};
   }
   return {
+    schemaVersion: 1,
     day: 1, location: HOME, cash: CONFIG.startCash, bank: 0, debt: CONFIG.startDebt,
     space: CONFIG.startSpace, health: CONFIG.startHealth, guns: 0,
     inventory: {}, costBasis: {}, events,
@@ -383,6 +384,7 @@ function newGame(rates){
 
 function migrateSave(state){
   if (!state || typeof state !== 'object') return null;
+  if (!state.schemaVersion) state.schemaVersion = 0;
   const remap = {
     spices:'cigars', perfume:'cigars', bourbon:'scotch', cigs:'cigars',
     artwork:'art', jewellery:'counterfeits', slots:'furcoats',
