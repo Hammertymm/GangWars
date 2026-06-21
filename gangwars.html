@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=3" />
 <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
-<link rel="preload" as="image" href="title-screen.png?v=11" fetchpriority="high" />
+<link rel="preload" as="image" href="title-screen.png?v=12" fetchpriority="high" />
 <title>GANG WARS</title>
 <link rel="stylesheet" href="gangwars.css?v=1">
 
@@ -95,8 +95,8 @@ if (typeof document !== "undefined") {
   let pendingUnlockQueue = [], pendingCompleteQueue = [];
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
-  const TITLE_SCREEN = "title-screen.png?v=11";
-  const TITLE_CANVAS = { w: 473, h: 1024 };
+  const TITLE_SCREEN = "title-screen.png?v=12";
+  const TITLE_CANVAS = { w: 853, h: 1844 };
   function layoutTitleScreen(){
     const cover = document.querySelector(".title-cover");
     if (!cover) return;
@@ -133,6 +133,12 @@ if (typeof document !== "undefined") {
   }
   function ledgerProgressText(){
     return `${countDiscovered(ledger)} / ${LEDGER_TOTAL} DISCOVERED`;
+  }
+  function titleAchievementText(){
+    return `${countDiscovered(ledger)}/${LEDGER_TOTAL} ACHIEVEMENTS DISCOVERED`;
+  }
+  function titleAchievementCount(){
+    return `${countDiscovered(ledger)}/${LEDGER_TOTAL}`;
   }
   function openLedgerFromTitle(){
     ledgerReturn = { type: "title", savedModal: null, savedModalEscape: null };
@@ -614,8 +620,11 @@ if (typeof document !== "undefined") {
     app.innerHTML = `${saveCorrupted ? '<p class="save-err" role="alert" style="padding:6px 0 0;">Save data was corrupted and has been cleared.</p>' : ''}<div class="play title-play">
       <div class="title-screen">
         <div class="title-cover">
-          <img src="${TITLE_SCREEN}" width="473" height="1024" decoding="async" fetchpriority="high"
+          <img src="${TITLE_SCREEN}" width="853" height="1844" decoding="async" fetchpriority="high"
             alt="Gang Wars — Prohibition 1929">
+          <div class="title-achievement-count" aria-label="${titleAchievementText()}">
+            <span>${titleAchievementCount()}</span><span>ACHIEVEMENTS</span><span>DISCOVERED</span>
+          </div>
           <button type="button" class="title-hit title-hit-new" id="new" aria-label="New Game"></button>
           <button type="button" class="title-hit title-hit-cont" id="cont" aria-label="Continue" ${saved?"":"disabled"}></button>
           <button type="button" class="title-hit title-hit-ledger" id="ledger" aria-label="Ledger"></button>
@@ -1331,7 +1340,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=113').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=115').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;

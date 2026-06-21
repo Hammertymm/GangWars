@@ -238,11 +238,19 @@
   .title-hit:active:not(:disabled){background:transparent;}
   .title-hit:focus-visible{outline:2px solid var(--amber);outline-offset:-2px;}
   .title-hit:disabled{cursor:default;pointer-events:none;opacity:0;}
-  /* Title hit rects on 473×1024 canvas; cqw/cqh = title-cover box */
-  .title-hit-new{left:2.114cqw;top:77.637cqh;width:47.569cqw;height:11.426cqh;}
-  .title-hit-cont{left:50.317cqw;top:77.637cqh;width:47.569cqw;height:11.426cqh;}
-  .title-hit-ledger{left:2.326cqw;top:86.914cqh;width:47.357cqw;height:7.812cqh;}
-  .title-hit-scores{left:50.317cqw;top:86.914cqh;width:47.569cqw;height:7.812cqh;}
+  /* Title overlay rects on native title-screen canvas; cqw/cqh = title-cover box */
+  .title-achievement-count{position:absolute;left:61.9cqw;top:53.82cqh;width:30.9cqw;height:4.15cqh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    font-family:"Didot","Bodoni MT","Playfair Display",Georgia,"Times New Roman",serif;
+    font-size:clamp(8px,1.35cqw,15px);line-height:.95;font-weight:700;letter-spacing:0;
+    color:#c99654;text-shadow:0 1px 1px #000,0 0 5px rgba(231,200,121,.22);
+    pointer-events:none;text-transform:uppercase;}
+  .title-achievement-count span:first-child{font-size:clamp(11px,2.2cqw,24px);line-height:1;}
+  /* Title hit rects on 853x1844 canvas; cqw/cqh = title-cover box */
+  .title-hit-new{left:2.1cqw;top:80.915cqh;width:47.1cqw;height:6.95cqh;}
+  .title-hit-cont{left:51.0cqw;top:80.915cqh;width:47.0cqw;height:6.95cqh;}
+  .title-hit-ledger{left:2.1cqw;top:88.365cqh;width:47.1cqw;height:6.95cqh;}
+  .title-hit-scores{left:51.0cqw;top:88.365cqh;width:47.0cqw;height:6.95cqh;}
   #crt.game-mode .masthead{position:relative;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:1px 0;}
 
