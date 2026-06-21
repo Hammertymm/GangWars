@@ -1,0 +1,9 @@
+GANG WARS v86 — smaller cash figures, darker BUY bg, stat box drops down
+=========================================================================
+Replace: gangwars.html, sw.js  (cache -> gangwars-v86)
+
+- CASH / DON DEBT figures reduced 20% so last item row is no longer obscured.
+- BUY button background near-black (#1e1809 -> #141005); only the gold border
+  and text remain lit. Active/tap state unchanged.
+- Stats box top border drops into the dead space below GUNS/HP row
+  (margin-top:auto pushes it to the bottom of the flex container).

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Projects\\\\gang-wars\\\\GangWars\" -Force)",
+      "Bash(Select-Object Name, PSIsContainer)",
+      "Bash(git add *)",
+      "Bash(git push *)",
+      "Bash(git commit -m ' *)",
+      "Bash(python -c \"from PIL import Image; print\\('PIL ok'\\)\")",
+      "Bash(python -m pip install pillow -q)",
+      "Bash(python -)",
+      "Bash(find \"C:/Projects/gang-wars/GangWars\" -name \"banner*\" 2>/dev/null; find \"C:/Users/jarro/Downloads\" -name \"banner*\" 2>/dev/null)",
+      "Bash(git rm *)"
+    ]
+  }
+}
