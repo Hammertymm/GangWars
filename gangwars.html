@@ -111,7 +111,7 @@ if (typeof document !== "undefined") {
     cover.style.width = sw + "px";
     cover.style.height = sh + "px";
     cover.style.left = ((vw - sw) / 2 + (vv?.offsetLeft || 0)) + "px";
-    cover.style.top = Math.max(0, (vh - sh) / 2 + (vv?.offsetTop || 0)) - 2 + "px";
+    cover.style.top = Math.max(0, (vh - sh) / 2 + (vv?.offsetTop || 0)) - 5 + "px";
   }
   function openLedgerCategory(catId){
     if (!LEDGER_CATEGORIES.find(c => c.id === catId)) return;
