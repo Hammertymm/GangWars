@@ -23,7 +23,7 @@
     min-height:0;height:100vh;height:100svh;height:100dvh;max-height:100dvh;overflow:hidden;
     padding:calc(env(safe-area-inset-top, 0px) + 10px) 10px calc(env(safe-area-inset-bottom, 0px) + 12px) 10px;background:var(--bg);}
   .masthead{flex:0 0 auto;text-align:center;padding:0;margin:0 0 3px;position:relative;}
-  #crt.game-mode{padding:calc(env(safe-area-inset-top, 0px) + 1px) 8px env(safe-area-inset-bottom, 0px) 8px;}
+  #crt.game-mode{padding:calc(env(safe-area-inset-top, 0px) + 1px) 8px 10px 8px;}
   #crt.game-mode .masthead{padding:0;margin:0 0 8px;}
   h1{margin:0;line-height:1;font-size:0;}
   .masthead-banner{display:block;width:100%;height:auto;filter:brightness(1.05);}
