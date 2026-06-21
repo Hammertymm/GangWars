@@ -1,6 +1,7 @@
 
   :root{
     color-scheme:dark;
+    --sat:env(safe-area-inset-top,0px);
     /* READABLE — art-deco speakeasy: espresso black, cream, gold */
     --bg:#15110b; --panel:#201a11;
     --text:#ece1cd; --dim:#9c8d73;
