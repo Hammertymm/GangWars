@@ -387,11 +387,15 @@ if (typeof document !== "undefined") {
       ${isYou ? '<td class="you-tag">← YOU</td>' : '<td></td>'}
     </tr>`;
   }
+  function rankPortrait(rank){
+    const r = rank.toLowerCase().replace(/ /g,'-');
+    return `cards/${r}-portrait.png`;
+  }
   function mkScoresLbRow(row, pos){
     return `<div class="slb-row">
       <span class="slb-pos">${pos}.</span>
+      <img class="slb-portrait" src="${rankPortrait(row.rank)}" alt="${row.rank}">
       <span class="slb-rank">${row.rank.toUpperCase()}</span>
-      <span class="slb-dots"></span>
       <span class="slb-score">${money(row.worth)}</span>
     </div>`;
   }
@@ -1328,7 +1332,7 @@ if (typeof document !== "undefined") {
 </script>
 <script>
   if ('serviceWorker' in navigator && !/^127\.0\.0\.1$|^localhost$/i.test(location.hostname)) {
-    navigator.serviceWorker.register('./sw.js?v=92').then(reg => {
+    navigator.serviceWorker.register('./sw.js?v=93').then(reg => {
       reg.update();
       reg.addEventListener('updatefound', () => {
         const worker = reg.installing;

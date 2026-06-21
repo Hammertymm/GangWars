@@ -417,6 +417,9 @@
   .slb-row:last-child{border-bottom:none;}
   .slb-pos{flex:0 0 auto;width:22px;text-align:right;color:var(--dim);
     font-size:clamp(.6rem,2.6vw,.74rem);}
+  .slb-portrait{flex:0 0 auto;width:clamp(28px,7vw,40px);height:clamp(28px,7vw,40px);
+    object-fit:cover;border-radius:3px;border:1px solid var(--border);display:block;
+    filter:brightness(1.05);}
   .slb-rank{flex:1 1 auto;font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.6rem,2.6vw,.74rem);color:var(--amber);letter-spacing:.6px;
     text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
