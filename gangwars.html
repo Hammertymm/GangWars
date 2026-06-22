@@ -13,7 +13,10 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png?v=3" />
 <link rel="preload" as="image" href="title-screen.png?v=12" fetchpriority="high" />
 <title>GANG WARS</title>
-<link rel="stylesheet" href="gangwars.css?v=12">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" />
+<link rel="stylesheet" href="gangwars.css?v=16">
 
 </head>
 <body>
@@ -195,12 +198,17 @@ if (typeof document !== "undefined") {
     app.dataset.ledgerFocus = ledgerFocusId || "";
     LedgerUI.render(app, ledgerUiCtx());
   }
+  const EVENT_IMG_VERSION = "events-v2";
+  function versionEventImage(path){
+    if (typeof path !== "string" || !path.startsWith("events/") || path.includes("?")) return path;
+    return `${path}?v=${EVENT_IMG_VERSION}`;
+  }
   function getAchievementCardImage(id){
     const cat = getCategoryForAchievement(id);
-    if (cat === "rare") return `events/rare_${id}.png`;
-    if (cat === "superRare") return `events/super_${id}.png`;
-    if (cat === "godlike") return `events/godlike_${id}.png`;
-    if (cat === "goldenGodlike") return "events/godlike_golden.png";
+    if (cat === "rare") return versionEventImage(`events/rare_${id}.png`);
+    if (cat === "superRare") return versionEventImage(`events/super_${id}.png`);
+    if (cat === "godlike") return versionEventImage(`events/godlike_${id}.png`);
+    if (cat === "goldenGodlike") return versionEventImage("events/godlike_golden.png");
     return null;
   }
   /** Achievement unlock presentation (Achievement Found → reveal / card → ledger list). */
@@ -313,7 +321,8 @@ if (typeof document !== "undefined") {
     "Warehouse District": "assets/warehouse-district.png",
     "City Hall":          "assets/city-hall.png",
   };
-  const GOODS_IMG = Object.fromEntries(GOODS.map(d => [d.id, `assets/goods/${d.id}.png`]));
+  const GOODS_IMG_VERSION = "160x250-v2";
+  const GOODS_IMG = Object.fromEntries(GOODS.map(d => [d.id, `assets/goods/${d.id}.png?v=${GOODS_IMG_VERSION}`]));
   const TRAVEL_FLAVOR = {
     "Little Italy":       "The heart of old-world power. Respect matters more than money here.",
     "Dock #13":           "Smugglers' Paradise. High-risk trading and black-market goods rule these foggy docks.",
@@ -687,16 +696,14 @@ if (typeof document !== "undefined") {
       const p = S.prices[d.id]; const have = S.inventory[d.id]||0;
       const dead = p==null;
       return `<div class="market-row${dead?' dead':''}">
-        <div class="card-head">
-          <span class="goods-icon-wrap" data-good="${d.id}" data-initial="${(d.name||'?').charAt(0)}"><img class="goods-icon" src="${GOODS_IMG[d.id]||''}" alt="${d.name}" onerror="this.onerror=null;this.style.display='none';this.closest('.goods-icon-wrap').classList.add('no-icon');"></span>
-          <div class="card-meta">
-            <span class="goods-name">${d.name}</span>
-            <div class="price-row"><span class="price-cell${dead?' na':''}">${dead?'—':money(p)}</span><span class="hold-cell${have?' have':''}">Hold ${have||'—'}</span></div>
+        <span class="goods-icon-wrap" data-good="${d.id}" data-initial="${(d.name||'?').charAt(0)}"><img class="goods-icon" src="${GOODS_IMG[d.id]||''}" alt="${d.name}" onerror="this.onerror=null;this.style.display='none';this.closest('.goods-icon-wrap').classList.add('no-icon');"></span>
+        <div class="card-content">
+          <div class="card-name-row"><span class="goods-name">${d.name}</span></div>
+          <div class="card-price-row"><span class="price-cell${dead?' na':''}">${dead?'—':money(p)}</span><span class="stock-cell${have?' have':''}">${have||0}</span></div>
+          <div class="market-actions">
+            <button class="sellbtn" data-sell="${d.id}" ${have?'':'disabled'} style="${have?'':'opacity:.28;'}">SELL</button>
+            <button class="buybtn" data-buy="${d.id}" ${dead?'disabled':''}>BUY</button>
           </div>
-        </div>
-        <div class="market-actions">
-          <button class="sellbtn" data-sell="${d.id}" ${have?'':'disabled'} style="${have?'':'opacity:.28;'}">SELL</button>
-          <button class="buybtn" data-buy="${d.id}" ${dead?'disabled':''}>BUY</button>
         </div>
       </div>`;
     }).join("");
@@ -1000,21 +1007,38 @@ if (typeof document !== "undefined") {
   };
 
   function eventImgSrc(imgKeyOrPath){
-    if (typeof imgKeyOrPath === 'string' && imgKeyOrPath.includes('/')) return imgKeyOrPath;
-    return EV_IMG[imgKeyOrPath] || EV_IMG.intel;
+    if (typeof imgKeyOrPath === 'string' && imgKeyOrPath.includes('/')) return versionEventImage(imgKeyOrPath);
+    return versionEventImage(EV_IMG[imgKeyOrPath] || EV_IMG.intel);
+  }
+  function fitEventPopupToImage(src){
+    const popup = app.querySelector(".ev-popup");
+    const left = popup && popup.querySelector(".ev-left");
+    if (!popup || !left || !src) return;
+    const fit = (naturalWidth, naturalHeight)=>{
+      if (!naturalWidth || !naturalHeight) return;
+      const leftWidth = left.getBoundingClientRect().width || popup.getBoundingClientRect().width / 2;
+      const maxHeight = Math.floor(window.innerHeight * 0.88);
+      const imageHeight = Math.round(leftWidth * naturalHeight / naturalWidth);
+      popup.style.height = `${Math.min(imageHeight, maxHeight)}px`;
+    };
+    const img = new Image();
+    img.onload = ()=>fit(img.naturalWidth, img.naturalHeight);
+    img.src = src;
   }
 
   /* Single-button event popup with split image/text layout */
   function showEvent(imgKey, body, btn, cb){
     modal=function(){
       audioPlay("sfx.events.modalOpen");
+      const imgSrc = eventImgSrc(imgKey);
       app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-        <div class="ev-left" style="background-image:url('${eventImgSrc(imgKey)}')" role="img" aria-label="Event illustration"></div>
+        <div class="ev-left" style="background-image:url('${imgSrc}')" role="img" aria-label="Event illustration"></div>
         <div class="ev-right">
           <div class="ev-body"><div>${body}</div></div>
           <div class="ev-acts"><button class="amber full" id="ok">${btn||'OK'}</button></div>
         </div>
       </div></div>`;
+      fitEventPopupToImage(imgSrc);
       const advance = ()=>{ audioPlay("sfx.events.modalClose"); modal=null; modalEscape=null; cb(); };
       document.getElementById("ok").onclick=advance;
       modalEscape = advance;
@@ -1026,8 +1050,9 @@ if (typeof document !== "undefined") {
   function showEventAsk(imgKey, body, yesLabel, onYes, noLabel, onNo){
     modal=function(){
       audioPlay("sfx.events.modalOpen");
+      const imgSrc = eventImgSrc(imgKey);
       app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-        <div class="ev-left" style="background-image:url('${eventImgSrc(imgKey)}')" role="img" aria-label="Event illustration"></div>
+        <div class="ev-left" style="background-image:url('${imgSrc}')" role="img" aria-label="Event illustration"></div>
         <div class="ev-right">
           <div class="ev-body"><div>${body}</div></div>
           <div class="ev-acts">
@@ -1036,6 +1061,7 @@ if (typeof document !== "undefined") {
           </div>
         </div>
       </div></div>`;
+      fitEventPopupToImage(imgSrc);
       const yes = ()=>{ audioPlay("sfx.events.modalClose"); modal=null; modalEscape=null; onYes(); };
       const pass = ()=>{ audioPlay("sfx.events.modalClose"); modal=null; modalEscape=null; onNo(); };
       document.getElementById("yes").onclick=yes;
@@ -1151,8 +1177,9 @@ if (typeof document !== "undefined") {
           if (A()) { A().duckMusic(true); A().playMusic("music.fedsTension"); }
           fedsAudioStarted = true;
         }
+        const imgSrc = eventImgSrc('feds');
         app.innerHTML=`<div class="modal"><div class="ev-popup" role="dialog" aria-modal="true">
-          <div class="ev-left" style="background-image:url('${EV_IMG.feds}')" role="img" aria-label="The Feds"></div>
+          <div class="ev-left" style="background-image:url('${imgSrc}')" role="img" aria-label="The Feds"></div>
           <div class="ev-right">
             <div class="ev-body"><div>
               Agent Hayes spotted you — <b>${cops}</b> ${cops>1?'agents':'agent'} closing in.<br><br>
@@ -1167,6 +1194,7 @@ if (typeof document !== "undefined") {
             </div>
           </div>
         </div></div>`;
+        fitEventPopupToImage(imgSrc);
         document.getElementById("run").onclick=doRun;
         document.getElementById("bribe").onclick=doBribe;
         const f=document.getElementById("fight");
