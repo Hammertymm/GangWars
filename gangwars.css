@@ -112,7 +112,7 @@
     font-size:clamp(.7rem,3vw,.9rem);line-height:1;text-transform:uppercase;}
   .market-row .price-cell{text-align:left;color:var(--amber);
     font-family:var(--font-deco);font-weight:700;white-space:nowrap;
-    font-size:clamp(1.4rem,6.2vw,2rem);line-height:1;}
+    font-size:clamp(1.05rem,4.65vw,1.5rem);line-height:1;}
   .market-row .price-cell.na{color:var(--dim);}
   .market-row .stock-cell{flex:0 0 auto;text-align:right;color:var(--dim);white-space:nowrap;
     font-family:var(--font-deco);font-size:clamp(.6rem,2.4vw,.8rem);}
