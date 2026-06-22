@@ -687,16 +687,14 @@ if (typeof document !== "undefined") {
       const p = S.prices[d.id]; const have = S.inventory[d.id]||0;
       const dead = p==null;
       return `<div class="market-row${dead?' dead':''}">
-        <div class="card-head">
-          <span class="goods-icon-wrap" data-good="${d.id}" data-initial="${(d.name||'?').charAt(0)}"><img class="goods-icon" src="${GOODS_IMG[d.id]||''}" alt="${d.name}" onerror="this.onerror=null;this.style.display='none';this.closest('.goods-icon-wrap').classList.add('no-icon');"></span>
-          <div class="card-meta">
-            <span class="goods-name">${d.name}</span>
-            <div class="price-row"><span class="price-cell${dead?' na':''}">${dead?'—':money(p)}</span><span class="hold-cell${have?' have':''}">Hold ${have||'—'}</span></div>
+        <span class="goods-icon-wrap" data-good="${d.id}" data-initial="${(d.name||'?').charAt(0)}"><img class="goods-icon" src="${GOODS_IMG[d.id]||''}" alt="${d.name}" onerror="this.onerror=null;this.style.display='none';this.closest('.goods-icon-wrap').classList.add('no-icon');"></span>
+        <div class="card-content">
+          <div class="card-name-row"><span class="goods-name">${d.name}</span></div>
+          <div class="card-price-row"><span class="price-cell${dead?' na':''}">${dead?'—':money(p)}</span><span class="stock-cell${have?' have':''}">${have||0}</span></div>
+          <div class="market-actions">
+            <button class="sellbtn" data-sell="${d.id}" ${have?'':'disabled'} style="${have?'':'opacity:.28;'}">SELL</button>
+            <button class="buybtn" data-buy="${d.id}" ${dead?'disabled':''}>BUY</button>
           </div>
-        </div>
-        <div class="market-actions">
-          <button class="sellbtn" data-sell="${d.id}" ${have?'':'disabled'} style="${have?'':'opacity:.28;'}">SELL</button>
-          <button class="buybtn" data-buy="${d.id}" ${dead?'disabled':''}>BUY</button>
         </div>
       </div>`;
     }).join("");

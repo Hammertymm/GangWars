@@ -84,51 +84,39 @@
   /* two-column card grid */
   .market-rows{flex:1 1 0;min-height:0;overflow:hidden;
     display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,minmax(0,1fr));gap:2px 3px;}
-  .market-row{position:relative;min-height:0;overflow:hidden;display:grid;grid-template-columns:clamp(46px,12.1vw,60px) minmax(0,1fr);
-    grid-template-rows:minmax(0,1fr) auto;column-gap:7px;row-gap:0;padding:5px;border:1px solid var(--btnborder);border-radius:7px;
+  .market-row{position:relative;min-height:0;overflow:hidden;
+    display:flex;flex-direction:row;gap:0;padding:0;
+    border:1px solid var(--btnborder);border-radius:7px;
     background:linear-gradient(180deg,#201a11,#141009);}
   .market-row.dead{opacity:.42;}
-  .card-head{display:contents;}
   .goods-icon-wrap{position:relative;flex:0 0 auto;
-  grid-column:1;grid-row:1 / span 2;width:calc(100% + 5px);height:auto;min-height:0;align-self:stretch;margin:-10px 0 -5px -5px;
-    border:1px solid var(--btnborder);border-radius:5px;background:rgba(0,0,0,.45);
+    aspect-ratio:1/1;height:100%;
+    border-right:1px solid var(--btnborder);border-radius:5px 0 0 5px;background:rgba(0,0,0,.45);
     padding:0;box-sizing:border-box;overflow:hidden;
     display:grid;grid-template:1fr/1fr;align-items:center;justify-items:center;}
   .goods-icon-wrap.no-icon::after{content:attr(data-initial);position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
-    font-size:clamp(15px,4.6vw,20px);color:var(--amber);line-height:1;}
+    font-size:clamp(18px,5vw,28px);color:var(--amber);line-height:1;}
   .goods-icon{width:100%;height:100%;display:block;object-fit:contain;
-    transform-origin:50% 50%;max-width:none;max-height:none;
     border:none;border-radius:0;background:transparent;padding:0;}
-  /* ~2.3–2.7× zoom inside fixed frame; translate optically centres each silhouette */
-  .goods-icon-wrap[data-good="moonshine"] .goods-icon{transform:scale(2.46) translate(-2.6%,-30.9%);}
-  .goods-icon-wrap[data-good="cigars"] .goods-icon{transform:scale(2.51) translate(-2.2%,-31.2%);}
-  .goods-icon-wrap[data-good="bathgin"] .goods-icon{transform:scale(2.46) translate(-1.5%,-34.6%);}
-  .goods-icon-wrap[data-good="art"] .goods-icon{transform:scale(2.56) translate(-0.4%,-31.6%);}
-  .goods-icon-wrap[data-good="scotch"] .goods-icon{transform:scale(2.97) translate(3.3%,-34.2%);}
-  .goods-icon-wrap[data-good="counterfeits"] .goods-icon{transform:scale(2.56) translate(-2.9%,29%);}
-  .goods-icon-wrap[data-good="cognac"] .goods-icon{transform:scale(2.28) translate(-0.4%,29.4%);}
-  .goods-icon-wrap[data-good="furcoats"] .goods-icon{transform:scale(2.41) translate(-0.4%,30.5%);}
-  .goods-icon-wrap[data-good="champagne"] .goods-icon{transform:scale(2.72) translate(1.8%,29%);}
-  .goods-icon-wrap[data-good="diamonds"] .goods-icon{transform:scale(2.84) translate(4.4%,32%);}
-  .card-meta{position:absolute;left:calc(clamp(46px,12.1vw,60px) + 15px);right:9px;top:calc(34% - 10px);
-    min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:0;padding-top:0;}
-  .card-meta .price-row{display:flex;align-items:baseline;justify-content:space-between;gap:4px;min-width:0;margin-top:clamp(0px,.25vh,2px);}
+  .card-content{flex:1 1 0;min-width:0;display:flex;flex-direction:column;padding:4px 6px 4px 5px;gap:0;}
+  .card-name-row{flex:248 1 0;min-height:0;display:flex;align-items:center;overflow:hidden;}
+  .card-price-row{flex:200 1 0;min-height:0;display:flex;align-items:center;justify-content:space-between;gap:4px;min-width:0;}
   .goods-name{min-width:0;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;font-weight:700;
-    font-size:clamp(.672rem,2.856vw,.912rem);line-height:.95;text-transform:uppercase;}
+    font-size:clamp(.6rem,2.6vw,.86rem);line-height:.95;text-transform:uppercase;}
   .market-row .price-cell{text-align:left;color:var(--amber);
     font-family:ui-monospace,"SF Mono","Menlo",Consolas,monospace;font-weight:700;white-space:nowrap;
-    font-size:clamp(.792rem,3.54vw,1.08rem);line-height:1;}
+    font-size:clamp(.7rem,3.1vw,1rem);line-height:1;}
   .market-row .price-cell.na{color:var(--dim);}
-  .market-row .hold-cell{flex:0 0 auto;text-align:right;color:var(--dim);white-space:nowrap;
-    font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;font-size:clamp(.5rem,2.1vw,.64rem);}
-  .market-row .hold-cell.have{color:var(--green);}
-  .market-play .market-actions{grid-column:2;grid-row:2;display:flex;gap:5px;margin:0 0 0 8px;align-self:end;min-height:0;z-index:1;transform:translateY(-5px);}
-  .market-play .market-actions button{flex:0 0 calc(50% - 8px);height:20px;min-height:20px;max-height:20px;padding:0 4px;margin:0;
+  .market-row .stock-cell{flex:0 0 auto;text-align:right;color:var(--dim);white-space:nowrap;
+    font-family:ui-monospace,"SF Mono","Menlo",Consolas,monospace;font-size:clamp(.6rem,2.4vw,.8rem);}
+  .market-row .stock-cell.have{color:var(--green);}
+  .market-play .market-actions{flex:140 1 0;min-height:0;display:flex;gap:4px;align-items:center;}
+  .market-play .market-actions button{flex:1 1 0;height:100%;min-height:0;padding:0 2px;margin:0;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
-    font-size:clamp(.46rem,1.82vw,.56rem);font-weight:700;letter-spacing:.7px;line-height:1;border-radius:5px;}
+    font-size:clamp(.42rem,1.7vw,.54rem);font-weight:700;letter-spacing:.7px;line-height:1;border-radius:4px;}
   .market-play .market-actions .buybtn{background:linear-gradient(180deg,#1e1809,#141005);
     border:1px solid var(--amber);color:var(--amber);}
   .market-play .market-actions .buybtn:active{background:var(--amber);color:#1a1206;}
