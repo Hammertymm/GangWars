@@ -9,7 +9,7 @@
     --border:#3a2f1d; --bartrack:#2a2114;
     --btnbg:#241d12; --btnborder:#4a3b22;
     --shadow:rgba(0,0,0,.55); --glow:none; --rowline:#2a2215;
-    --goods-art-width:160px; --goods-art-height:250px;
+    --goods-art-ratio:160 / 250; /* market item art native 160×250 — panel scales to fit, keeps this aspect */
     /* 1920s type system: Playfair Display for titles/names, Josefin Sans for body/data */
     --font-display:"Playfair Display",Georgia,"Times New Roman",serif;
     --font-deco:"Josefin Sans","Century Gothic",Futura,"Twentieth Century",ui-sans-serif,system-ui,sans-serif;
@@ -86,15 +86,15 @@
   .market-head-gem{flex:0 0 auto;width:9px;height:9px;transform:rotate(45deg);
     border:1px solid var(--btnborder);background:var(--bg);}
   /* two-column card grid */
-  .market-rows{flex:0 0 auto;min-height:0;overflow:hidden;
-    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,var(--goods-art-height));gap:2px 3px;}
-  .market-row{position:relative;height:var(--goods-art-height);min-height:0;overflow:hidden;
+  .market-rows{flex:1 1 0;min-height:0;overflow:hidden;
+    display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(5,minmax(0,1fr));gap:2px 3px;}
+  .market-row{position:relative;min-height:0;overflow:hidden;
     display:flex;flex-direction:row;gap:0;padding:0;
     border:1px solid var(--btnborder);border-radius:7px;
     background:linear-gradient(180deg,#201a11,#141009);}
   .market-row.dead{opacity:.42;}
-  .goods-icon-wrap{position:relative;flex:0 0 var(--goods-art-width);
-    width:var(--goods-art-width);height:var(--goods-art-height);
+  .goods-icon-wrap{position:relative;flex:0 0 auto;
+    height:100%;aspect-ratio:var(--goods-art-ratio);
     border-right:1px solid var(--btnborder);border-radius:5px 0 0 5px;background:rgba(0,0,0,.45);
     padding:0;box-sizing:border-box;overflow:hidden;
     display:grid;grid-template:1fr/1fr;align-items:center;justify-items:center;}
@@ -102,7 +102,7 @@
     display:flex;align-items:center;justify-content:center;
     font-family:var(--font-deco);
     font-size:clamp(18px,5vw,28px);color:var(--amber);line-height:1;}
-  .goods-icon{width:100%;height:100%;display:block;object-fit:fill;
+  .goods-icon{width:100%;height:100%;display:block;object-fit:cover;
     object-position:center center;border:none;border-radius:0;background:transparent;padding:0;}
   .card-content{flex:1 1 0;min-width:0;display:flex;flex-direction:column;padding:4px 6px 4px 5px;gap:0;}
   .card-name-row{flex:248 1 0;min-height:0;display:flex;align-items:center;overflow:hidden;}
