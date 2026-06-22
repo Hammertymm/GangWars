@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v137';
+const CACHE = 'gangwars-v138';
 const ASSETS = [
   './gangwars.html',
   './gangwars.css',
@@ -51,14 +51,14 @@ const ASSETS = [
   './cards/underboss.png',
   './cards/godfather.png',
   './cards/big-daddy-j.png',
-  './events/the_feds.png',
-  './events/ambushed_rolled.png',
-  './events/dead_drop.png',
-  './events/packing_iron.png',
-  './events/upgrade_available.png',
-  './events/shortage.png',
-  './events/buying_frenzy.png',
-  './events/flooded_market.png',
+  './events/the_feds.jpg',
+  './events/ambushed_rolled.jpg',
+  './events/dead_drop.jpg',
+  './events/packing_iron.jpg',
+  './events/upgrade_available.jpg',
+  './events/shortage.jpg',
+  './events/buying_frenzy.jpg',
+  './events/flooded_market.jpg',
   './events/super_rare_event.png',
   './events/rare_event_intel.png',
   './events/rare_capone.png',

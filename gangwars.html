@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" />
-<link rel="stylesheet" href="gangwars.css?v=21">
+<link rel="stylesheet" href="gangwars.css?v=22">
 
 </head>
 <body>
@@ -198,7 +198,7 @@ if (typeof document !== "undefined") {
     app.dataset.ledgerFocus = ledgerFocusId || "";
     LedgerUI.render(app, ledgerUiCtx());
   }
-  const EVENT_IMG_VERSION = "events-v2";
+  const EVENT_IMG_VERSION = "events-v3";
   function versionEventImage(path){
     if (typeof path !== "string" || !path.startsWith("events/") || path.includes("?")) return path;
     return `${path}?v=${EVENT_IMG_VERSION}`;
@@ -729,7 +729,7 @@ if (typeof document !== "undefined") {
       <div class="bot-bar">
         <div class="bot-stats">
           <div class="bot-stat"><span class="bot-label">CASH</span><span class="bot-val">${money(S.cash)}</span></div>
-          <div class="bot-stat right"><span class="bot-label">DON DEBT</span><span class="bot-val red">${money(S.debt)}</span></div>
+          <div class="bot-stat right"><span class="bot-val red">${money(S.debt)}</span><span class="bot-label">DON DEBT</span></div>
         </div>
         <div class="bot-sub">
           <span>BANK ${money(S.bank)}</span>
@@ -993,14 +993,14 @@ if (typeof document !== "undefined") {
     next();
   }
   const EV_IMG={
-    feds:     'events/the_feds.png',
-    mugging:  'events/ambushed_rolled.png',
-    find:     'events/dead_drop.png',
-    gun:      'events/packing_iron.png',
-    stash:    'events/upgrade_available.png',
-    shortage: 'events/shortage.png',
-    frenzy:   'events/buying_frenzy.png',
-    flood:    'events/flooded_market.png',
+    feds:     'events/the_feds.jpg',
+    mugging:  'events/ambushed_rolled.jpg',
+    find:     'events/dead_drop.jpg',
+    gun:      'events/packing_iron.jpg',
+    stash:    'events/upgrade_available.jpg',
+    shortage: 'events/shortage.jpg',
+    frenzy:   'events/buying_frenzy.jpg',
+    flood:    'events/flooded_market.jpg',
     celeb:    'events/super_rare_event.png',
     intel:    'events/rare_event_intel.png',
     bigdaddy: 'cards/big-daddy-j.png',
