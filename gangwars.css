@@ -45,7 +45,7 @@
     pointer-events:none;border:1px solid rgba(201,162,74,.36);border-radius:5px;}
   .market-row::before{content:"";position:absolute;inset:4px;
     pointer-events:none;border:1px solid rgba(201,162,74,.32);border-radius:5px;}
-  .market-play .loc-img{position:relative;flex:0 0 44%;height:100%;min-width:0;max-width:44%;overflow:hidden;
+  .market-play .loc-img{position:relative;left:-5px;flex:0 0 44%;height:100%;min-width:0;max-width:44%;overflow:hidden;
     border-radius:5px;border:1px solid rgba(201,162,74,.42);padding:0;}
   .market-play .loc-img img{width:100%;height:100%;display:block;object-fit:cover;object-position:center;
     image-rendering:pixelated;image-rendering:crisp-edges;}
@@ -55,7 +55,7 @@
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.6rem,2.6vw,.8rem);color:var(--dim);line-height:1.2;}
   .market-play .loc-header-body{flex:1 1 auto;min-width:0;overflow:hidden;
-    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-top:0;}
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-top:10px;}
   .market-play .loc-header-title{font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.86rem, 4.45vw, 1.34rem);font-weight:700;color:var(--amber);letter-spacing:1px;
     line-height:1;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -90,7 +90,7 @@
   .market-row.dead{opacity:.42;}
   .card-head{display:contents;}
   .goods-icon-wrap{position:relative;flex:0 0 auto;
-    grid-column:1;grid-row:1 / span 2;width:100%;height:auto;aspect-ratio:1;min-height:0;max-height:100%;align-self:center;
+    grid-column:1;grid-row:1 / span 2;width:100%;height:auto;aspect-ratio:1;min-height:0;max-height:100%;align-self:center;transform:translateY(-5px);
     border:1px solid var(--btnborder);border-radius:5px;background:rgba(0,0,0,.45);
     padding:4px;box-sizing:border-box;overflow:hidden;
     display:grid;grid-template:1fr/1fr;align-items:center;justify-items:center;}
@@ -112,7 +112,7 @@
   .goods-icon-wrap[data-good="furcoats"] .goods-icon{transform:scale(2.48) translate(2.1%,26%);}
   .goods-icon-wrap[data-good="champagne"] .goods-icon{transform:scale(2.36) translate(3%,31%);}
   .goods-icon-wrap[data-good="diamonds"] .goods-icon{transform:scale(2.62) translate(5.9%,34.5%);}
-  .card-meta{position:absolute;left:calc(clamp(46px,12.1vw,60px) + 12px);right:9px;top:34%;
+  .card-meta{position:absolute;left:calc(clamp(46px,12.1vw,60px) + 12px);right:9px;top:calc(34% - 5px);
     min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:0;padding-top:0;}
   .card-meta .price-row{display:flex;align-items:baseline;justify-content:space-between;gap:4px;min-width:0;margin-top:clamp(0px,.25vh,2px);}
   .goods-name{min-width:0;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -125,7 +125,7 @@
   .market-row .hold-cell{flex:0 0 auto;text-align:right;color:var(--dim);white-space:nowrap;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;font-size:clamp(.5rem,2.1vw,.64rem);}
   .market-row .hold-cell.have{color:var(--green);}
-  .market-play .market-actions{grid-column:2;grid-row:2;display:flex;gap:6px;margin-top:0;align-self:end;min-height:0;z-index:1;}
+  .market-play .market-actions{grid-column:2;grid-row:2;display:flex;gap:6px;margin-top:0;align-self:end;min-height:0;z-index:1;transform:translateY(-5px);}
   .market-play .market-actions button{flex:1 1 0;height:15px;min-height:15px;max-height:15px;padding:0 4px;margin:0;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.46rem,1.82vw,.56rem);font-weight:700;letter-spacing:.7px;line-height:1;border-radius:5px;}
@@ -200,9 +200,9 @@
   .price{color:var(--amber);} .have{color:var(--green);} .na{color:var(--dim);}
 
   /* BOTTOM BAR — cash/debt/bank/guns + action buttons, always visible */
-  .market-play .bot-bar{position:relative;flex:0 0 92px;height:92px;min-height:92px;max-height:92px;
+  .market-play .bot-bar{position:relative;flex:0 0 102px;height:102px;min-height:102px;max-height:102px;
     background:linear-gradient(180deg,#201a11,#141009);border:1px solid var(--btnborder);border-radius:8px;
-    padding:5px 12px 7px;margin-top:2px;display:flex;flex-direction:column;overflow:hidden;}
+    padding:10px 12px 7px;margin-top:2px;display:flex;flex-direction:column;overflow:hidden;}
   .bot-bar{flex:0 0 auto;background:var(--panel);border:1px solid var(--border);
     border-radius:8px;padding:7px 10px 8px;}
   .bot-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px 10px;margin-bottom:4px;flex:1 1 auto;min-height:0;}
@@ -224,7 +224,7 @@
   .bar{height:4px;background:var(--bartrack);border-radius:3px;margin:3px 0 6px;overflow:hidden;}
   .bar > i{display:block;height:100%;background:var(--green);}
   .market-play .save-err{flex:0 0 auto;margin:0;padding:0;line-height:1.2;}
-  .market-play .actions{flex:0 0 auto;margin-top:2px;margin-bottom:3px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .market-play .actions{flex:0 0 auto;margin-top:5px;margin-bottom:3px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
   .market-play .actions button{min-height:30px;padding:0 6px;font-size:clamp(.64rem, 2.75vw, .76rem);letter-spacing:.6px;font-weight:700;
     background:linear-gradient(180deg,#211a0f,#151009);border-color:var(--amber);border-radius:8px;
     box-shadow:inset 0 0 0 1px rgba(201,162,74,.16);}
