@@ -92,7 +92,7 @@
   .goods-icon-wrap{position:relative;flex:0 0 auto;
   grid-column:1;grid-row:1 / span 2;width:calc(100% + 5px);height:auto;min-height:0;align-self:stretch;margin:-10px 0 -5px -5px;
     border:1px solid var(--btnborder);border-radius:5px;background:rgba(0,0,0,.45);
-    padding:4px;box-sizing:border-box;overflow:hidden;
+    padding:0;box-sizing:border-box;overflow:hidden;
     display:grid;grid-template:1fr/1fr;align-items:center;justify-items:center;}
   .goods-icon-wrap.no-icon::after{content:attr(data-initial);position:absolute;inset:0;
     display:flex;align-items:center;justify-content:center;
@@ -102,17 +102,17 @@
     transform-origin:50% 50%;max-width:none;max-height:none;
     border:none;border-radius:0;background:transparent;padding:0;}
   /* ~2.3–2.7× zoom inside fixed frame; translate optically centres each silhouette */
-  .goods-icon-wrap[data-good="moonshine"] .goods-icon{transform:scale(2.32) translate(-0.1%,-32.7%);}
-  .goods-icon-wrap[data-good="cigars"] .goods-icon{transform:scale(2.70) translate(1.1%,-30%);}
-  .goods-icon-wrap[data-good="bathgin"] .goods-icon{transform:scale(2.58) translate(1%,-36.9%);}
-  .goods-icon-wrap[data-good="art"] .goods-icon{transform:scale(2.40) translate(2.2%,-29.8%);}
-  .goods-icon-wrap[data-good="scotch"] .goods-icon{transform:scale(2.90) translate(4.1%,-36%);}
-  .goods-icon-wrap[data-good="counterfeits"] .goods-icon{transform:scale(2.50) translate(-1.7%,30.9%);}
-  .goods-icon-wrap[data-good="cognac"] .goods-icon{transform:scale(2.26) translate(-0.2%,28.6%);}
-  .goods-icon-wrap[data-good="furcoats"] .goods-icon{transform:scale(2.48) translate(2.1%,26%);}
-  .goods-icon-wrap[data-good="champagne"] .goods-icon{transform:scale(2.36) translate(3%,31%);}
-  .goods-icon-wrap[data-good="diamonds"] .goods-icon{transform:scale(2.62) translate(5.9%,34.5%);}
-  .card-meta{position:absolute;left:calc(clamp(46px,12.1vw,60px) + 12px);right:9px;top:calc(34% - 10px);
+  .goods-icon-wrap[data-good="moonshine"] .goods-icon{transform:scale(2.46) translate(-2.6%,-30.9%);}
+  .goods-icon-wrap[data-good="cigars"] .goods-icon{transform:scale(2.51) translate(-2.2%,-31.2%);}
+  .goods-icon-wrap[data-good="bathgin"] .goods-icon{transform:scale(2.46) translate(-1.5%,-34.6%);}
+  .goods-icon-wrap[data-good="art"] .goods-icon{transform:scale(2.56) translate(-0.4%,-31.6%);}
+  .goods-icon-wrap[data-good="scotch"] .goods-icon{transform:scale(2.97) translate(3.3%,-34.2%);}
+  .goods-icon-wrap[data-good="counterfeits"] .goods-icon{transform:scale(2.56) translate(-2.9%,29%);}
+  .goods-icon-wrap[data-good="cognac"] .goods-icon{transform:scale(2.28) translate(-0.4%,29.4%);}
+  .goods-icon-wrap[data-good="furcoats"] .goods-icon{transform:scale(2.41) translate(-0.4%,30.5%);}
+  .goods-icon-wrap[data-good="champagne"] .goods-icon{transform:scale(2.72) translate(1.8%,29%);}
+  .goods-icon-wrap[data-good="diamonds"] .goods-icon{transform:scale(2.84) translate(4.4%,32%);}
+  .card-meta{position:absolute;left:calc(clamp(46px,12.1vw,60px) + 15px);right:9px;top:calc(34% - 10px);
     min-width:0;min-height:0;display:flex;flex-direction:column;justify-content:flex-start;gap:0;padding-top:0;}
   .card-meta .price-row{display:flex;align-items:baseline;justify-content:space-between;gap:4px;min-width:0;margin-top:clamp(0px,.25vh,2px);}
   .goods-name{min-width:0;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
@@ -125,8 +125,8 @@
   .market-row .hold-cell{flex:0 0 auto;text-align:right;color:var(--dim);white-space:nowrap;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;font-size:clamp(.5rem,2.1vw,.64rem);}
   .market-row .hold-cell.have{color:var(--green);}
-  .market-play .market-actions{grid-column:2;grid-row:2;display:flex;gap:6px;margin-top:0;align-self:end;min-height:0;z-index:1;transform:translateY(-5px);}
-  .market-play .market-actions button{flex:1 1 0;height:20px;min-height:20px;max-height:20px;padding:0 4px;margin:0;
+  .market-play .market-actions{grid-column:2;grid-row:2;display:flex;gap:5px;margin:0 0 0 8px;align-self:end;min-height:0;z-index:1;transform:translateY(-5px);}
+  .market-play .market-actions button{flex:0 0 calc(50% - 8px);height:20px;min-height:20px;max-height:20px;padding:0 4px;margin:0;
     font-family:"Didot","Bodoni MT","Playfair Display",Georgia,serif;
     font-size:clamp(.46rem,1.82vw,.56rem);font-weight:700;letter-spacing:.7px;line-height:1;border-radius:5px;}
   .market-play .market-actions .buybtn{background:linear-gradient(180deg,#1e1809,#141005);
