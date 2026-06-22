@@ -316,7 +316,8 @@ if (typeof document !== "undefined") {
     "Warehouse District": "assets/warehouse-district.png",
     "City Hall":          "assets/city-hall.png",
   };
-  const GOODS_IMG = Object.fromEntries(GOODS.map(d => [d.id, `assets/goods/${d.id}.png`]));
+  const GOODS_IMG_VERSION = "160x250-v2";
+  const GOODS_IMG = Object.fromEntries(GOODS.map(d => [d.id, `assets/goods/${d.id}.png?v=${GOODS_IMG_VERSION}`]));
   const TRAVEL_FLAVOR = {
     "Little Italy":       "The heart of old-world power. Respect matters more than money here.",
     "Dock #13":           "Smugglers' Paradise. High-risk trading and black-market goods rule these foggy docks.",
