@@ -361,12 +361,13 @@ function newGame(rates){
     const gl = pick(GODLIKE_EVENTS);
     if (gl) events.godlike = {...gl, day: randInt(5, 25), district: pick(LOCATIONS)};
   }
+  const market0 = rollMarket(HOME);
   return {
     schemaVersion: 1,
     day: 1, location: HOME, cash: CONFIG.startCash, bank: 0, debt: CONFIG.startDebt,
     space: CONFIG.startSpace, health: CONFIG.startHealth, guns: 0,
     inventory: {}, costBasis: {}, events,
-    prices: rollMarket(HOME).prices, log: [], over: false, stallActions: 0,
+    prices: market0.prices, anomaly: market0.anomaly || null, log: [], over: false, stallActions: 0,
     debtInterestFreeze: 0,
     runStats: {
       districtsVisited: { [HOME]: true },
@@ -379,6 +380,12 @@ function newGame(rates){
       didBorrow: false,
       diamondSellProfit: 0,
       maxSpace: CONFIG.startSpace,
+      spentBuying: 0,
+      fedFightsWon: 0,
+      commodityProfit: {},
+      boughtDuringFlood: {},
+      upsAndDowns: false,
+      maxDebtReached: 0,
     },
   };
 }

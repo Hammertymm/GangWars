@@ -191,8 +191,15 @@ if (typeof document !== "undefined") {
   }
   function renderLedgerRoute(){
     const crt = document.getElementById("crt");
-    crt.classList.remove("title-mode", "game-mode");
-    crt.classList.add("ledger-mode");
+    // Category pages reuse the High Scores layout (Gang Wars banner shown);
+    // the home blueprint keeps its full-bleed art mode.
+    if (ledgerView === "category") {
+      crt.classList.remove("title-mode", "ledger-mode");
+      crt.classList.add("game-mode");
+    } else {
+      crt.classList.remove("title-mode", "game-mode");
+      crt.classList.add("ledger-mode");
+    }
     app.dataset.ledgerView = ledgerView || "";
     app.dataset.ledgerCategory = ledgerViewCat || "";
     app.dataset.ledgerFocus = ledgerFocusId || "";
@@ -256,7 +263,7 @@ if (typeof document !== "undefined") {
     const cat = isMaster ? null : LEDGER_CATEGORIES.find(c => c.id === kind);
     const title = isMaster ? "CRIME LORD" : cat.completeTitle;
     const sub = isMaster
-      ? "ALL 40 LEDGER ENTRIES DISCOVERED"
+      ? `ALL ${LEDGER_TOTAL} LEDGER ENTRIES DISCOVERED`
       : `${cat.achievements.length} / ${cat.achievements.length} FOUND`;
     modal = function(){
       modal._achFlow = true;
@@ -755,8 +762,11 @@ if (typeof document !== "undefined") {
         const err = mode==="buy"?buy(S,id,qty):sell(S,id,qty);
         if(err){ document.getElementById("terr").textContent=err; audioPlay("sfx.economy.errorDeny"); return; }
         audioPlay(mode==="buy"?"sfx.economy.coinsBuy":"sfx.economy.cashRegister");
-        if (mode === "buy") recordBuy(S, id, qty);
-        else {
+        if (mode === "buy") {
+          recordBuy(S, id, qty, price * qty);
+          recordUnitsBought(ledger, qty);
+          saveLedger();
+        } else {
           const avg = avgCost(S, id);
           const profit = avg ? (price - avg) * qty : 0;
           recordSell(S, id, qty, profit);
@@ -827,6 +837,7 @@ if (typeof document !== "undefined") {
           const bankSounds = { repay: "sfx.economy.debtPaid", borrow: "sfx.economy.loanTaken", deposit: "sfx.economy.bills", withdraw: "sfx.economy.bills" };
           audioPlay(bankSounds[action]);
           if (action === 'borrow') recordBorrow(S);
+          if (action === 'deposit') { recordBankDeposit(ledger, qty); saveLedger(); }
           announce(a.msg(qty));
           afterMarketAction(a.msg(qty));
           checkRunAchievements();
@@ -887,6 +898,7 @@ if (typeof document !== "undefined") {
     if (S.day > CONFIG.days){ endGame(); return; }
     const { prices, anomaly, sr, gk, golden, re } = resolveTravelMarket(S, dest);
     S.prices = prices;
+    S.anomaly = anomaly || null;
     if (LOCATION_FLAVOR[dest]) { logMsg(`Arrived in ${dest}. ${LOCATION_FLAVOR[dest]}`); announce(`Day ${S.day}. Arrived in ${dest}.`); }
 
     let marketEvent=null;
@@ -1180,6 +1192,7 @@ if (typeof document !== "undefined") {
       cops = fedsApplyFightKill(S, cops, fightRound);
       if (cops<=0){ const reward=randInt(3750,10000); S.cash+=reward;
         grantDebtInterestFreeze(S, 1);
+        recordFedFightWin(S);
         logMsg(`Beat the Feds, grabbed ${money(reward)}.`); modal=null;
         audioPlay("sfx.combat.tommyBurst");
         fedsResolved();

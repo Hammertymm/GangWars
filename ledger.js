@@ -8,20 +8,26 @@ const LEDGER_CATEGORIES = [
     title: 'GENERAL',
     completeTitle: 'GENERAL COLLECTION COMPLETE',
     achievements: [
-      { id: 'made_man', title: 'MADE MAN', description: 'Complete a full run.' },
-      { id: 'debt_survivor', title: 'DEBT SURVIVOR', description: 'Finish with the Don paid off.' },
-      { id: 'first_million', title: 'FIRST MILLION', description: 'Reach one million dollar net worth.' },
-      { id: 'connected', title: 'CONNECTED', description: 'Visit every district in the city.' },
-      { id: 'bootlegger', title: 'BOOTLEGGER', description: 'Move one hundred units of moonshine.' },
-      { id: 'smoke_merchant', title: 'SMOKE MERCHANT', description: 'Move one hundred units of cigars.' },
-      { id: 'the_collector', title: 'THE COLLECTOR', description: 'Trade every commodity at least once.' },
-      { id: 'high_roller', title: 'HIGH ROLLER', description: 'Hold two and a half million in cash.' },
-      { id: 'diamond_hands', title: 'DIAMOND HANDS', description: 'Earn one hundred thousand on diamonds.' },
-      { id: 'empire_builder', title: 'EMPIRE BUILDER', description: 'Grow stash to one hundred fifty units.' },
-      { id: 'king_of_docks', title: 'KING OF THE DOCKS', description: 'Visit Dock #13 twelve times.' },
-      { id: 'smooth_operator', title: 'SMOOTH OPERATOR', description: 'Win without borrowing from the Don.' },
-      { id: 'market_maven', title: 'MARKET MAVEN', description: 'Deal in every commodity three times.' },
-      { id: 'survivor', title: 'SURVIVOR', description: 'Survive all thirty days.' },
+      { id: 'made_man',             title: 'PROHIBITION ACCOMPLISHED',     description: 'Complete a full run.' },
+      { id: 'bootlegger',           title: 'GIN AND BEER IT',              description: 'Move 100 units of moonshine.' },
+      { id: 'smoke_merchant',       title: 'STOGIE NIGHTS',                description: 'Move 100 units of cigars.' },
+      { id: 'dough_capone',         title: 'DOUGH CAPONE',                 description: 'Hold $10M in cash.' },
+      { id: 'girls_best_fiend',     title: 'GIRLS\' BEST FIEND',           description: 'Earn $1M profit on diamonds.' },
+      { id: 'empire_builder',       title: 'STASH GORDON',                 description: 'Grow stash to 150 units.' },
+      { id: 'pier_pressure',        title: 'PIER PRESSURE',                description: 'Visit Dock #13 thirteen times.' },
+      { id: 'market_maven',         title: 'BUY CURIOUS',                  description: 'Buy and sell every commodity at least 3 times.' },
+      { id: 'loan_survivor',        title: 'LOAN SURVIVOR',                description: 'Finish a run after borrowing at least once, with debt paid off.' },
+      { id: 'club_fed',             title: 'CLUB FED',                     description: 'Win 10 Fed fights in one run.' },
+      { id: 'buy_hard',             title: 'BUY HARD',                     description: 'Spend $25M buying goods in one run.' },
+      { id: 'buy_hard_2',           title: 'BUY HARD 2',                   description: 'Spend $50M buying goods in one run.' },
+      { id: 'one_hp_wonder',        title: 'ONE HP WONDER',                description: 'Finish a full run with exactly 1 health remaining.' },
+      { id: 'ups_and_downs',        title: 'UPS AND DOWNS',                description: 'Buy during a flood, then sell the same commodity during a spike or surge in the same run.' },
+      { id: 'artful_dodger',        title: 'ARTFUL DODGER',                description: 'Earn $10M profit from Forged Art in one run.' },
+      { id: 'cognac_barbarian',     title: 'COGNAC THE BARBARIAN',         description: 'Earn $20M profit from Fine Cognac in one run.' },
+      { id: 'witness_reinvestment', title: 'WITNESS REINVESTMENT PROGRAM', description: 'Deposit $25M into the bank across all runs.' },
+      { id: 'scotch_and_awe',       title: 'SCOTCH AND AWE',               description: 'Earn $15M profit from Aged Scotch in one run.' },
+      { id: 'silence_of_loans',     title: 'THE SILENCE OF THE LOANS',     description: 'Finish a run after being over $90K in debt.' },
+      { id: 'shopaholic',           title: 'SHOPAHOLIC',                   description: 'Buy 1,000 total units across all runs.' },
     ],
   },
   {
@@ -126,6 +132,12 @@ function defaultRunStats(startSpace){
     didBorrow: false,
     diamondSellProfit: 0,
     maxSpace: startSpace,
+    spentBuying: 0,
+    fedFightsWon: 0,
+    commodityProfit: {},
+    boughtDuringFlood: {},
+    upsAndDowns: false,
+    maxDebtReached: 0,
   };
 }
 
@@ -144,6 +156,12 @@ function migrateRunStats(state){
   if (rs.didBorrow == null) rs.didBorrow = false;
   if (rs.diamondSellProfit == null) rs.diamondSellProfit = 0;
   if (rs.maxSpace == null) rs.maxSpace = state.space || 100;
+  if (rs.spentBuying == null) rs.spentBuying = 0;
+  if (rs.fedFightsWon == null) rs.fedFightsWon = 0;
+  if (!rs.commodityProfit) rs.commodityProfit = {};
+  if (!rs.boughtDuringFlood) rs.boughtDuringFlood = {};
+  if (rs.upsAndDowns == null) rs.upsAndDowns = false;
+  if (rs.maxDebtReached == null) rs.maxDebtReached = 0;
   return state;
 }
 
@@ -154,6 +172,8 @@ function emptyLedger(){
     masterComplete: false,
     masterCompleteShown: false,
     travelsSinceEventUnlock: 0,
+    bankDepositedTotal: 0,
+    unitsBoughtTotal: 0,
   };
 }
 
@@ -166,6 +186,8 @@ function migrateLedger(raw){
   ledger.masterComplete = !!raw.masterComplete;
   ledger.masterCompleteShown = !!raw.masterCompleteShown;
   ledger.travelsSinceEventUnlock = raw.travelsSinceEventUnlock || 0;
+  ledger.bankDepositedTotal = raw.bankDepositedTotal || 0;
+  ledger.unitsBoughtTotal = raw.unitsBoughtTotal || 0;
   return ledger;
 }
 
@@ -253,19 +275,39 @@ function recordDistrictVisit(state, location){
   if (location === 'Dock #13') state.runStats.dockVisits += 1;
 }
 
-function recordBuy(state, id, qty){
+function recordBuy(state, id, qty, cost){
   migrateRunStats(state);
-  state.runStats.buys[id] = (state.runStats.buys[id] || 0) + qty;
-  state.runStats.commoditiesTouched[id] = true;
+  const rs = state.runStats;
+  rs.buys[id] = (rs.buys[id] || 0) + qty;
+  rs.commoditiesTouched[id] = true;
+  rs.spentBuying += Math.max(0, cost || 0);
+  // UPS and DOWNS — remember anything bought while its market was flooded.
+  if (state.anomaly && state.anomaly.type === 'flood' && state.anomaly.itemId === id) {
+    rs.boughtDuringFlood[id] = true;
+  }
 }
 
 function recordSell(state, id, qty, profit){
   migrateRunStats(state);
-  state.runStats.sells[id] = (state.runStats.sells[id] || 0) + qty;
-  state.runStats.commoditiesTouched[id] = true;
-  if (id === 'moonshine') state.runStats.moonshineSold += qty;
-  if (id === 'cigars') state.runStats.cigarsSold += qty;
-  if (id === 'diamonds' && profit > 0) state.runStats.diamondSellProfit += profit;
+  const rs = state.runStats;
+  rs.sells[id] = (rs.sells[id] || 0) + qty;
+  rs.commoditiesTouched[id] = true;
+  if (id === 'moonshine') rs.moonshineSold += qty;
+  if (id === 'cigars') rs.cigarsSold += qty;
+  if (profit > 0) {
+    rs.commodityProfit[id] = (rs.commodityProfit[id] || 0) + profit;
+    if (id === 'diamonds') rs.diamondSellProfit += profit;
+  }
+  // UPS and DOWNS — sold during a spike/surge what was bought during a flood.
+  if (state.anomaly && (state.anomaly.type === 'spike' || state.anomaly.type === 'surge')
+      && state.anomaly.itemId === id && rs.boughtDuringFlood[id]) {
+    rs.upsAndDowns = true;
+  }
+}
+
+function recordFedFightWin(state){
+  migrateRunStats(state);
+  state.runStats.fedFightsWon += 1;
 }
 
 function recordBorrow(state){
@@ -273,13 +315,60 @@ function recordBorrow(state){
   state.runStats.didBorrow = true;
 }
 
+/* Cross-run cumulative counters live on the ledger (account-wide). */
+function recordBankDeposit(ledger, amount){
+  ledger.bankDepositedTotal = (ledger.bankDepositedTotal || 0) + Math.max(0, amount || 0);
+}
+
+function recordUnitsBought(ledger, qty){
+  ledger.unitsBoughtTotal = (ledger.unitsBoughtTotal || 0) + Math.max(0, qty || 0);
+}
+
 function recordSpaceChange(state){
   migrateRunStats(state);
   if (state.space > state.runStats.maxSpace) state.runStats.maxSpace = state.space;
 }
 
+// In-run GENERAL achievements — checked after every market/bank/travel action.
 function checkGeneralAchievements(state, ledger){
-  const { netWorth, GOODS } = engineApi();
+  const { GOODS } = engineApi();
+  const unlocks = [];
+  const rs = state.runStats;
+  rs.maxDebtReached = Math.max(rs.maxDebtReached || 0, state.debt || 0);
+  const maybe = id => {
+    const u = unlockAchievement(ledger, id);
+    if (u) unlocks.push(u);
+  };
+
+  // Single-run thresholds.
+  if (state.cash >= 10000000) maybe('dough_capone');
+  if ((rs.commodityProfit.diamonds || 0) >= 1000000) maybe('girls_best_fiend');
+  if (state.space >= 150) maybe('empire_builder');
+  if (rs.dockVisits >= 13) maybe('pier_pressure');
+  if (rs.moonshineSold >= 100) maybe('bootlegger');
+  if (rs.cigarsSold >= 100) maybe('smoke_merchant');
+  if (rs.fedFightsWon >= 10) maybe('club_fed');
+  if (rs.spentBuying >= 25000000) maybe('buy_hard');
+  if (rs.spentBuying >= 50000000) maybe('buy_hard_2');
+  if ((rs.commodityProfit.art || 0) >= 10000000) maybe('artful_dodger');
+  if ((rs.commodityProfit.cognac || 0) >= 20000000) maybe('cognac_barbarian');
+  if ((rs.commodityProfit.scotch || 0) >= 15000000) maybe('scotch_and_awe');
+  if (rs.upsAndDowns) maybe('ups_and_downs');
+
+  const mavenOk = GOODS.every(d =>
+    (rs.buys[d.id] || 0) >= 3 && (rs.sells[d.id] || 0) >= 3
+  );
+  if (mavenOk) maybe('market_maven');
+
+  // Account-wide cumulative thresholds.
+  if ((ledger.bankDepositedTotal || 0) >= 25000000) maybe('witness_reinvestment');
+  if ((ledger.unitsBoughtTotal || 0) >= 1000) maybe('shopaholic');
+
+  return unlocks;
+}
+
+// End-of-run GENERAL achievements — checked once when a run is over.
+function checkEndRunAchievements(state, ledger){
   const unlocks = [];
   const rs = state.runStats;
   const maybe = id => {
@@ -287,40 +376,10 @@ function checkGeneralAchievements(state, ledger){
     if (u) unlocks.push(u);
   };
 
-  if (netWorth(state) >= 1000000) maybe('first_million');
-  if (state.cash >= 2500000) maybe('high_roller');
-  if (rs.moonshineSold >= 100) maybe('bootlegger');
-  if (rs.cigarsSold >= 100) maybe('smoke_merchant');
-  if (rs.diamondSellProfit >= 100000) maybe('diamond_hands');
-  if (state.space >= 150) maybe('empire_builder');
-  if (rs.dockVisits >= 12) maybe('king_of_docks');
-  if (Object.keys(rs.districtsVisited).length >= 6) maybe('connected');
-
-  const allCommodities = GOODS.length;
-  if (Object.keys(rs.commoditiesTouched).length >= allCommodities) maybe('the_collector');
-
-  const mavenOk = GOODS.every(d =>
-    (rs.buys[d.id] || 0) >= 3 && (rs.sells[d.id] || 0) >= 3
-  );
-  if (mavenOk) maybe('market_maven');
-
-  if (state.day >= 30 && !state.over) maybe('survivor');
-
-  return unlocks;
-}
-
-function checkEndRunAchievements(state, ledger){
-  const { CONFIG, netWorth } = engineApi();
-  const unlocks = [];
-  const maybe = id => {
-    const u = unlockAchievement(ledger, id);
-    if (u) unlocks.push(u);
-  };
-
-  maybe('made_man');
-  if (state.debt === 0) maybe('debt_survivor');
-  if (!state.runStats.didBorrow && state.day > CONFIG.days && netWorth(state) > 0) maybe('smooth_operator');
-  if (state.day > CONFIG.days || (state.day === CONFIG.days && state.over)) maybe('survivor');
+  maybe('made_man');                                         // complete a full run
+  if (rs.didBorrow && state.debt === 0) maybe('loan_survivor');
+  if (state.health === 1) maybe('one_hp_wonder');
+  if ((rs.maxDebtReached || 0) > 90000) maybe('silence_of_loans');
 
   return unlocks;
 }
@@ -408,7 +467,10 @@ if (typeof module !== 'undefined') {
     recordDistrictVisit,
     recordBuy,
     recordSell,
+    recordFedFightWin,
     recordBorrow,
+    recordBankDeposit,
+    recordUnitsBought,
     recordSpaceChange,
     checkGeneralAchievements,
     checkEndRunAchievements,

@@ -446,6 +446,25 @@
   .eos-you-wrap .slb-row{flex:0 0 auto;min-height:58px;}
   .eos-foot{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
   .eos-foot button{font-size:clamp(.66rem,2.8vw,.74rem);padding:9px 4px;letter-spacing:.5px;}
+  /* Crime Ledger category pages reuse the high-scores layout; the achievement
+     list is the only scrolling region, rows fixed at one-tenth height so short
+     categories leave the remaining space empty (no stretch). */
+  .scores-lb-wrap.ach-list{overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .slb-row.ach-row{flex:0 0 10%;}
+  .ach-row .ledger-row-icon{flex:0 0 55px;width:55px;height:55px;box-sizing:border-box;
+    border:1px solid var(--border);border-radius:3px;overflow:hidden;background:#0c0a06;display:flex;}
+  .ach-row .ledger-row-icon.revealed{border-color:#c9a85a;}
+  .ach-row .ledger-row-icon img{width:100%;height:100%;object-fit:contain;display:block;}
+  .ach-row .ledger-row-copy{flex:1 1 auto;min-width:0;overflow:hidden;line-height:1.2;}
+  .ach-row .ledger-row-title{font-family:var(--font-display);font-size:.82rem;letter-spacing:.6px;
+    color:var(--amber);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ach-row .ledger-row-title.hidden{color:var(--dim);}
+  .ach-row .ledger-row-desc{font-size:.7rem;color:var(--dim);margin-top:2px;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ach-row .ledger-row-desc.placeholder{color:#5a5040;}
+  .ach-row .ledger-row-mark{flex:0 0 auto;margin-left:6px;width:1.2em;text-align:center;
+    color:var(--amber);font-size:1rem;}
+  .ach-row.reveal-focus .ledger-row-title{color:#e7c879;}
   .tutorial .card{border-color:var(--green);max-width:420px;width:100%;}
   .tutorial .card-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
   .save-err{text-align:center;color:var(--red);font-size:.72rem;padding:2px 0;}

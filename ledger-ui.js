@@ -45,31 +45,37 @@ function categoryCounterText(catId, found, total) {
 
 function listPanelStyleVars(bp) { return ""; }
 
-const HIDDEN_ACHIEVEMENT_DESC = "Achievement not yet discovered.";
+const HIDDEN_ACHIEVEMENT_DESC = "Discover achievement to reveal description.";
 
+/* Achievement rows reuse the High Scores leaderboard row container (.slb-row)
+   for identical height/borders/spacing; inner .ledger-row-* hooks keep the
+   reveal animation working. */
 function buildListRows(cat, ledger, focusId) {
-  return cat.achievements.map(a => {
+  return cat.achievements.map((a, idx) => {
     const unlocked = isUnlocked(ledger, a.id);
     const revealed  = isRevealed(ledger, a.id);
     const focus     = focusId === a.id ? " reveal-focus" : "";
-    const hiddenTitle = "Unknown";
-    let title    = hiddenTitle;
+    let title    = "UNKNOWN";
     let desc     = HIDDEN_ACHIEVEMENT_DESC;
     let mark     = "";
-    let iconHtml = `<div class="ledger-row-icon locked"><img src="${LEDGER_ICON_PREFIX}locked.png" alt="" decoding="async"></div>`;
+    let iconSrc  = `${LEDGER_ICON_PREFIX}locked.png`;
+    let iconState = "locked";
     if (revealed) {
       title    = getAchievementTitle(a.id);
       desc     = getAchievementDescription(a.id);
       if (unlocked) mark = "\u2713";
-      iconHtml = `<div class="ledger-row-icon revealed"><img src="${ledgerIconPath(a.id)}" alt="" decoding="async"></div>`;
+      iconSrc  = ledgerIconPath(a.id);
+      iconState = "revealed";
     }
     const titleCls = revealed ? "" : " hidden";
     const descCls  = revealed ? "" : " placeholder";
-    return `<div class="ledger-list-row${focus}" data-aid="${a.id}">
-      ${iconHtml}
+    const descHtml = desc ? `<div class="ledger-row-desc${descCls}">${desc}</div>` : "";
+    return `<div class="slb-row ach-row${focus}" data-aid="${a.id}">
+      <span class="slb-pos">${idx + 1}.</span>
+      <div class="ledger-row-icon ${iconState}"><img src="${iconSrc}" alt="" decoding="async" onerror="this.onerror=null;this.style.display='none'"></div>
       <div class="ledger-row-copy">
         <div class="ledger-row-title${titleCls}">${title}</div>
-        <div class="ledger-row-desc${descCls}">${desc}</div>
+        ${descHtml}
       </div>
       <span class="ledger-row-mark">${mark}</span>
     </div>`;
@@ -87,22 +93,23 @@ function ledgerShell(baseAsset, overlayHtml, hitHtml, backRect) {
   </div></div></div>`;
 }
 
-/* ── CATEGORY PAGE — unified template shell ─────────────────────────────── */
-function categoryShell(catId, cat, counterText, rows) {
+/* ── CATEGORY PAGE — reuses the High Scores screen layout ───────────────────
+   Header art is letterboxed behind the category title; the achievement list
+   reuses the leaderboard container/rows and is the only scrolling region. */
+function categoryShell(catId, cat, rows) {
   const img = ledgerAssetPath(LEDGER_HEADER_IMAGE[catId]);
-  return `<div class="play ledger-play ledger-template-page">
-    <div class="ledger-tpl-inner">
-      <img class="ledger-tpl-img" src="${img}" alt="" decoding="async">
-      <div class="ledger-tpl-header">
-        <div class="ledger-tpl-title">${cat.title}</div>
-        <div class="ledger-tpl-divider"><span class="ledger-tpl-ornament">&#x2B29;&#x25C6;&#x2B29;</span></div>
-        <div class="ledger-tpl-counter">${counterText}</div>
-        <div class="ledger-tpl-divider"><span class="ledger-tpl-ornament">&#x2B29;&#x25C6;&#x2B29;</span></div>
+  return `<div class="play scores-play ledger-scores">
+    <div class="scores-hero">
+      <img src="${img}" alt="" class="scores-hero-img">
+      <div class="scores-hero-overlay"></div>
+      <div class="scores-hero-title">
+        <span class="eos-orn-line"></span>
+        <span class="scores-hero-text">${cat.title}</span>
+        <span class="eos-orn-line r"></span>
       </div>
-      <div class="ledger-tpl-separator"></div>
-      <div class="ledger-tpl-list">${rows}</div>
-      <button type="button" class="ledger-tpl-back" id="ledgerBack">BACK</button>
     </div>
+    <div class="scores-lb-wrap ach-list">${rows}</div>
+    <div class="scores-foot"><button type="button" class="full" id="ledgerBack">BACK</button></div>
   </div>`;
 }
 
@@ -169,10 +176,8 @@ const LedgerUI = {
   renderCategory(app, catId, ctx) {
     const cat = LEDGER_CATEGORIES.find(c => c.id === catId);
     if (!cat) { ctx.onBackHome(); return; }
-    const found       = countUnlocked(ctx.ledger, catId);
-    const counterText = categoryCounterText(catId, found, cat.achievements.length);
-    const rows        = buildListRows(cat, ctx.ledger, ctx.focusId);
-    app.innerHTML     = categoryShell(catId, cat, counterText, rows);
+    const rows = buildListRows(cat, ctx.ledger, ctx.focusId);
+    app.innerHTML = categoryShell(catId, cat, rows);
     document.getElementById("ledgerBack").onclick = ctx.onBackCategory;
     if (ctx.focusId && isUnlocked(ctx.ledger, ctx.focusId) && !isRevealed(ctx.ledger, ctx.focusId)) {
       const row = app.querySelector(`[data-aid="${ctx.focusId}"]`);
@@ -184,7 +189,7 @@ const LedgerUI = {
       }
     } else if (ctx.focusId) {
       const row = app.querySelector(`[data-aid="${ctx.focusId}"]`);
-      const list = app.querySelector(".ledger-tpl-list");
+      const list = app.querySelector(".ach-list");
       if (row && list) row.scrollIntoView({ block: "nearest" });
     }
   },
