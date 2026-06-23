@@ -70,17 +70,21 @@ const RARE_EVENTS = [
   {id:'madden',    commodity:'champagne',    district:'City Hall',            img:'events/rare_madden.png',    lines:['OWNEY MADDEN BACKS ANOTHER BIG NIGHT','THE FIX IS IN AT CITY HALL']},
 ];
 
+// 12 Super Rare events — 2 per location. Visiting the event district on its
+// day multiplies every available price there by 5 (see resolveTravelMarket).
 const SUPER_RARE_EVENTS = [
-  {id:'lindbergh',  district:'Dock #13',       img:'events/super_lindbergh.png',  lines:['LINDBERGH ARRIVES TO GREAT FANFARE','THE CITY STOPS TO WATCH']},
-  {id:'mauretania', district:'Dock #13',       img:'events/super_mauretania.png', lines:['MAURETANIA DOCKS TO HUGE CROWDS','THE WATERFRONT HAS NEVER BEEN BUSIER']},
-  {id:'dempsey',    district:'Kitty Kat Club', img:'events/super_dempsey.png',    lines:['A BIG FIGHT DRAWS NEAR','DEMPSEY MANIA GRIPS THE DISTRICT']},
-  {id:'kkrevue',    district:'Kitty Kat Club', img:'events/super_kkrevue.png',    lines:['THE KITTY KAT CLUB DEBUTS A NEW REVUE',"THE CITY'S ELITE FLOCK TO THE DISTRICT"]},
-  {id:'ziegfeld',   district:'Kitty Kat Club', img:'events/super_ziegfeld.png',   lines:['ZIEGFELD FEVER SWEEPS THE CITY','EVERYBODY WANTS THE BEST SEAT']},
-  {id:'hollywood',  district:'Kitty Kat Club', img:'events/super_hollywood.png',  lines:['THE TALKIES ARE ALL THE RAGE','THEATRES SELL OUT ACROSS THE DISTRICT']},
-  {id:'wales',      district:'Uptown',         img:'events/super_wales.png',      lines:['THE PRINCE OF WALES IS IN TOWN','NO EXPENSE IS BEING SPARED']},
-  {id:'wallst',     district:'Uptown',         img:'events/super_wallst.png',     lines:['STOCK MARKET FORTUNES GROW AGAIN','UPSCALE DISTRICTS REPORT RECORD TRADE']},
-  {id:'ruth',       district:'City Hall',      img:'events/super_ruth.png',       lines:['BABE RUTH FEVER SWEEPS THE CITY','CITY HALL DECLARES A DAY OF CELEBRATION']},
-  {id:'walker',     district:'City Hall',      img:'events/super_walker.png',     lines:['MAYOR WALKER VISITS THE DISTRICT','EVERY TABLE IN TOWN IS RESERVED']},
+  {id:'lindbergh',   district:'Dock #13',           img:'events/super_lindbergh.png',   title:'THE AVIATOR',     desc:'Lindbergh lands at Dock #13. Crowds surge, cameras pop, and every waterfront price takes flight.'},
+  {id:'mauretania',  district:'Dock #13',           img:'events/super_mauretania.png',  title:'THE LINER',       desc:'Mauretania docks to roaring crowds. Trunks, crates, and contraband move fast at Dock #13.'},
+  {id:'ziegfeld',    district:'Kitty Kat Club',     img:'events/super_ziegfeld.png',    title:'THE MARQUEE',     desc:'Ziegfeld fever hits the Kitty Kat Club. Bright lights, rich fools, and prices with chorus-line legs.'},
+  {id:'hollywood',   district:'Kitty Kat Club',     img:'events/super_hollywood.png',   title:'THE TALKIES',     desc:'Hollywood comes to the Kitty Kat Club. Cameras roll, champagne flows, and prices learn to talk.'},
+  {id:'wales',       district:'Uptown',             img:'events/super_wales.png',       title:'THE GENTLEMAN',   desc:'The Prince of Wales charms Uptown. High society opens its purse and forgets to close it.'},
+  {id:'wallst',      district:'Uptown',             img:'events/super_wallst.png',      title:'THE MARKET',      desc:'Wall Street is roaring Uptown. Ticker tape flies, fortunes swell, and prices lose their manners.'},
+  {id:'ruth',        district:'City Hall',          img:'events/super_ruth.png',        title:'THE SLUGGER',     desc:'Babe Ruth fever grips City Hall. The crowd wants a hero, and every seller wants a bigger cut.'},
+  {id:'walker',      district:'City Hall',          img:'events/super_walker.png',      title:'THE MAYOR',       desc:'Mayor Walker works the City Hall crowd. Smiles up front, envelopes out back, prices everywhere.'},
+  {id:'feast',       district:'Little Italy',       img:'events/super_feast.png',       title:'THE FEAST',       desc:'Little Italy takes to the streets. Lanterns glow, saints watch, and every back room does brisk business.'},
+  {id:'chairman',    district:'Little Italy',       img:'events/super_chairman.png',    title:'THE CHAIRMAN',    desc:'A young boss takes the head table in Little Italy. Quiet words, thick envelopes, expensive consequences.'},
+  {id:'garage',      district:'Warehouse District', img:'events/super_garage.png',      title:'THE GARAGE',      desc:'Something ugly happened in the warehouse garage. Now every crate has a story and a higher price.'},
+  {id:'picket_line', district:'Warehouse District', img:'events/super_picket_line.png', title:'THE PICKET LINE', desc:'The Warehouse District stops moving. The workers fold their arms, and the prices stand at attention.'},
 ];
 
 const GODLIKE_EVENTS = [
@@ -442,7 +446,7 @@ function resolveTravelMarket(state, dest){
   const re = state.events && state.events.rare;
 
   if (sr && state.day === sr.day && dest === sr.district){
-    Object.keys(prices).forEach(id=>{ if (prices[id]) prices[id] = Math.round(prices[id] * 3); });
+    Object.keys(prices).forEach(id=>{ if (prices[id]) prices[id] = Math.round(prices[id] * 5); });
   }
   if (golden && state.day === golden.day){
     Object.keys(prices).forEach(id=>{ if (prices[id]) prices[id] = Math.round(prices[id] * 10); });

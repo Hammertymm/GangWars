@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v141';
+const CACHE = 'gangwars-v142';
 const ASSETS = [
   './gangwars.html',
   './gangwars.css',
@@ -71,16 +71,18 @@ const ASSETS = [
   './events/rare_armstrong.png',
   './events/rare_rumrow.png',
   './events/rare_midnight.png',
-  './events/super_ruth.png',
   './events/super_lindbergh.png',
-  './events/super_dempsey.png',
-  './events/super_wales.png',
-  './events/super_kkrevue.png',
   './events/super_mauretania.png',
   './events/super_ziegfeld.png',
-  './events/super_wallst.png',
-  './events/super_walker.png',
   './events/super_hollywood.png',
+  './events/super_wales.png',
+  './events/super_wallst.png',
+  './events/super_ruth.png',
+  './events/super_walker.png',
+  './events/super_feast.png',
+  './events/super_chairman.png',
+  './events/super_garage.png',
+  './events/super_picket_line.png',
   './events/godlike_in_town.png',
   './events/godlike_interest.png',
   './events/godlike_move.png',
@@ -125,8 +127,6 @@ const ASSETS = [
   './assets/ledger/icons/madden.png',
   './assets/ledger/icons/lindbergh.png',
   './assets/ledger/icons/mauretania.png',
-  './assets/ledger/icons/dempsey.png',
-  './assets/ledger/icons/kkrevue.png',
   './assets/ledger/icons/ziegfeld.png',
   './assets/ledger/icons/hollywood.png',
   './assets/ledger/icons/wales.png',

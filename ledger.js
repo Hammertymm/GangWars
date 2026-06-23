@@ -54,14 +54,16 @@ const LEDGER_CATEGORIES = [
     achievements: [
       { id: 'lindbergh', title: 'THE AVIATOR', description: 'Lindbergh arrives to great fanfare.' },
       { id: 'mauretania', title: 'THE LINER', description: 'Mauretania docks to huge crowds.' },
-      { id: 'dempsey', title: 'THE FIGHT', description: 'A big fight draws near.' },
-      { id: 'kkrevue', title: 'THE REVUE', description: 'The Kitty Kat Club debuts a new revue.' },
       { id: 'ziegfeld', title: 'THE MARQUEE', description: 'Ziegfeld fever sweeps the city.' },
       { id: 'hollywood', title: 'THE TALKIES', description: 'Moving pictures are all the rage.' },
       { id: 'wales', title: 'THE GENTLEMAN', description: 'The Prince of Wales is in town.' },
       { id: 'wallst', title: 'THE MARKET', description: 'Stock market fortunes grow again.' },
       { id: 'ruth', title: 'THE SLUGGER', description: 'Babe Ruth fever sweeps the city.' },
       { id: 'walker', title: 'THE MAYOR', description: 'Mayor Walker visits the district.' },
+      { id: 'feast', title: 'THE FEAST', description: 'Little Italy floods the streets.' },
+      { id: 'chairman', title: 'THE CHAIRMAN', description: 'A young boss takes the head table.' },
+      { id: 'garage', title: 'THE GARAGE', description: 'Something ugly in the warehouse garage.' },
+      { id: 'picket_line', title: 'THE PICKET LINE', description: 'The Warehouse District stops moving.' },
     ],
   },
   {

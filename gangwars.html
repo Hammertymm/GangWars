@@ -905,31 +905,33 @@ if (typeof document !== "undefined") {
     if(golden && S.day===golden.day){
       unlockFromEvent('golden');
       const goldenImg=golden.img||'bigdaddy';
-      marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'golden' }); showEvent(goldenImg, `<b>${golden.lines[0]}</b><br><br>${golden.lines[1]} Every price in the city is climbing.`, 'GOLDEN', next); };
+      marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'golden' }); showTierEvent(goldenImg, golden.lines[0], `${golden.lines[1]} Every price in the city is climbing.`, next); };
     } else if(gk && S.day===gk.day){
       unlockFromEvent(gk.id);
       const gkImg=gk.img||'bigdaddy';
       if(dest===gk.district){
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'godlike' }); showEvent(gkImg, `<b>${gk.lines[0]}</b><br><br>${gk.lines[1]}`, 'BIG DADDY J', next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'godlike' }); showTierEvent(gkImg, gk.lines[0], gk.lines[1], next); };
       } else {
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'godlike' }); showEvent(gkImg, `<b>BIG DADDY J IS ACROSS TOWN</b><br><br>He's making moves in ${gk.district}. Every price there is climbing.`, 'NOTED', next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'godlike' }); showTierEvent(gkImg, 'BIG DADDY J IS ACROSS TOWN', `He's making moves in ${gk.district}. Every price there is climbing.`, next); };
       }
     } else if(sr && S.day===sr.day){
       unlockFromEvent(sr.id);
       const srImg=sr.img||'celeb';
+      const srTitle = sr.title || (sr.lines && sr.lines[0]) || '';
+      const srDesc  = sr.desc  || (sr.lines && sr.lines[1]) || '';
       if(dest===sr.district){
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'superRare' }); showEvent(srImg, `<b>${sr.lines[0]}</b><br><br>${sr.lines[1]} Every price in the district is climbing.`, "LET'S GO", next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'superRare' }); showTierEvent(srImg, srTitle, srDesc, next); };
       } else {
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'superRare' }); showEvent(srImg, `<b>${sr.lines[0]}</b><br><br>${sr.lines[1]} Head to ${sr.district} for the action.`, 'NOTED', next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'superRare' }); showTierEvent(srImg, srTitle, `${srDesc} Head to ${sr.district} for the action.`, next); };
       }
     } else if(re && S.day===re.day){
       unlockFromEvent(re.id);
       const spikeGood=GOOD[re.commodity];
       const reImg=re.img||'intel';
       if(dest===re.district){
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'rare' }); showEvent(reImg, `<b>${re.lines[0]}</b><br><br>${re.lines[1]}`, 'INTERESTING', next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'rare' }); showTierEvent(reImg, re.lines[0], re.lines[1], next); };
       } else if(spikeGood){
-        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'rare' }); showEvent(reImg, `<b>${re.lines[0]}</b><br><br>${re.lines[1]} ${spikeGood.name} prices are surging in ${re.district}.`, 'NOTED', next); };
+        marketEvent=(next)=>{ if(A()) A().eventStinger({ tier: 'rare' }); showTierEvent(reImg, re.lines[0], `${re.lines[1]} ${spikeGood.name} prices are surging in ${re.district}.`, next); };
       }
     } else if(anomaly){
       const anomalyImg={spike:'shortage',surge:'frenzy',flood:'flood'};
@@ -1021,6 +1023,27 @@ if (typeof document !== "undefined") {
         </div>
       </div></div>`;
       fitEventPopupToImage(imgSrc);
+      const advance = ()=>{ audioPlay("sfx.events.modalClose"); modal=null; modalEscape=null; cb(); };
+      document.getElementById("ok").onclick=advance;
+      modalEscape = advance;
+    };
+    render();
+  }
+
+  /* Tier-event popup (rare / super rare / godlike / golden godlike):
+     event title + description stacked above a large illustration, NEXT below. */
+  function showTierEvent(imgKey, title, desc, cb){
+    modal=function(){
+      audioPlay("sfx.events.modalOpen");
+      const imgSrc = eventImgSrc(imgKey);
+      app.innerHTML=`<div class="modal modal-event"><div class="ev-tier" role="dialog" aria-modal="true" aria-label="${title}">
+        <div class="ev-tier-head">
+          <div class="ev-tier-title">${title}</div>
+          <div class="ev-tier-desc">${desc}</div>
+        </div>
+        <div class="ev-tier-art"><img src="${imgSrc}" alt="" decoding="async"></div>
+        <div class="ev-tier-acts"><button class="amber full" id="ok">NEXT</button></div>
+      </div></div>`;
       const advance = ()=>{ audioPlay("sfx.events.modalClose"); modal=null; modalEscape=null; cb(); };
       document.getElementById("ok").onclick=advance;
       modalEscape = advance;
