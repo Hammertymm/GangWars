@@ -179,8 +179,8 @@ const RANKS = [
   'Underboss','Consigliere','Boss','Godfather','Big Daddy J',
 ];
 const RANK_MIN_WORTH = [
-  0, 5000000, 10000000, 15000000, 20000000,
-  25000000, 30000000, 35000000, 40000000, 45000000,
+  0, 10000000, 15000000, 20000000, 25000000,
+  30000000, 35000000, 40000000, 45000000, 50000000,
 ];
 function getRank(worth){
   const nw = Math.max(0, worth);
