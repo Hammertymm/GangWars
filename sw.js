@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v147';
+const CACHE = 'gangwars-v148';
 const ASSETS = [
   './gangwars.html',
   './gangwars.css',
@@ -84,6 +84,11 @@ const ASSETS = [
   './assets/ledger/ledger-header-super-rare.jpg',
   './assets/ledger/ledger-header-godlike.jpg',
   './assets/ledger/ledger-header-golden-godlike.jpg',
+  './assets/ledger/ledger-group-general.png',
+  './assets/ledger/ledger-group-rare.png',
+  './assets/ledger/ledger-group-super-rare.png',
+  './assets/ledger/ledger-group-godlike.png',
+  './assets/ledger/ledger-group-golden-godlike.png',
   './assets/ledger/icons/locked.png',
   './assets/ledger/icons/made_man.png',
   './assets/ledger/icons/debt_survivor.png',

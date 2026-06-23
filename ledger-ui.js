@@ -18,6 +18,14 @@ const LEDGER_HEADER_IMAGE = {
   goldenGodlike: "ledger-header-golden-godlike.jpg",
 };
 
+const LEDGER_GROUP_ICON = {
+  general:       "ledger-group-general.png",
+  rare:          "ledger-group-rare.png",
+  superRare:     "ledger-group-super-rare.png",
+  godlike:       "ledger-group-godlike.png",
+  goldenGodlike: "ledger-group-golden-godlike.png",
+};
+
 function ledgerRectStyle(r) {
   const { w: W, h: H } = LEDGER_CANVAS;
   return `left:${(r.x/W)*100}%;top:${(r.y/H)*100}%;width:${(r.w/W)*100}%;height:${(r.h/H)*100}%`;
@@ -163,9 +171,9 @@ const LedgerUI = {
       const total = cat.achievements.length;
       const pct   = total ? Math.round((n / total) * 100) : 0;
       const done  = total && n >= total ? " complete" : "";
-      const img   = ledgerAssetPath(LEDGER_HEADER_IMAGE[cat.id]);
+      const icon  = ledgerAssetPath(LEDGER_GROUP_ICON[cat.id]);
       return `<button type="button" class="slb-row ledger-home-row${done}" data-cat="${cat.id}" aria-label="${cat.title}, ${n} of ${total} found">
-        <div class="ledger-home-thumb"><img src="${img}" alt="" decoding="async" onerror="this.onerror=null;this.style.display='none'"></div>
+        <div class="ledger-home-icon"><img src="${icon}" alt="" decoding="async" onerror="this.onerror=null;this.style.display='none'"></div>
         <div class="ledger-home-copy">
           <div class="ledger-home-title">${cat.title}</div>
           <div class="ledger-home-bar"><span style="width:${pct}%"></span></div>
