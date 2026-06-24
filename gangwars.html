@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#15110b" />
 <link rel="manifest" href="manifest.json?v=3" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" />
-<link rel="stylesheet" href="gangwars.css?v=33">
+<link rel="stylesheet" href="gangwars.css?v=34">
 
 </head>
 <body>
@@ -163,9 +163,15 @@ if (typeof document !== "undefined") {
       pendingUnlockQueue = pendingUnlockQueue.filter(id => id !== ledgerFocusId);
       saveLedger();
     }
+    const returnToGame = ledgerFocusId && ledgerReturn?.type === "game";
+    ledgerFocusId = null;
+    if (returnToGame) {
+      ledgerViewCat = null;
+      restoreLedgerReturn();
+      return;
+    }
     ledgerView = "home";
     ledgerViewCat = null;
-    ledgerFocusId = null;
     render();
   }
   function exitLedgerHome(){
@@ -561,7 +567,8 @@ if (typeof document !== "undefined") {
     if(e.key !== "Escape") return;
     if (ledgerView && !modal) {
       e.preventDefault();
-      exitLedgerHome();
+      if (ledgerView === "category") exitLedgerCategory();
+      else exitLedgerHome();
       return;
     }
     if (!modal) return;
