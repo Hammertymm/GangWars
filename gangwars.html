@@ -32,6 +32,7 @@
 
 <script src="engine.js"></script>
 <script src="ledger.js"></script>
+<script src="tips.js"></script>
 <script src="ledger-ui.js"></script>
 <script src="audio.js"></script>
 <script>
@@ -94,8 +95,10 @@ if (typeof document !== "undefined") {
   function announce(msg){ const el = document.getElementById("game-live"); if(el) el.textContent = msg; }
   let S = null, modal = null;
   let ledgerView = null, ledgerViewCat = null, ledgerFocusId = null, ledgerReturn = null;
-  let pendingUnlockQueue = [], pendingCompleteQueue = [];
+  let pendingUnlockQueue = [], pendingCompleteQueue = [], pendingTipQueue = [];
   let ledger = migrateLedger((() => { try { return JSON.parse(localStorage.getItem(LEDGER_KEY)); } catch(e) { return null; } })());
+  let tipsState = loadTips();
+  if (localStorage.getItem("gw:tutorialDone") && !localStorage.getItem(TIPS_STORAGE_KEY)) saveTips(tipsState);
   const money = n => "$"+Math.round(n).toLocaleString("en-US");
   const TITLE_SCREEN = "title-screen.png?v=12";
   const TITLE_CANVAS = { w: 853, h: 1844 };
@@ -213,9 +216,74 @@ if (typeof document !== "undefined") {
   }
   /** Achievement unlock presentation (Achievement Found → reveal / card → ledger list). */
   function tryShowAchievementFlow(){
+    if (modal && !modal._achFlow) return false;
     if (modal && modal._achFlow) return true;
     if (pendingUnlockQueue.length) { showAchievementFoundPopup(); return true; }
     if (pendingCompleteQueue.length) { showLedgerCompletionPopup(pendingCompleteQueue[0]); return true; }
+    return false;
+  }
+  function emitTipEvent(name, ctx){
+    matchTips(name, ctx || {}, tipsState).forEach(t => {
+      pendingTipQueue = enqueueTipIds([t.id], pendingTipQueue);
+    });
+  }
+  function hideTipOverlay(){
+    document.getElementById("tutorial-overlay")?.remove();
+  }
+  function showTipModal(tipId){
+    const tip = getTipById(tipId);
+    if (!tip){ if (tryShowTipFlow()) return; render(); return; }
+    const body = resolveTipBody(tip, CONFIG, money);
+    let el = document.getElementById("tutorial-overlay");
+    if (!el){
+      el = document.createElement("div");
+      el.id = "tutorial-overlay";
+      document.body.appendChild(el);
+    }
+    el.className = "tutorial";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.innerHTML = `<div class="card">
+        <p class="na">PRO TIP</p>
+        <h2 id="modal-title">${tip.title}</h2><p>${body}</p>
+        <div class="card-actions">
+          <button type="button" id="tskip">SKIP ALL</button>
+          <button type="button" class="amber" id="tnext">OK</button>
+        </div>
+      </div>`;
+    const dismissTip = ()=>{
+      markTipSeen(tipId, tipsState);
+      saveTips(tipsState);
+      hideTipOverlay();
+      modal = null;
+      modalEscape = null;
+      if (tryShowTipFlow()) return;
+      render();
+    };
+    const skipAll = ()=>{
+      skipAllTips(tipsState);
+      saveTips(tipsState);
+      pendingTipQueue = [];
+      hideTipOverlay();
+      modal = null;
+      modalEscape = null;
+      render();
+    };
+    el.querySelector("#tnext").onclick = dismissTip;
+    el.querySelector("#tskip").onclick = skipAll;
+    modal = ()=>{};
+    modal._tipFlow = true;
+    modalEscape = skipAll;
+  }
+  function tryShowTipFlow(){
+    if (modal && !modal._tipFlow) return false;
+    if (!pendingTipQueue.length) return false;
+    showTipModal(pendingTipQueue.shift());
+    return true;
+  }
+  function tryShowPostFlow(){
+    if (tryShowAchievementFlow()) return true;
+    if (tryShowTipFlow()) return true;
     return false;
   }
   function showAchievementFoundPopup(){
@@ -282,6 +350,7 @@ if (typeof document !== "undefined") {
         modalEscape = null;
         if (pendingUnlockQueue.length) showAchievementFoundPopup();
         else if (pendingCompleteQueue.length) showLedgerCompletionPopup(pendingCompleteQueue[0]);
+        else if (tryShowTipFlow()) return;
         else restoreLedgerReturn();
       };
     };
@@ -332,7 +401,6 @@ if (typeof document !== "undefined") {
       if(el) el.textContent = "Could not save — storage may be full or disabled.";
     }
   }
-  const TUTORIAL_KEY = "gw:tutorialDone";
   function load(){
     try{
       const raw = localStorage.getItem(SAVE_KEY);
@@ -508,56 +576,6 @@ if (typeof document !== "undefined") {
     ],
   };
 
-  function maybeTutorial(){
-    if(localStorage.getItem(TUTORIAL_KEY)) return;
-    const steps = [
-      {title:"THE DON'S DEBT", body:`Your debt compounds at ${Math.round(CONFIG.loanInterest*100)}% every day you travel. Pay him down at Little Italy before it eats your profits — the Don caps total debt at ${money(CONFIG.maxTotalDebt)}.`},
-      {title:"THE FAMILY VAULT", body:`Bank your cash at Little Italy only. Savings earn ${Math.round(CONFIG.bankInterest*100)}% daily — plus a ${Math.round(CONFIG.conservativeBankBonus*100)}% bonus when your debt is under half the cap.`},
-      {title:"PACK HEAT", body:"Feds show up on the road. Buy guns when offered — without one, you can only run or bribe."},
-      {title:"LOOSE CASH", body:"Muggings hit harder when you're carrying a lot of cash. Bank it at Little Italy before you travel — the streets notice a fat wallet."},
-    ];
-    let step = 0;
-    function hideTutorial(){
-      document.getElementById("tutorial-overlay")?.remove();
-    }
-    function finishTutorial(){
-      localStorage.setItem(TUTORIAL_KEY, "1");
-      hideTutorial();
-      modal = null;
-      modalEscape = null;
-      render();
-    }
-    function showStep(){
-      if(step >= steps.length){
-        finishTutorial();
-        return;
-      }
-      const s = steps[step];
-      let el = document.getElementById("tutorial-overlay");
-      if(!el){
-        el = document.createElement("div");
-        el.id = "tutorial-overlay";
-        document.body.appendChild(el);
-      }
-      el.className = "tutorial";
-      el.setAttribute("role", "dialog");
-      el.setAttribute("aria-modal", "true");
-      el.innerHTML = `<div class="card">
-          <p class="na">Tip ${step+1}/${steps.length}</p>
-          <h2 id="modal-title">${s.title}</h2><p>${s.body}</p>
-          <div class="card-actions">
-            <button type="button" id="tskip">SKIP</button>
-            <button type="button" class="amber" id="tnext">${step===steps.length-1?"PLAY":"NEXT"}</button>
-          </div>
-        </div>`;
-      el.querySelector("#tnext").onclick = ()=>{ step++; showStep(); };
-      el.querySelector("#tskip").onclick = finishTutorial;
-      modal = ()=>{};
-      modalEscape = finishTutorial;
-    }
-    showStep();
-  }
-
   function render(){
     const crt = document.getElementById("crt");
     if (ledgerView && !modal){
@@ -607,13 +625,11 @@ if (typeof document !== "undefined") {
     }
     bindMuteButton(document.getElementById("audio-mute"));
     if (A()) A().preload("music.title");
-    document.getElementById("new").onclick = ()=>{ startNewGame(); render(); maybeTutorial(); };
+    document.getElementById("new").onclick = ()=>{ startNewGame(); render(); };
     document.getElementById("cont").onclick = ()=>{
       const v=load();
       if(v){
         S=v; migrateRunStats(S); checkRunAchievements(); render();
-        if (tryShowAchievementFlow()) return;
-        maybeTutorial();
       }
     };
     document.getElementById("scores").onclick = renderScores;
@@ -699,6 +715,9 @@ if (typeof document !== "undefined") {
     app.querySelectorAll("[data-sell]").forEach(b=> b.onclick=()=>openTrade(b.dataset.sell,"sell"));
     document.getElementById("travel").onclick = renderTravel;
     const bk=document.getElementById("bankbtn"); if(bk && S.location===HOME) bk.onclick = openBank;
+    if (S.day === 1) emitTipEvent("game:firstMarket", { day: S.day });
+    if (S.location === HOME) emitTipEvent("location:donAvailable", { location: S.location });
+    if (!modal) tryShowPostFlow();
     save();
   }
 
@@ -757,7 +776,7 @@ if (typeof document !== "undefined") {
         afterMarketAction(`${mode==="buy"?"Bought":"Sold"} ${qty} ${d.name}.`);
         checkRunAchievements();
         modal=null;
-        if (tryShowAchievementFlow()) return;
+        if (tryShowPostFlow()) return;
         render();
       };
     };
@@ -766,6 +785,7 @@ if (typeof document !== "undefined") {
 
   /* ---------- the Don & the bank (in-DOM inputs) ---------- */
   function openBank(){
+    emitTipEvent("bank:opened", { location: S.location });
     let action = null;
     modal = function(){
       const A = {
@@ -824,7 +844,7 @@ if (typeof document !== "undefined") {
           afterMarketAction(a.msg(qty));
           checkRunAchievements();
           action=null;
-          if (tryShowAchievementFlow()) return;
+          if (tryShowPostFlow()) return;
           render();
         };
       }
@@ -867,6 +887,7 @@ if (typeof document !== "undefined") {
     audioPlay("sfx.travel.engineStart");
     audioPlay("sfx.travel.dayTick");
     modal=null; S.location=dest; S.day+=1;
+    emitTipEvent("travel:dayAdvanced", { day: S.day });
     audioPlay("sfx.travel.arrival");
     audioPlay("sfx.travel.screech");
     const eventsBefore = countEventAchievementsUnlocked(ledger);
@@ -925,7 +946,7 @@ if (typeof document !== "undefined") {
       }
       checkRunAchievements();
       save();
-      if (tryShowAchievementFlow()) return;
+      if (tryShowPostFlow()) return;
       render();
     }, marketEvent);
   }
@@ -1068,6 +1089,7 @@ if (typeof document !== "undefined") {
     render();
   }
   function eventMugging(next){
+    emitTipEvent("event:mugging", {});
     const loss=Math.min(S.cash, randInt(50, Math.max(100, Math.round(S.cash*0.15))));
     S.cash-=loss; logMsg(`Ambushed — lost ${money(loss)}.`);
     const mugV = pick([
@@ -1123,6 +1145,7 @@ if (typeof document !== "undefined") {
     );
   }
   function eventGun(next){
+    emitTipEvent("event:gunOffer", {});
     if (S.guns >= CONFIG.maxGuns){ next(); return; }
     const base=randInt(1500,2500);
     const cost=gunEventCost(base, S.guns);
@@ -1146,6 +1169,7 @@ if (typeof document !== "undefined") {
   }
   /* Feds encounter — same combat math as the original cop fight */
   function eventFeds(next){
+    if (S.guns === 0) emitTipEvent("event:fedsUnarmed", { guns: 0 });
     let maxCops = 1 + Math.min(3, Math.floor(S.day / 8));
     if (S.day > 20) maxCops += 1;
     let cops = randInt(1, maxCops);
@@ -1273,7 +1297,7 @@ if (typeof document !== "undefined") {
     checkEndAchievements();
     save();
     saveLedger();
-    if (tryShowAchievementFlow()) { render(); return; }
+    if (tryShowPostFlow()) { render(); return; }
     render();
   }
   function renderGameOver(){
@@ -1313,6 +1337,15 @@ if (typeof document !== "undefined") {
     document.getElementById("menu").onclick = ()=>{ S=null; render(); };
   }
 
+
+  window.GangWarsTips = {
+    getTipsState: () => tipsState,
+    getPendingTips: () => pendingTipQueue.slice(),
+    emitTipEvent,
+    tryShowTipFlow,
+    tryShowPostFlow,
+    saveTipsState: () => saveTips(tipsState),
+  };
 
   window.GangWarsLedger = {
     getLedger: () => ledger,
