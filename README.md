@@ -32,7 +32,7 @@ The market is volatile. Shortages send prices through the roof. Flooded supply c
 |Dock #13          |Where everything enters the city. High volume, unpredictable|
 |Kitty Kat Club    |Jazz, nightlife, and deals made over drinks                 |
 |Uptown            |Wealthy clientele. Premium prices for premium goods         |
-|Warehouse District|No questions asked. The city’s logistical underworld        |
+|Warehouse         |No questions asked. The city’s logistical underworld        |
 |City Hall         |The law is for sale. The price changes daily                |
 
 -----
@@ -72,7 +72,7 @@ Each time you travel, the city may have something waiting:
 
 **Rare events (~1 in 10 runs):**
 
-Historical figures — Capone, Luciano, Rothstein, Armstrong and others — trigger a forced price surge on their associated commodity in a specific district. You have to already be there to benef[...]
+Historical figures — Capone, Luciano, Rothstein, Armstrong and others — trigger a forced price surge on their associated commodity in a specific district. You have to already be there to bef[...]
 
 **Super Rare (~1 in 20 runs):**
 A major city event drives all prices in its connected district to 5× normal for a single day. Babe Ruth. Lindbergh. The Prince of Wales. Two events per district, twelve in all.
