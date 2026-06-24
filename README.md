@@ -10,7 +10,7 @@ Runs as a Progressive Web App — installs on your phone, plays fully offline, n
 
 ## Gameplay
 
-You have **30 days** and **$10,000** to make your fortune running contraband across six territories. The Don lent you **$25,000** to get started and he charges **10% interest per day**, compounding. Pay him back before day 30 or the debt will swallow everything you’ve made.
+You have **30 days** and **$10,000** to make your fortune running contraband across six territories. The Don lent you **$25,000** to get started and he charges **10% interest per day**, compoundin[...]
 
 Each day you can:
 
@@ -18,7 +18,7 @@ Each day you can:
 - **Move** to another territory — prices reset every time you travel
 - **Visit the Don** (Little Italy only) to repay debt, borrow more, or deposit cash in the bank at 6% daily interest
 
-The market is volatile. Shortages send prices through the roof. Flooded supply crashes them. Events — from police raids to celebrity appearances — can reshape the market for a day. Today’s price is all you get on the buy screen; when you sell, the game shows your average cost and profit % vs the current quote. Read the city, move fast.
+The market is volatile. Shortages send prices through the roof. Flooded supply crashes them. Events — from police raids to celebrity appearances — can reshape the market for a day. Today’s p[...]
 
 **Your score** is your net worth on day 30: cash + bank − debt. Score scales smoothly from 0 to **100**; a perfect **100** requires **$50M** net (Big Daddy J).
 
@@ -39,7 +39,7 @@ The market is volatile. Shortages send prices through the roof. Flooded supply c
 
 ## Goods
 
-Ten contraband tiers — from street moonshine to diamonds. Prices change every day you travel; market events can push them far above or below what you’ve seen before. The buy/sell screens show only today’s quote (not historical low/high bands). On **sell**, you also see your average cost and profit **%** vs the current price.
+Ten contraband tiers — from street moonshine to diamonds. Prices change every day you travel; market events can push them far above or below what you’ve seen before. The buy/sell screens show [...]
 
 |Good        |Family  |
 |------------|--------|
@@ -71,7 +71,8 @@ Each time you travel, the city may have something waiting:
 - **The Feds** — Agent Hayes and his men. Fight, run, or pay them off
 
 **Rare events (~1 in 10 runs):**
-Historical figures — Capone, Luciano, Rothstein, Armstrong and others — trigger a forced price surge on their associated commodity in a specific district. You have to already be there to benefit.
+
+Historical figures — Capone, Luciano, Rothstein, Armstrong and others — trigger a forced price surge on their associated commodity in a specific district. You have to already be there to benef[...]
 
 **Super Rare (~1 in 20 runs):**
 A major city event drives all prices in its connected district to 5× normal for a single day. Babe Ruth. Lindbergh. The Prince of Wales. Two events per district, twelve in all.
@@ -98,7 +99,7 @@ Open **LEDGER** from the title screen to browse five categories:
 | Godlike | 5 | Unknown |
 | Golden Godlike | 1 | Unknown |
 
-Unlocks during a run show an **Achievement Found** popup, then either a title reveal (general) or full event card (rare+), and finally the entry in the ledger list with icon, title, and description.
+Unlocks during a run show an **Achievement Found** popup, then either a title reveal (general) or full event card (rare+), and finally the entry in the ledger list with icon, title, and descripti[...]
 
 Complete all 40 to earn **Crime Lord** status.
 
@@ -149,7 +150,6 @@ Once installed, the game works fully offline.
 |`ledger-ui.js`    |Crime Ledger screen rendering (base PNG + overlays)  |
 |`audio.js`        |Audio catalog, music/SFX playback, mute settings     |
 |`assets/audio/`   |Music and sound effect `.ogg` files                  |
-|`ledger-blueprint.js`|Runtime overlay layout for Crime Ledger home screen |
 |`assets/ledger/`  |Crime Ledger screen art, header images, and icons    |
 |`title-screen.png`|Title screen artwork                               |
 |`manifest.json`   |PWA manifest — name, icons, display settings         |
@@ -175,11 +175,11 @@ Once installed, the game works fully offline.
 
 ## Design Notes
 
-Gang Wars is a faithful Prohibition-era reskin of the classic 1984 pocket trading game (John E. Dell). The core loop — volatile prices, compounding debt, territory movement, combat with law enforcement — is reproduced from the original. All names, locations, flavor text, historical references, and artwork are original.
+Gang Wars is a faithful Prohibition-era reskin of the classic 1984 pocket trading game (John E. Dell). The core loop — volatile prices, compounding debt, territory movement, combat with law enf[...]
 
 Price ranges are scaled ×5 from the original documented values across 10 distinct trading tiers, giving the same risk/reward structure at a scale that feels right on modern screens.
 
-The event system layers historical atmosphere over the mechanical core: 10 rare events tied to real Prohibition-era figures, 12 super-rare events drawn from 1929 headlines (two per district), and the Godlike tier — Big Daddy J — for runs that will be talked about.
+The event system layers historical atmosphere over the mechanical core: 10 rare events tied to real Prohibition-era figures, 12 super-rare events drawn from 1929 headlines (two per district), and[...]
 
 -----
 
