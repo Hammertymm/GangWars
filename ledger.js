@@ -63,7 +63,7 @@ const LEDGER_CATEGORIES = [
       { id: 'feast', title: 'THE FEAST', description: 'Little Italy floods the streets.' },
       { id: 'chairman', title: 'THE CHAIRMAN', description: 'A young boss takes the head table.' },
       { id: 'garage', title: 'THE GARAGE', description: 'Something ugly in the warehouse garage.' },
-      { id: 'picket_line', title: 'THE PICKET LINE', description: 'The Warehouse District stops moving.' },
+      { id: 'picket_line', title: 'THE PICKET LINE', description: 'The Warehouse stops moving.' },
     ],
   },
   {
