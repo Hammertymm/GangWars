@@ -11,4 +11,4 @@
 | **THE FEAST** | `events/super_feast.png` | Little Italy takes to the streets. Lanterns glow, saints watch, and every back room does brisk business. |
 | **THE CHAIRMAN** | `events/super_chairman.png` | A young boss takes the head table in Little Italy. Quiet words, thick envelopes, expensive consequences. |
 | **THE GARAGE** | `events/super_garage.png` | Something ugly happened in the warehouse garage. Now every crate has a story and a higher price. |
-| **THE PICKET LINE** | `events/super_picket_line.png` | The Warehouse District stops moving. The workers fold their arms, and the prices stand at attention. |
+| **THE PICKET LINE** | `events/super_picket_line.png` | The Warehouse stops moving. The workers fold their arms, and the prices stand at attention. |
