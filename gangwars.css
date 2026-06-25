@@ -232,7 +232,7 @@
   html.title-route body{display:block;}
   #crt.title-mode .masthead{display:none;}
   #crt.title-mode{position:fixed;inset:0;width:100%;max-width:none;height:100%;max-height:none;
-    min-height:0;padding:0;margin:0;background:#000;overflow:hidden;}
+    min-height:0;padding:0;margin:0 auto;background:#000;overflow:hidden;}
   #crt.title-mode #app{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;}
   .title-play{position:absolute;inset:0;width:100%;height:100%;}
   .title-screen{position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#000;}
@@ -553,7 +553,7 @@
   .ev-tier-acts button{font-size:.86rem;padding:13px 8px;letter-spacing:1px;}
 
   /* === PORTRAIT ONLY — portrait layout fixed; rotate viewport on touch landscape === */
-  #portrait-root{width:100%;height:100%;min-height:0;}
+  #portrait-root{width:100%;height:100%;min-height:0;display:flex;justify-content:center;align-items:stretch;}
   @media (orientation:landscape) and (pointer:coarse){
     html,body{overflow:hidden;}
     #portrait-root{position:fixed;top:0;left:0;width:100vh;height:100vw;
