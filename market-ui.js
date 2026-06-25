@@ -61,7 +61,7 @@
         <div class="bot-bar">
           <div class="bot-stats">
             <div class="bot-stat"><span class="bot-label">CASH</span><span class="bot-val">${money(S.cash)}</span></div>
-            <div class="bot-stat right"><span class="bot-val red">${money(S.debt)}</span><span class="bot-label">DON DEBT</span></div>
+            <div class="bot-stat right"><span class="bot-label">DON DEBT</span><span class="bot-val red">${money(S.debt)}</span></div>
           </div>
           <div class="bot-sub">
             <span>BANK ${money(S.bank)}</span>
