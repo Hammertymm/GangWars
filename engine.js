@@ -187,11 +187,12 @@ const RANKS = [
   'Underboss','Consigliere','Boss','Godfather','Big Daddy J',
 ];
 const RANK_MIN_WORTH = [
-  0, 10000000, 15000000, 20000000, 25000000,
+  5000000, 10000000, 15000000, 20000000, 25000000,
   30000000, 35000000, 40000000, 45000000, 50000000,
 ];
 function getRank(worth){
   const nw = Math.max(0, worth);
+  if (nw < RANK_MIN_WORTH[0]) return 'Nobody';
   for (let i = RANKS.length - 1; i >= 0; i--) {
     if (nw >= RANK_MIN_WORTH[i]) return RANKS[i];
   }

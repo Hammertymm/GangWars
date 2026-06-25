@@ -101,6 +101,7 @@ if (typeof document !== "undefined") {
   let saveCorrupted = false;
   function announce(msg){ const el = document.getElementById("game-live"); if(el) el.textContent = msg; }
   let S = null, modal = null;
+  let achModalFocusTrap = null, achModalPrevFocus = null;
   let ledgerView = null, ledgerViewCat = null, ledgerFocusId = null, ledgerReturn = null;
   let pendingUnlockQueue = [], pendingCompleteQueue = [], pendingTipQueue = [];
   const pendingEventCards = {};
@@ -323,18 +324,36 @@ if (typeof document !== "undefined") {
   }
   function showAchievementFoundPopup(){
     audioPlay("sfx.achievement.found");
+    achModalPrevFocus = document.activeElement;
     modal = function(){
       modal._achFlow = true;
-      app.innerHTML = `<div class="modal"><div class="card ach-found-card" role="dialog" aria-modal="true">
-        <div class="ach-found-popup">
-          <div class="ach-found-rule">════════════════════</div>
-          <div class="ach-found-title">ACHIEVEMENT FOUND</div>
-          <div class="ach-found-body">A NEW ENTRY HAS BEEN<br>ADDED TO YOUR LEDGER</div>
-          <button type="button" class="full amber" id="achView">OK</button>
-          <div class="ach-found-rule">════════════════════</div>
-        </div>
-      </div></div>`;
-      document.getElementById("achView").onclick = ()=>{
+      app.innerHTML = `<div class="modal achievement-modal-overlay">
+        <section class="achievement-modal" role="dialog" aria-modal="true" aria-labelledby="achievement-modal-title">
+          <div class="achievement-modal__divider" aria-hidden="true">
+            <span class="achievement-modal__divider-lines"></span>
+            <span class="achievement-modal__divider-diamond"></span>
+            <span class="achievement-modal__divider-lines"></span>
+          </div>
+          <h2 id="achievement-modal-title" class="achievement-modal__title">ACHIEVEMENT FOUND</h2>
+          <p class="achievement-modal__message">A NEW ENTRY HAS BEEN<br>ADDED TO YOUR LEDGER</p>
+          <button type="button" class="achievement-modal__button" id="achView">OK</button>
+          <div class="achievement-modal__divider achievement-modal__divider--bottom" aria-hidden="true">
+            <span class="achievement-modal__divider-lines"></span>
+            <span class="achievement-modal__divider-diamond"></span>
+            <span class="achievement-modal__divider-lines"></span>
+          </div>
+        </section>
+      </div>`;
+      const btn = document.getElementById("achView");
+      achModalFocusTrap = (e)=>{
+        if (e.key !== "Tab") return;
+        e.preventDefault();
+        btn?.focus();
+      };
+      document.addEventListener("keydown", achModalFocusTrap);
+      btn.onclick = ()=>{
+        removeAchModalFocusTrap();
+        achModalPrevFocus = null;
         const id = pendingUnlockQueue[0];
         modal._achFlow = false;
         modal = null;
@@ -346,6 +365,11 @@ if (typeof document !== "undefined") {
         else showEventAchievementReveal(id);
       };
       modalEscape = ()=>{
+        removeAchModalFocusTrap();
+        if (achModalPrevFocus && achModalPrevFocus.focus) {
+          try { achModalPrevFocus.focus(); } catch (_) {}
+        }
+        achModalPrevFocus = null;
         modal._achFlow = false;
         modal = null;
         modalEscape = null;
@@ -522,6 +546,12 @@ if (typeof document !== "undefined") {
     card.setAttribute("aria-modal","true");
     const h2 = card.querySelector("h2");
     if(h2 && !card.getAttribute("aria-labelledby")) card.setAttribute("aria-labelledby", h2.id || (h2.id = "modal-title"));
+  }
+  function removeAchModalFocusTrap(){
+    if (achModalFocusTrap) {
+      document.removeEventListener("keydown", achModalFocusTrap);
+      achModalFocusTrap = null;
+    }
   }
   function dismissModal(){
     modal = null;

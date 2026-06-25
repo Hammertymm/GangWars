@@ -59,10 +59,12 @@
     display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
   .market-play .loc-day{flex:0 0 auto;display:flex;align-items:center;justify-content:center;
     padding:8px 10px 8px 6px;z-index:2;}
-  .market-play .day-counter{width:81px;max-width:81px;display:flex;flex-direction:column;align-items:center;gap:5px;}
+  .market-play .day-counter{width:81px;max-width:81px;display:flex;flex-direction:column;align-items:center;}
   .market-play .day-counter-label{font-family:var(--font-deco);font-size:.58rem;font-weight:700;
-    letter-spacing:3px;text-transform:uppercase;color:var(--dim);}
-  .market-play .day-counter-frame{width:100%;padding:5px;border-radius:6px;
+    letter-spacing:3px;text-transform:uppercase;color:var(--dim);
+    position:absolute;top:0;left:50%;transform:translate(-50%,-50%);z-index:3;white-space:nowrap;
+    padding:0 4px;background:linear-gradient(145deg,#8a7344 0%,#c9a85a 50%,#6b5630 100%);}
+  .market-play .day-counter-frame{position:relative;width:100%;padding:5px;border-radius:6px;
     background:linear-gradient(145deg,#8a7344 0%,#c9a85a 18%,#6b5630 50%,#a88942 82%,#5c4a28 100%);
     box-shadow:0 2px 6px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,240,200,.25),inset 0 -1px 0 rgba(0,0,0,.45);}
   .market-play .day-counter-inset{border-radius:4px;padding:6px 4px 5px;
@@ -80,7 +82,9 @@
     font-family:var(--font-deco);font-size:clamp(1.35rem,6.5vw,1.75rem);font-weight:700;color:var(--amber);
     text-shadow:0 0 12px rgba(231,200,121,.35),0 1px 0 rgba(0,0,0,.9);letter-spacing:-1px;}
   .market-play .day-counter-sub{font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;
-    color:rgba(156,141,115,.85);}
+    color:rgba(156,141,115,.85);
+    position:absolute;bottom:0;left:50%;transform:translate(-50%,50%);z-index:3;white-space:nowrap;
+    padding:0 4px;background:linear-gradient(145deg,#8a7344 0%,#c9a85a 50%,#6b5630 100%);}
 
   /* mid region (transparent — cards float) */
   .market-mid{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;
@@ -351,11 +355,66 @@
     padding:10px 36px;font-family:inherit;font-size:clamp(.72rem,3.2vw,.84rem);letter-spacing:2px;cursor:pointer;border-radius:7px;}
   .ach-card-next:active{background:var(--amber);color:#1a1206;}
   @keyframes achCardFade{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
-  .ach-found-popup{text-align:center;padding:4px 2px;}
   .ach-found-rule{color:var(--amber);letter-spacing:1px;font-size:clamp(.62rem,2.8vw,.72rem);margin:2px 0;}
-  .ach-found-title{font-family:var(--font-display);font-size:clamp(.84rem,3.8vw,.96rem);color:var(--amber);letter-spacing:2px;margin:8px 0 6px;}
-  .ach-found-body{font-size:clamp(.68rem,3vw,.78rem);color:var(--text);line-height:1.45;margin:6px 0 10px;}
-  .card.ach-found-card{width:auto;max-width:min(88vw,300px);padding:12px 14px 10px;}
+
+  /* Achievement Found popup — compact Art Deco panel */
+  .modal.achievement-modal-overlay{
+    background:rgba(0,0,0,.76);z-index:200;
+    padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom));
+    animation:ach-modal-overlay-in 220ms ease-out;}
+  .achievement-modal{
+    --ach-gold:#caa85e;--ach-ivory:#efe5d2;--ach-gold-text:#d5b66a;
+    width:78vw;max-width:490px;min-width:min(300px,100%);
+    padding:34px 28px;margin:0;
+    background:
+      radial-gradient(circle at 50% 40%,rgba(83,62,28,.16),rgba(23,19,13,.96) 58%,rgba(12,10,7,.98) 100%);
+    border:1.5px solid var(--ach-gold);border-radius:18px;
+    box-shadow:0 12px 40px rgba(0,0,0,.65),0 0 24px rgba(202,168,94,.06);
+    text-align:center;animation:ach-modal-panel-in 220ms ease-out;}
+  .achievement-modal__divider{
+    display:flex;align-items:center;gap:8px;width:100%;height:12px;}
+  .achievement-modal__divider-lines{
+    flex:1 1 0;min-width:0;height:12px;display:flex;flex-direction:column;
+    justify-content:center;gap:4px;}
+  .achievement-modal__divider-lines::before,
+  .achievement-modal__divider-lines::after{
+    content:"";display:block;height:1px;background:var(--ach-gold);}
+  .achievement-modal__divider-diamond{
+    flex:0 0 auto;width:8px;height:8px;border:1.5px solid var(--ach-gold);
+    transform:rotate(45deg);background:transparent;}
+  .achievement-modal__title{
+    margin:30px 0 0;font-family:var(--font-display);font-weight:700;
+    font-size:clamp(25px,6.2vw,31px);letter-spacing:.035em;line-height:1.05;
+    text-transform:uppercase;
+    background:linear-gradient(180deg,#f1d88f 0%,#c9a45a 44%,#7b5726 72%,#d4b66d 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 1px 0 rgba(255,230,160,.12),0 2px 4px rgba(0,0,0,.8);}
+  .achievement-modal__message{
+    margin:28px 0;font-size:clamp(12.375px,3.3vw,16.5px);font-weight:400;
+    letter-spacing:.045em;line-height:1.35;color:var(--ach-ivory);
+    text-transform:uppercase;}
+  .achievement-modal__button{
+    display:block;width:100%;min-height:50px;height:50px;margin:0;padding:0;
+    border:1.5px solid var(--ach-gold);border-radius:8px;
+    background:rgba(20,16,10,.55);color:var(--ach-gold-text);
+    font-family:inherit;font-size:15.075px;font-weight:500;letter-spacing:.18em;
+    text-transform:uppercase;cursor:pointer;line-height:1;}
+  .achievement-modal__button:active{
+    transform:translateY(1px);background:rgba(202,168,94,.1);border-color:#e1c77f;color:var(--ach-gold-text);}
+  .achievement-modal__button:focus-visible{
+    outline:2px solid rgba(225,199,127,.75);outline-offset:3px;}
+  .achievement-modal__divider--bottom{margin-top:30px;}
+  @keyframes ach-modal-overlay-in{from{opacity:0}to{opacity:1}}
+  @keyframes ach-modal-panel-in{
+    from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+  @media (max-width:400px){
+    .achievement-modal{padding:28px 22px;}
+    .achievement-modal__title{margin-top:24px;font-size:clamp(22px,5.4vw,28px);letter-spacing:.02em;}
+    .achievement-modal__message{margin:22px 0;font-size:12.375px;letter-spacing:.035em;}
+    .achievement-modal__divider--bottom{margin-top:24px;}
+    .achievement-modal__button{min-height:46px;height:46px;font-size:13.87px;}}
+  @media (prefers-reduced-motion:reduce){
+    .modal.achievement-modal-overlay,.achievement-modal{animation:none;}}
 
   button{font-family:inherit;background:var(--btnbg);color:var(--text);border:1px solid var(--btnborder);
     padding:12px 12px;font-size:.84rem;letter-spacing:1px;cursor:pointer;border-radius:7px;}

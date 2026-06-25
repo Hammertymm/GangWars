@@ -41,13 +41,13 @@
           </div>
           <div class="loc-day">
             <div class="day-counter" aria-label="Day ${S.day} of ${ctx.CONFIG.days}">
-              <div class="day-counter-label">Day</div>
               <div class="day-counter-frame">
+                <span class="day-counter-label">Day</span>
                 <div class="day-counter-inset">
                   <div class="day-flip" aria-hidden="true">${dayFlip}</div>
                 </div>
+                <span class="day-counter-sub">of ${ctx.CONFIG.days}</span>
               </div>
-              <div class="day-counter-sub">of ${ctx.CONFIG.days}</div>
             </div>
           </div>
         </div>

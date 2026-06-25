@@ -46,6 +46,7 @@ const ASSETS = [
   './cards/wise-guy-portrait.jpg',
   './cards/associate-portrait.jpg',
   './cards/street-runner-portrait.jpg',
+  './cards/nobody-portrait.jpg',
   './cards/big-daddy-j.jpg',
   './events/the_feds.jpg',
   './events/ambushed_rolled.jpg',
