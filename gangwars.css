@@ -552,34 +552,24 @@
   .ev-tier-acts{flex:0 0 auto;width:100%;}
   .ev-tier-acts button{font-size:.86rem;padding:13px 8px;letter-spacing:1px;}
 
-  /* Desktop browser — exact phone layout (390px) scaled to fit viewport */
+  /* Desktop browser — same 853×1844 contain fit as welcome screen (layoutGameScreen) */
   @media (pointer:fine) and (min-width:560px){
-    #portrait-root{align-items:center;justify-content:center;overflow:visible;}
+    #portrait-root{align-items:center;justify-content:center;}
     #crt.game-mode,#crt.ledger-mode{
-      --phone-w:390px;
-      --phone-h:calc(var(--phone-w) * 1844 / 853);
       container-type:inline-size;
-      width:var(--phone-w);
-      height:var(--phone-h);
-      max-width:var(--phone-w);
-      max-height:var(--phone-h);
       flex:0 0 auto;
-      align-self:center;
-      transform:scale(min(calc(100vw / var(--phone-w)), calc(100dvh / var(--phone-h))));
-      transform-origin:center center;}
-    .market-play .loc-header{flex:0 0 82px;height:82px;min-height:82px;max-height:82px;}
+      align-self:center;}
+    .market-play .loc-header{flex:0 0 clamp(82px,10.7vh,104px);height:clamp(82px,10.7vh,104px);min-height:82px;max-height:104px;}
     .market-play .loc-header-title{font-size:clamp(1.05rem,4.8cqw,1.44rem);}
     .market-play .loc-header-desc{font-size:clamp(.744rem,3.12cqw,.912rem);}
     .market-golden-banner{font-size:clamp(.58rem,2.5cqw,.68rem);}
     .market-head-title{font-size:clamp(1.08rem,5.1cqw,1.464rem);}
     .goods-icon-wrap.no-icon::after{font-size:clamp(18px,5cqw,28px);}
     .goods-name{font-size:clamp(.7rem,3cqw,.9rem);}
-    .market-row .price-cell{font-size:clamp(.9rem,4.65cqw,1.15rem);}
+    .market-row .price-cell{font-size:clamp(.95rem,4.65cqw,1.2rem);}
     .market-row .stock-cell{font-size:clamp(1rem,4.8cqw,1.35rem);}
     .market-play .market-actions button{font-size:clamp(.6rem,2.5cqw,.66rem);}
     .market-play .flip-digit span{font-size:clamp(1.35rem,6.5cqw,1.75rem);}
-    .market-rows{grid-template-rows:repeat(5,minmax(0,1fr));}
-    .card-name-row,.card-price-row{flex:1 1 auto;min-height:0;}
     .market-play .bot-stat .bot-label{font-size:clamp(.7rem,3cqw,.9rem);}
     .market-play .bot-val{font-size:clamp(1.05rem,4.65cqw,1.5rem);}
     .market-play .actions button{font-size:clamp(.64rem,2.75cqw,.76rem);}

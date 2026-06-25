@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" />
-<link rel="stylesheet" href="gangwars.css?v=43">
+<link rel="stylesheet" href="gangwars.css?v=44">
 
 <!-- Privacy-friendly analytics by Plausible -->
 <script async src="https://plausible.io/js/pa-vDLGM9babFFQ5szxirltK.js"></script>
@@ -155,6 +155,33 @@ if (typeof document !== "undefined") {
     cover.style.left = ((vw - sw) / 2 + (vv?.offsetLeft || 0)) + "px";
     cover.style.top = ((vh - sh) / 2 + (vv?.offsetTop || 0)) + "px";
   }
+  function layoutGameScreen(){
+    const crt = document.getElementById("crt");
+    if (!crt) return;
+    const desktop = window.matchMedia("(pointer:fine) and (min-width:560px)").matches;
+    const active = crt.classList.contains("game-mode") || crt.classList.contains("ledger-mode");
+    if (!desktop || !active) {
+      crt.style.width = "";
+      crt.style.height = "";
+      crt.style.maxWidth = "";
+      crt.style.maxHeight = "";
+      return;
+    }
+    const { w: W, h: H } = TITLE_CANVAS;
+    const vv = window.visualViewport;
+    const vw = vv ? vv.width : window.innerWidth;
+    const vh = vv ? vv.height : window.innerHeight;
+    if (!vw || !vh) return;
+    const scale = Math.min(vw / W, vh / H);
+    crt.style.width = (W * scale) + "px";
+    crt.style.height = (H * scale) + "px";
+    crt.style.maxWidth = "none";
+    crt.style.maxHeight = "none";
+  }
+  function layoutScreens(){
+    layoutTitleScreen();
+    layoutGameScreen();
+  }
   function openLedgerCategory(catId){
     if (!LEDGER_CATEGORIES.find(c => c.id === catId)) return;
     ledgerView = "category";
@@ -246,6 +273,7 @@ if (typeof document !== "undefined") {
     app.dataset.ledgerCategory = ledgerViewCat || "";
     app.dataset.ledgerFocus = ledgerFocusId || "";
     LedgerUI.render(app, ledgerUiCtx());
+    layoutGameScreen();
   }
   const EVENT_IMG_VERSION = "events-v7";
   function versionEventImage(path){
@@ -776,6 +804,7 @@ if (typeof document !== "undefined") {
     }
     crt.classList.remove("ledger-mode");
     if (modal){ document.documentElement.classList.remove("title-route"); crt.classList.remove("title-mode"); crt.classList.add("game-mode"); modal();
+      layoutGameScreen();
       requestAnimationFrame(()=>{ const d=app.querySelector('[role="dialog"]'); if(!d) return; const f=d.querySelector('button:not([disabled]),input:not([disabled])'); if(f) f.focus(); });
       return; }
     if (!S){ document.documentElement.classList.add("title-route"); crt.classList.add("title-mode"); crt.classList.remove("game-mode"); renderTitle(); syncSceneAudio("title"); return; }
@@ -786,6 +815,7 @@ if (typeof document !== "undefined") {
     syncSceneAudio("market");
     emitMarketTips();
     schedulePostFlow();
+    layoutGameScreen();
   }
 
   function renderTitle(){
@@ -808,12 +838,12 @@ if (typeof document !== "undefined") {
     layoutTitleScreen();
     const coverImg = app.querySelector(".title-cover img");
     if (coverImg && !coverImg.complete) coverImg.addEventListener("load", layoutTitleScreen, { once: true });
-    if (!window._titleLayoutBound) {
-      window._titleLayoutBound = true;
-      window.addEventListener("resize", layoutTitleScreen);
-      window.addEventListener("orientationchange", layoutTitleScreen);
-      window.visualViewport?.addEventListener("resize", layoutTitleScreen);
-      window.visualViewport?.addEventListener("scroll", layoutTitleScreen);
+    if (!window._screenLayoutBound) {
+      window._screenLayoutBound = true;
+      window.addEventListener("resize", layoutScreens);
+      window.addEventListener("orientationchange", layoutScreens);
+      window.visualViewport?.addEventListener("resize", layoutScreens);
+      window.visualViewport?.addEventListener("scroll", layoutScreens);
     }
     bindMuteButton(document.getElementById("audio-mute"));
     if (A()) A().preload("music.title");
