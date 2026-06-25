@@ -61,7 +61,7 @@
     padding:8px 10px 8px 6px;z-index:2;}
   .market-play .day-counter{width:81px;max-width:81px;display:flex;flex-direction:column;align-items:center;}
   .market-play .day-counter-label{font-family:var(--font-deco);font-size:.58rem;font-weight:700;
-    letter-spacing:3px;text-transform:uppercase;color:var(--dim);
+    letter-spacing:3px;text-transform:uppercase;color:#1a1206;
     position:absolute;top:0;left:50%;transform:translate(-50%,-50%);z-index:3;white-space:nowrap;
     padding:0 4px;background:linear-gradient(145deg,#8a7344 0%,#c9a85a 50%,#6b5630 100%);}
   .market-play .day-counter-frame{position:relative;width:100%;padding:5px;border-radius:6px;
@@ -82,7 +82,7 @@
     font-family:var(--font-deco);font-size:clamp(1.35rem,6.5vw,1.75rem);font-weight:700;color:var(--amber);
     text-shadow:0 0 12px rgba(231,200,121,.35),0 1px 0 rgba(0,0,0,.9);letter-spacing:-1px;}
   .market-play .day-counter-sub{font-size:.52rem;letter-spacing:1.5px;text-transform:uppercase;
-    color:rgba(156,141,115,.85);
+    color:#1a1206;font-weight:700;
     position:absolute;bottom:0;left:50%;transform:translate(-50%,50%);z-index:3;white-space:nowrap;
     padding:0 4px;background:linear-gradient(145deg,#8a7344 0%,#c9a85a 50%,#6b5630 100%);}
 
