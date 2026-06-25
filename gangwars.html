@@ -838,13 +838,6 @@ if (typeof document !== "undefined") {
     layoutTitleScreen();
     const coverImg = app.querySelector(".title-cover img");
     if (coverImg && !coverImg.complete) coverImg.addEventListener("load", layoutTitleScreen, { once: true });
-    if (!window._screenLayoutBound) {
-      window._screenLayoutBound = true;
-      window.addEventListener("resize", layoutScreens);
-      window.addEventListener("orientationchange", layoutScreens);
-      window.visualViewport?.addEventListener("resize", layoutScreens);
-      window.visualViewport?.addEventListener("scroll", layoutScreens);
-    }
     bindMuteButton(document.getElementById("audio-mute"));
     if (A()) A().preload("music.title");
     document.getElementById("new").onclick = ()=>{ trackPlausible("Game Started"); startNewGame(); render(); };
@@ -1123,6 +1116,13 @@ if (typeof document !== "undefined") {
     saveLedger,
   };
 
+  if (!window._screenLayoutBound) {
+    window._screenLayoutBound = true;
+    window.addEventListener("resize", layoutScreens);
+    window.addEventListener("orientationchange", layoutScreens);
+    window.visualViewport?.addEventListener("resize", layoutScreens);
+    window.visualViewport?.addEventListener("scroll", layoutScreens);
+  }
   render();
 })();
 }
