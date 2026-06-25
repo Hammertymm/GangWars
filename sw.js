@@ -1,7 +1,7 @@
 /* Gang Wars — service worker
    Cache-first for app shell; network-first for icons so home-screen art updates. */
 
-const CACHE = 'gangwars-v163';
+const CACHE = 'gangwars-v170';
 const ASSETS = [
   './gangwars.html',
   './gangwars.css',
@@ -9,6 +9,13 @@ const ASSETS = [
   './ledger.js',
   './tips.js',
   './ledger-ui.js',
+  './scores-ui.js',
+  './event-ui.js',
+  './travel-ui.js',
+  './market-ui.js',
+  './bank-ui.js',
+  './standard-events.js',
+  './feds-event.js',
   './audio.js',
   './manifest.json',
   './banner.png',
@@ -222,13 +229,13 @@ const ASSETS = [
 
 const ICON_PATTERN = /(?:apple-touch-icon|icon-(?:180|192|512))\.png(?:\?.*)?$/;
 /** App shell — network-first so ledger/UI fixes reach installed PWAs without a stale trap. */
-const SHELL_PATTERN = /\/(gangwars\.html|gangwars\.css|engine\.js|ledger\.js|ledger-ui\.js|audio\.js|sw\.js)$/;
+const SHELL_PATTERN = /\/(gangwars\.html|gangwars\.css|engine\.js|ledger\.js|tips\.js|ledger-ui\.js|scores-ui\.js|event-ui\.js|travel-ui\.js|market-ui\.js|bank-ui\.js|standard-events\.js|feds-event\.js|audio\.js|sw\.js)$/;
 /** Ledger art — network-first so regenerated -base PNGs are not trapped in cache-first. */
 const LEDGER_PATTERN = /\/assets\/ledger\//;
 /** Goods art — network-first so replaced market icons show immediately after deploy. */
 const GOODS_PATTERN = /\/assets\/goods\/[^/]+\.png$/;
 /** Event art — network-first so regenerated event cards are not trapped in cache-first. */
-const EVENT_PATTERN = /\/events\/[^/]+\.png$/;
+const EVENT_PATTERN = /\/events\/[^/]+\.(?:jpg|png)$/;
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
