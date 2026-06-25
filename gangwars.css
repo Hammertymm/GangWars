@@ -198,7 +198,7 @@
   .market-play .bot-stat{flex-direction:row;align-items:baseline;justify-content:flex-start;gap:5px;min-width:0;}
   .market-play .bot-stat.right{justify-content:flex-end;}
   .market-play .bot-stat .bot-label{flex:0 0 auto;font-size:clamp(.7rem,3vw,.9rem);}
-  .market-play .bot-stat .bot-val{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .market-play .bot-stat .bot-val{flex:0 0 auto;overflow:visible;text-overflow:clip;white-space:nowrap;}
   .bot-sub{flex:0 0 auto;display:flex;justify-content:space-between;align-items:baseline;gap:4px 8px;margin-top:5px;
     padding-top:6px;border-top:1px solid rgba(201,162,74,.22);
     font-size:clamp(.7rem,3vw,.9rem);color:var(--dim);letter-spacing:.2px;white-space:nowrap;}
@@ -557,7 +557,7 @@
     #portrait-root{align-items:center;}
     #crt.game-mode,#crt.ledger-mode{
       container-type:inline-size;
-      width:min(540px,100vw,calc(100dvh * 853 / 1844));
+      width:min(540px,100vw);
       height:min(100dvh,calc(min(540px,100vw) * 1844 / 853));
       max-width:540px;
       flex:0 0 auto;
@@ -577,9 +577,11 @@
     .market-play .bot-val.dim{font-size:clamp(.72rem,3.2cqw,.88rem);}
     .market-play .actions button{font-size:clamp(.64rem,2.75cqw,.76rem);}
     .market-play .flip-digit span{font-size:clamp(1.35rem,6.5cqw,1.75rem);}
-    .market-play .bot-bar{flex:0 0 140px;height:140px;min-height:140px;max-height:140px;padding:10px 14px 8px;}
-    .market-play .bot-stats{gap:4px 12px;}
-    .market-play .bot-stat .bot-val{overflow:visible;text-overflow:clip;}
+    .market-play .bot-bar{flex:0 0 148px;height:148px;min-height:148px;max-height:148px;padding:10px 14px 8px;overflow:visible;}
+    .market-play .bot-stats{gap:6px 16px;}
+    .market-play .bot-stat{flex-direction:column;align-items:flex-start;gap:2px;min-width:0;}
+    .market-play .bot-stat.right{align-items:flex-end;}
+    .market-play .bot-stat .bot-val{font-size:clamp(.95rem,3.6cqw,1.28rem);}
     .market-play .bot-sub{
       display:grid;grid-template-columns:1fr 1fr;gap:3px 14px;
       justify-content:stretch;white-space:normal;font-size:clamp(.68rem,2.6cqw,.82rem);}}
